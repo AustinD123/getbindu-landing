@@ -1,0 +1,38 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "../styles/ui/tokens.css";
+@import "../styles/ui/base.css";
+@import "./custom.css";
+
+/* Bindu design-system kit — copied verbatim from
+ * project/colors-and-type.css and project/kits/product.html. These two
+ * files ARE the source of truth for the product surface; do not hand-
+ * edit them. To update, re-export from claude.ai/design and replace. */
+@import "../styles/bindu-colors-and-type.css";
+@import "../styles/bindu-product.css";
+@import "../styles/app-layout.css";
+@import "../styles/bindu-onboarding.css";
+
+@custom-variant dark (&:is(.dark *));
+
+
+/* Corridor briefing: download-to-PDF via window.print(). Scoped with :has() so
+ * ONLY a page that renders a briefing print-region is affected; every other
+ * page prints normally. The briefing paints its own print header + colours. */
+@media print {
+  @page { margin: 14mm; }
+  body:has([data-print-region]) * { visibility: hidden; }
+  body:has([data-print-region]) [data-print-region],
+  body:has([data-print-region]) [data-print-region] * {
+    visibility: visible;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body:has([data-print-region]) [data-print-region] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
