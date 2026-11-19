@@ -1,11 +1,28 @@
-# getbindu-blog
+# getbindu-landing
 
-A standalone copy of the Bindu trade-compliance blog (getbindu.com/blog and
-/de/blog), split out of the `shelley` monorepo so people can work on the blog
-without the whole product stack: no Go backend, no database, no workspace app.
+A standalone copy of the Bindu marketing site: everything a visitor sees
+**before signing in** at getbindu.com. It was split out of the `shelley`
+monorepo (`frontend/apps/web`) so people can work on the landing without the
+product stack: no Go backend, no database, no workspace app.
 
-The **live** blog is still served by shelley. This repo is where blog work
+The **live** site is still served by shelley. This repo is where landing work
 happens until it is merged back. Nothing here deploys to getbindu.com.
+
+## What's in it
+
+| Pages | Routes |
+|---|---|
+| Home | `/` |
+| Regulation pages | `/eudr`, `/cbam`, `/cbam/software`, `/dpp`, `/dpp/battery`, `/dpp/textiles`, `/dpp/others`, `/ppwr`, `/reach` |
+| Localized EUDR | `/de/eudr`, `/es/eudr`, `/fr/eudr`, `/it/eudr`, `/nl/eudr`, `/pl/eudr` |
+| Blog | `/blog`, `/blog/<slug>`, `/blog/authors/<slug>`, `/de/blog`, `/de/blog/<slug>` |
+| Legal | `/privacy`, `/terms` |
+| Machine-readable | `/sitemap.xml`, `/llms.txt`, `/robots.txt` |
+
+Not in it: `/login` and the other sign-in screens, the workspace app,
+`/regulation/<id>` (behind login), and the public EUDR product page
+`/eudr/p/<code>` (it reads live data from the backend). Header links to
+`/login` 404 here; that is expected.
 
 ## Run it
 
@@ -13,68 +30,74 @@ Needs Node 22 and pnpm 10.
 
 ```bash
 pnpm install
-pnpm dev          # http://localhost:3010/blog
+pnpm dev          # http://localhost:3010
 ```
 
 Before you open a PR:
 
 ```bash
 pnpm typecheck
-pnpm build        # prerenders every post; a broken frontmatter fails here
-pnpm check:dashes # no em or en dashes in any post
+pnpm test
+pnpm build        # prerenders every page and post
+pnpm check:dashes # no em or en dashes in any blog post
 ```
 
-Header and footer links to the rest of the site (/eudr, /cbam, /login, ...)
-404 locally. They are real pages on getbindu.com, not part of this repo.
-
-## Add or edit a post
-
-The full rules are in `.claude/skills/blog-post/SKILL.md`; read them first.
-The short version:
+## Where things live
 
 | What | Where |
 |---|---|
-| English post | `content/blog/<slug>.md` (file name = URL slug) |
-| German post | `content/blog/de/<slug>.md` |
-| Flow-diagram thumbnail | add a spec to `scripts/blog-diagrams.data.mjs`, run `pnpm diagrams` (never hand-write the SVG) |
-| Diagram output | `public/images/blog/<slug>.svg` |
+| Page routes | `app/(en)/(landing)/`, `app/(de)/` … `app/(pl)/` |
+| Page content and sections | `features/landing/` (one folder per area: `regulation/`, `story/`, `sections/`, `pricing/`, `blog/`, ...) |
+| Header and footer | `features/landing/chrome/` |
+| Landing CSS | `features/landing/*.css`, `features/landing/story/*.css` |
+| Design tokens and type | `styles/`, `styles/ui/` |
+| Images and hero videos | `public/images/`, `public/videos/` |
+| Blog posts | `content/blog/<slug>.md`, `content/blog/de/<slug>.md` |
+| Blog diagram thumbnails | specs in `scripts/blog-diagrams.data.mjs`, then `pnpm diagrams` |
 | Authors | `features/landing/seo/team.ts` |
-| Rendering, index, schema | `features/landing/blog/` |
-| Routes | `app/(en)/(landing)/blog/`, `app/(de)/de/blog/` |
-| Design rules | `docs/DESIGN.md` |
+| Design rules | `docs/DESIGN.md` (marketing register) |
 
-With Claude Code, the `blog-post` skill and the `.claude/hooks/blog-gate.sh`
-reminder load automatically in this repo.
+Blog posts have their own rules: `.claude/skills/blog-post/SKILL.md`. With
+Claude Code, that skill and the `.claude/hooks/blog-gate.sh` reminder load
+automatically in this repo.
+
+Animation is GSAP (`gsap`, `@gsap/react`, ScrollTrigger). Never hand-write a
+CSS hidden state for something GSAP animates.
 
 ## Layout: mirrors shelley on purpose
 
-Every blog file sits at the **same path** it has in
+Every landing file sits at the **same path** it has in
 `shelley/frontend/apps/web/`, so merging back is a copy, not a port.
 
-**Blog-owned (copy these back to shelley):**
+**Landing-owned (copy these back to shelley):**
 
-- `content/blog/`
-- `public/images/blog/`
-- `features/landing/blog/`
+- `app/(en)/(landing)/`, `app/(de)/`, `app/(es)/`, `app/(fr)/`, `app/(it)/`, `app/(nl)/`, `app/(pl)/`
+- `app/llms.txt/`, `app/sitemap.ts`, `app/landing-chrome.tsx`
+- `features/landing/`
+- `content/`, `public/images/`, `public/videos/`
 - `scripts/blog-diagrams.data.mjs`, `scripts/gen-blog-diagrams.mjs`
-- `app/(en)/(landing)/blog/`, `app/(de)/de/blog/`
 
-**Snapshots of shelley's shared landing code (edit these in shelley, not
-here):** the header and footer in `features/landing/chrome/`,
-`features/landing/seo/`, `features/landing/*.css`, `features/landing/story/`,
-`styles/`, `app/landing-chrome.tsx`, `app/document-shell.tsx`,
-`app/root-metadata.ts`, `app/locale-root-layout.tsx`.
+**Shared with the app (change only with care, the app uses them too):**
+`styles/`, `app/custom.css`, `app/document-shell.tsx`, `app/root-metadata.ts`,
+`app/locale-root-layout.tsx`, `app/(en)/error.tsx`, `app/(en)/not-found.tsx`,
+`app/global-error.tsx`, `lib/`, `image-loader.ts`.
+`styles/ui/` is a copy of shelley's `packages/ui/styles/` (it lives there,
+not under `apps/web`).
 
 **Only for this repo (never copy back):** `shims/`, `app/root-shell.tsx`,
-`app/(en)/layout.tsx`, `app/(en)/(landing)/page.tsx`, `app/robots.ts`,
-`app/globals.css`, `next.config.ts`, `tsconfig.json`, `package.json`.
+`app/providers.tsx`, `app/(en)/layout.tsx`, `app/robots.ts`, `app/globals.css`,
+`next.config.ts`, `tsconfig.json`, `vitest.config.ts`, `package.json`.
 
-`shims/` stands in for the two monorepo packages the header and the document
-shell import (`@shelley/core/auth`, `@shelley/ui/lib/utils`), mapped in
-`tsconfig.json`, so those files stay byte-identical to shelley's.
+`shims/` stands in for the few monorepo packages that landing files import
+(`@shelley/core/*`, `@shelley/ui/lib/utils`), mapped in `tsconfig.json`, so
+those files stay byte-identical to shelley's. See `shims/README.md`.
 
-This copy loads no analytics or consent scripts, and `robots.txt` blocks all
-crawlers, so a preview deploy can never compete with the live pages.
+`features/landing/pricing/pricing-drift.test.ts` is kept but skipped here: it
+checks the landing price against shelley's backend, which only exists there.
+
+This copy loads no consent banner and no analytics, and `robots.txt` blocks
+all crawlers, so dev traffic stays out of the real numbers and a preview deploy
+can never compete with getbindu.com as duplicate content.
 
 ## Merging back into shelley
 
@@ -82,17 +105,19 @@ From this repo, with shelley checked out next to it:
 
 ```bash
 WEB=../shelley/frontend/apps/web
-for p in content/blog public/images/blog features/landing/blog \
-         "app/(en)/(landing)/blog" "app/(de)/de/blog"; do
+for p in "app/(en)/(landing)" "app/(de)" "app/(es)" "app/(fr)" "app/(it)" \
+         "app/(nl)" "app/(pl)" app/llms.txt features/landing content \
+         public/images public/videos; do
   rsync -a --delete "$p/" "$WEB/$p/"
 done
+cp app/sitemap.ts app/landing-chrome.tsx "$WEB/app/"
 cp scripts/blog-diagrams.data.mjs scripts/gen-blog-diagrams.mjs "$WEB/scripts/"
 ```
 
-Then in shelley run `pnpm typecheck` and `pnpm build`. The sitemap reads
-`content/blog` at build time, so new posts need no extra wiring. Posts only go
-live once they land in shelley's `main`.
+Then in shelley run `pnpm typecheck`, `pnpm lint`, `pnpm test` and
+`pnpm build`. Changes go live once they land in shelley's `main`.
 
-Split from shelley at commit `3aec4250` (2026-11-17). Posts added to shelley
-after that are not in this copy; pull them across before a merge-back so
-`--delete` does not remove them.
+Split from shelley at `a4a096e2` (2026-11-19, branch
+`chore/company-address-contact-email`). Landing changes made in shelley after
+that are not in this copy; bring them across before a merge-back so `--delete`
+does not remove them.

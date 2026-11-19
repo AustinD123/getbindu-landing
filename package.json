@@ -1,5 +1,5 @@
 {
-  "name": "getbindu-blog",
+  "name": "getbindu-landing",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,10 +10,12 @@
     "start": "next start --port 3010",
     "typecheck": "tsc --noEmit",
     "diagrams": "node scripts/gen-blog-diagrams.mjs",
-    "check:dashes": "! grep -rlE '—|–| -- ' content/blog"
+    "check:dashes": "! grep -rlE '—|–| -- ' content/blog",
+    "test": "vitest run"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
+    "@tanstack/react-query": "^5.108.0",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "gsap": "^3.15.0",
@@ -39,6 +41,7 @@
     "@types/react-dom": "^19.2.0",
     "@types/three": "^0.184.1",
     "tailwindcss": "^4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.12"
   }
 }

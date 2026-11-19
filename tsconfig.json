@@ -3,7 +3,11 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,11 +17,30 @@
     "noUncheckedIndexedAccess": true,
     "resolveJsonModule": true,
     "jsx": "react-jsx",
-    "plugins": [{ "name": "next" }],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
-      "@/*": ["./*"],
-      "@shelley/core/auth": ["./shims/shelley-core-auth.ts"],
-      "@shelley/ui/lib/utils": ["./shims/shelley-ui-utils.ts"]
+      "@/*": [
+        "./*"
+      ],
+      "@shelley/core/auth": [
+        "./shims/shelley-core-auth.ts"
+      ],
+      "@shelley/core/workspace": [
+        "./shims/shelley-core-workspace.ts"
+      ],
+      "@shelley/core/paths": [
+        "./shims/shelley-core-paths.ts"
+      ],
+      "@shelley/core/logger": [
+        "./shims/shelley-core-logger.ts"
+      ],
+      "@shelley/ui/lib/utils": [
+        "./shims/shelley-ui-utils.ts"
+      ]
     },
     "noEmit": true,
     "allowJs": true,
@@ -30,5 +53,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "features/landing/pricing/pricing-drift.test.ts"
+  ]
 }

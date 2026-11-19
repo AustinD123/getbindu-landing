@@ -63,7 +63,7 @@ const COLS: Col[] = [
       // "Contact" as an address or a form, and a fourth label on a destination
       // the page already offers three times teaches nothing. The address was
       // published in llms.txt and nowhere a human could read it.
-      { label: "hello@getbindu.com", href: "mailto:hello@getbindu.com" },
+      { label: "raahul@getbindu.com", href: "mailto:raahul@getbindu.com" },
       { label: "Terms", href: "/terms" },
       { label: "Privacy", href: "/privacy" },
     ],

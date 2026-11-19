@@ -135,6 +135,26 @@ export const BLOG_TRANSLATIONS: readonly BlogTranslationSet[] = [
     en: "taric-code-checklist",
     de: "taric-code-finden",
   },
+  {
+    en: "dap-vs-ddp-incoterms",
+    de: "dap-oder-ddp-incoterms",
+  },
+  {
+    en: "fca-incoterms-explained",
+    de: "fca-incoterms-erklaert",
+  },
+  {
+    en: "exw-incoterms-explained",
+    de: "exw-incoterms-erklaert",
+  },
+  {
+    en: "cpt-incoterms-explained",
+    de: "cpt-incoterms-erklaert",
+  },
+  {
+    en: "fob-incoterms-explained",
+    de: "fob-incoterms-erklaert",
+  },
 ];
 
 export function blogIndexPath(locale: BlogLocale): string {
