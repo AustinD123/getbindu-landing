@@ -15,7 +15,7 @@ import "./styles/r13-cta.css";
 import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
-import { ScrollTrigger, startSmoothScroll } from "./lib/motion";
+import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
 import { startHeadings } from "./lib/headings";
@@ -57,14 +57,7 @@ export function HomePage() {
     const target = id ? document.getElementById(id) : null;
     if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: "auto" });
     else window.scrollTo(0, 0);
-    // The page hydrates after the server HTML has laid out, and the web fonts can arrive after the scroll scenes measured
-    // their start and end. Measure again once fonts and the load event are in (the mockup built everything client-side).
-    const refresh = () => ScrollTrigger.refresh();
-    document.fonts?.ready.then(refresh);
-    window.addEventListener("load", refresh);
-    const t1 = window.setTimeout(refresh, 800), t2 = window.setTimeout(refresh, 2500);
     return () => {
-      window.removeEventListener("load", refresh); window.clearTimeout(t1); window.clearTimeout(t2);
       stop(); stopHeads(); stopBands(); stopScroll(); html.style.scrollPaddingTop = "";
     };
   }, []);

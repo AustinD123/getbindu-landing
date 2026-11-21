@@ -369,7 +369,7 @@ export function Guide() {
       stopIntro = () => mo.disconnect();
     } else el.classList.add("is-on");
     const ro = new ResizeObserver(rebuild);
-    ro.observe(document.body);
+    ro.observe(getRoot());
     // clicking the ship sounds its horn and rocks it (the canvas takes no pointer events, so the click is tested against the ship's place)
     const near = (e: MouseEvent) => shipAt.a > 0.3 && Math.hypot(e.clientX - shipAt.x, e.clientY - (shipAt.y - 8 * shipAt.sc)) < Math.max(18, 28 * shipAt.sc);
     const onClick = (e: MouseEvent) => {

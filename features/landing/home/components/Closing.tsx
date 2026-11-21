@@ -1,3 +1,4 @@
+import { getRoot } from "../lib/root";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
 import { play } from "../lib/sound";
@@ -164,7 +165,7 @@ export function Finale() {
     // the page above can change height after load (sections that skip rendering, fonts): re-measure the zoom's start and end when the finale has moved
     let rt = 0, lastTop = tk.top;
     const ro = new ResizeObserver(() => { window.clearTimeout(rt); rt = window.setTimeout(() => { const t = sec.getBoundingClientRect().top + window.scrollY; if (Math.abs(t - lastTop) > 2) { lastTop = t; ScrollTrigger.refresh(); } }, 250); });
-    ro.observe(document.body);
+    ro.observe(getRoot());
     return () => { ro.disconnect(); window.clearTimeout(rt); window.removeEventListener("resize", onResize); gsap.killTweensOf(fin); fin.t = 0; fin.z = 0; tween.scrollTrigger?.kill(); tween.kill(); handoff.scrollTrigger?.kill(); handoff.kill(); };
   }, [isStatic]);
 

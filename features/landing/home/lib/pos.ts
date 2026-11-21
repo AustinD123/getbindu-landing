@@ -1,3 +1,4 @@
+import { getRoot } from "./root";
 /* Round 24 item 1: cached element positions, so scroll handlers and per-frame code never read layout. A tracker measures
    once (document top, height) and again only after the layout may have changed (resize, body size change, fonts, load).
    Use: const t = track(el); t.top (document y), t.h, t.rectTop(scrollY) (viewport y). */
@@ -12,7 +13,7 @@ function hook() {
   document.fonts?.ready.then(bump);
   if (typeof ResizeObserver !== "undefined") {
     let t = 0;
-    new ResizeObserver(() => { window.clearTimeout(t); t = window.setTimeout(bump, 120); }).observe(document.body);
+    new ResizeObserver(() => { window.clearTimeout(t); t = window.setTimeout(bump, 120); }).observe(getRoot());
   }
 }
 export const invalidatePositions = () => { ver++; };
