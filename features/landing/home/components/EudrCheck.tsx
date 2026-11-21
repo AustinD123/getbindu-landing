@@ -12,7 +12,7 @@ function CheckBody() {
   return (
     <div className="check">
       <fieldset>
-        <legend className="eyebrow">{check.q1}</legend>
+        <legend className="bh-eyebrow">{check.q1}</legend>
         <div className="check-opts">
           {check.goods.map((g) => (
             <label key={g} className={`opt${good === g ? " is-on" : ""}`}><input type="radio" name="good" value={g} checked={good === g} onChange={() => setGood(g)} />{g}</label>
@@ -20,7 +20,7 @@ function CheckBody() {
         </div>
       </fieldset>
       <fieldset>
-        <legend className="eyebrow">{check.q2}</legend>
+        <legend className="bh-eyebrow">{check.q2}</legend>
         <div className="check-opts">
           {check.sizes.map((s) => (
             <label key={s.k} className={`opt${size === s.k ? " is-on" : ""}`}><input type="radio" name="size" value={s.k} checked={size === s.k} onChange={() => setSize(s.k)} />{s.t}</label>
@@ -52,7 +52,7 @@ export function EudrCheck() {
   const close = useCallback(() => setOpen(false), []);
   return (
     <div className="r6-check">
-      <p className="eyebrow">{applies.eyebrow}</p>
+      <p className="bh-eyebrow">{applies.eyebrow}</p>
       <div className="r6-check-row">
         <button type="button" className="tlink link-btn" aria-haspopup="dialog" onClick={(e) => { setOpener(e.currentTarget); setOpen(true); }}><LinkLabel>{applies.check}</LinkLabel></button>
         <a className="tlink r6-source" href={EUDR_SOURCE} target="_blank" rel="noopener noreferrer"><LinkLabel arrow={false}>{applies.source}</LinkLabel></a>

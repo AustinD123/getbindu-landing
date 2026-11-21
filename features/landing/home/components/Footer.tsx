@@ -15,7 +15,7 @@ export function Footer() {
         </div>
         {cols.map((c) => (
           <div key={c.h} className="foot-col">
-            <p className="eyebrow">{c.h}</p>
+            <p className="bh-eyebrow">{c.h}</p>
             <ul>{c.l.map((l) => <li key={l.t}><a href={l.u} {...(l.u.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}>{l.t}</a></li>)}</ul>
           </div>
         ))}

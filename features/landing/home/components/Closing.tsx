@@ -180,7 +180,7 @@ export function Finale() {
     </>
   );
   return (
-    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l" style={{ "--photo": "url(images/port-cargo.webp)" } as CSSProperties}>
+    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l" style={{ "--photo": "url(/home/images/port-cargo.webp)" } as CSSProperties}>
       <div ref={stg} className="fz-stage">
         {wordmark}
         {!isStatic && <div ref={grad} className="fz-grad" aria-hidden="true" />}

@@ -3,6 +3,7 @@
 /* The homepage, composed in the mockup's section order (v3 App.tsx, minus its hash-route sub-pages and the "Mockup"
    badge). One client boundary: the sections server-render for the text, and everything animated starts in effects. */
 import { useEffect, useLayoutEffect } from "react";
+import "./styles/reset.css";
 import "./styles/tokens.css";
 import "./styles/components.css";
 import "./styles/site.css";
@@ -14,7 +15,7 @@ import "./styles/r13-cta.css";
 import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
-import { startSmoothScroll } from "./lib/motion";
+import { ScrollTrigger, startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
 import { startHeadings } from "./lib/headings";
@@ -32,6 +33,7 @@ import { Intro } from "./components/Intro";
 import { Guide } from "./components/Guide";
 import { Rail } from "./components/Rail";
 import { EstimateProvider } from "./components/Estimate";
+import "./styles/subpages.css";
 // last, so the shared states win over the section sheets (equal specificity)
 import "./styles/states.css";
 // round 35: phones only (767px and under), after everything else
@@ -55,7 +57,16 @@ export function HomePage() {
     const target = id ? document.getElementById(id) : null;
     if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: "auto" });
     else window.scrollTo(0, 0);
-    return () => { stop(); stopHeads(); stopBands(); stopScroll(); html.style.scrollPaddingTop = ""; };
+    // The page hydrates after the server HTML has laid out, and the web fonts can arrive after the scroll scenes measured
+    // their start and end. Measure again once fonts and the load event are in (the mockup built everything client-side).
+    const refresh = () => ScrollTrigger.refresh();
+    document.fonts?.ready.then(refresh);
+    window.addEventListener("load", refresh);
+    const t1 = window.setTimeout(refresh, 800), t2 = window.setTimeout(refresh, 2500);
+    return () => {
+      window.removeEventListener("load", refresh); window.clearTimeout(t1); window.clearTimeout(t2);
+      stop(); stopHeads(); stopBands(); stopScroll(); html.style.scrollPaddingTop = "";
+    };
   }, []);
   return (
     <EstimateProvider>

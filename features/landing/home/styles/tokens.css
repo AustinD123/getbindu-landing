@@ -76,22 +76,22 @@
   --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
   /* scale: display weight 400 with negative tracking (x.ai); body 17px / 1.47 (Apple); mono caps labels (Together) */
-  --display-xl: clamp(3rem, 6.6vw, 6rem);        /* 48 -> 96 */
-  --display-lg: clamp(2.5rem, 5vw, 4.5rem);      /* 40 -> 72 */
-  --display-md: clamp(2rem, 3.4vw, 3rem);        /* 32 -> 48 */
-  --display-sm: clamp(1.5rem, 2.2vw, 2rem);      /* 24 -> 32 */
-  --display-xs: 1.25rem;                         /* 20 */
+  --display-xl: clamp(48px, 6.6vw, 96px);        /* 48 -> 96 */
+  --display-lg: clamp(40px, 5vw, 72px);      /* 40 -> 72 */
+  --display-md: clamp(32px, 3.4vw, 48px);        /* 32 -> 48 */
+  --display-sm: clamp(24px, 2.2vw, 32px);      /* 24 -> 32 */
+  --display-xs: 20px;                         /* 20 */
   --track-xl: -0.03em; --track-lg: -0.03em; --track-md: -0.025em; --track-sm: -0.015em;   /* r17: Notion-style tight display tracking */
   --display-weight: 600;
   --lh-display: 1.0; --lh-display-sm: 1.12;
-  --body-lg: 1.1875rem;  /* 19 */  --lh-body-lg: 1.5;
-  --body: 1.0625rem;     /* 17 */  --lh-body: 1.5;
-  --body-sm: 0.9375rem;  /* 15 */  --lh-body-sm: 1.45;
-  --caption: 0.8125rem;  /* 13 */
-  --mono-eyebrow: 0.75rem;  /* 12, uppercase, +0.12em */
-  --mono-button: 0.8125rem; /* 13, uppercase, +0.06em, weight 500 */
-  --mono-chip: 0.6875rem;   /* 11, uppercase, +0.08em */
-  --mono-number: 0.875rem;  /* 14, readouts */
+  --body-lg: 19px;  /* 19 */  --lh-body-lg: 1.5;
+  --body: 17px;     /* 17 */  --lh-body: 1.5;
+  --body-sm: 15px;  /* 15 */  --lh-body-sm: 1.45;
+  --caption: 13px;  /* 13 */
+  --mono-eyebrow: 12px;  /* 12, uppercase, +0.12em */
+  --mono-button: 13px; /* 13, uppercase, +0.06em, weight 500 */
+  --mono-chip: 11px;   /* 11, uppercase, +0.08em */
+  --mono-number: 14px;  /* 14, readouts */
 
   /* ---------- space (4px base) ---------- */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 80px; --s-10: 120px;

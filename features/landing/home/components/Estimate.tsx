@@ -38,12 +38,12 @@ function Calculator() {
   return (
     <div className="calc">
       <label className="calc-row" htmlFor="calc-n">
-        <span className="eyebrow">{C.filings}</span>
+        <span className="bh-eyebrow">{C.filings}</span>
         <span className="num calc-n">{n}</span>
       </label>
       <input id="calc-n" type="range" min={1} max={200} step={1} value={n} onChange={(e) => setN(+e.target.value)} style={{ ["--fill" as string]: `${((n - 1) / 199) * 100}%` }} />
       <fieldset className="calc-keep">
-        <legend className="eyebrow">{C.keep}</legend>
+        <legend className="bh-eyebrow">{C.keep}</legend>
         <label className={`opt${!ten ? " is-on" : ""}`}><input type="radio" name="keep" checked={!ten} onChange={() => setTen(false)} />{C.keep5}</label>
         <label className={`opt${ten ? " is-on" : ""}`}><input type="radio" name="keep" checked={ten} onChange={() => setTen(true)} />{C.keep10}</label>
       </fieldset>
@@ -52,11 +52,11 @@ function Calculator() {
         <div><dt>{C.lineWorkspace}</dt><dd className="num">{eur(workspace)}</dd></div>
       </dl>
       <div className="calc-total" aria-live="polite">
-        <span className="eyebrow">{C.total}</span>
+        <span className="bh-eyebrow">{C.total}</span>
         <span className="num num-key calc-sum">{eur(shown)}</span>
         <span className="t-caption t-muted">{C.vat}</span>
       </div>
-      <a className="btn btn-primary calc-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.popupBook}</BtnLabel></a>
+      <a className="btn bh-btn-primary calc-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.popupBook}</BtnLabel></a>
     </div>
   );
 }

@@ -133,6 +133,7 @@ export function createScene(canvas: HTMLCanvasElement, opts: SceneOpts): SceneAp
   renderer.setPixelRatio(dpr);
   renderer.setSize(W0!, H0!);
   renderer.setClearColor(0x000000, 0);
+  renderer.sortObjects = false;   // draw order is the insertion order; sorting would also compute bounding spheres
   const gl = renderer.getContext();
   const scene = new Scene();
   const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);   // unused: the shaders place every point themselves

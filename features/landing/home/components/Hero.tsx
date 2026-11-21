@@ -86,7 +86,7 @@ export function Hero() {
         </h1>
         <p className="t-body-lg t-soft hero-sub">{hero.sub}</p>
         <div className="cta">
-          <a className="btn btn-primary" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demo}</BtnLabel></a>
+          <a className="btn bh-btn-primary" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demo}</BtnLabel></a>
         </div>
       </div>
     </section>

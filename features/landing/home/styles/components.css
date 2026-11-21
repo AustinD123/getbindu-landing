@@ -20,9 +20,9 @@
 .bindu-home .band-light .t-soft,  .bindu-home .band-soft .t-soft  { color: var(--ink-body); }
 
 /* eyebrow (r17): small sentence-case label in the sans */
-.bindu-home .eyebrow { font: 500 0.875rem/1.35 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
-.bindu-home .band-dark .eyebrow { color: var(--on-dark-mute); }
-.bindu-home .band-light .eyebrow, .bindu-home .band-soft .eyebrow { color: var(--ink-mute); }
+.bindu-home .bh-eyebrow { font: 500 14px/1.35 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
+.bindu-home .band-dark .bh-eyebrow { color: var(--on-dark-mute); }
+.bindu-home .band-light .bh-eyebrow, .bindu-home .band-soft .bh-eyebrow { color: var(--ink-mute); }
 
 /* key number: yellow on dark only (on light it is ink, never yellow text) */
 .bindu-home .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
@@ -35,11 +35,11 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-sizing: border-box;
   height: var(--btn-h); min-height: var(--btn-h); padding: 0 var(--btn-px);
   border-radius: var(--r-pill); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
-  font: 500 0.9375rem/1 var(--font-sans); letter-spacing: 0;
+  font: 500 15px/1 var(--font-sans); letter-spacing: 0;
   transition: background-color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out), color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 /* the ONE filled pill per view: Estimate (ink label on yellow) */
-.bindu-home .btn-primary { background: var(--brand-yellow); color: var(--ink); border-color: var(--yellow-outline); }
+.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: var(--ink); border-color: var(--yellow-outline); }
 /* secondary: transparent pill, 1px translucent-white border, white label (x.ai) */
 .bindu-home .btn-outline { background: transparent; color: var(--on-dark); border-color: var(--line-white-25); }
 .bindu-home .band-light .btn-outline, .bindu-home .band-soft .btn-outline { color: var(--ink); border-color: var(--line-black-12); }
@@ -49,20 +49,20 @@
 /* ---------- round 15 item 11: the filled pill and the text link ----------
    Filled pill: yellow, sans label, a small navy dot at the right end. Hover: the dot slides 4px and becomes an arrow
    (r17: the sheen sweep and the label wipe are gone). Reduced motion: no slide; the states swap at once. */
-.bindu-home .btn-primary {
+.bindu-home .bh-btn-primary {
   position: relative; overflow: hidden; isolation: isolate;
   transition: background-color var(--t-ui) var(--ease-ui), border-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui), transform var(--t-ui) var(--ease-ui);
 }
 .bindu-home .btn-l { display: inline-block; vertical-align: top; }
 /* r22-9: a plain arrow after the label; it nudges 4px right on hover (no colour change) */
 .bindu-home .btn-arrow { flex: none; display: inline-grid; place-items: center; width: 14px; height: 14px; transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .bindu-home .btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover .btn-arrow { transform: translateX(4px); } }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover .btn-arrow { transform: translateX(4px); } }
 /* the dot (a 12px slot; the dot and the arrow share it) */
 /* press and focus: scale .98; a 2px cobalt ring with an offset */
-.bindu-home .btn-primary:not(:is(:disabled, [aria-disabled="true"])):active { transform: scale(0.98); }
-.bindu-home .btn-primary:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 3px; }
+.bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):active { transform: scale(0.98); }
+.bindu-home .bh-btn-primary:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 3px; }
 /* disabled: a muted fill, no motion */
-.bindu-home .btn-primary:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); border-color: var(--line-white-12); color: var(--on-dark-mute); opacity: 1; box-shadow: none; }
+.bindu-home .bh-btn-primary:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); border-color: var(--line-white-12); color: var(--on-dark-mute); opacity: 1; box-shadow: none; }
 
 /* text link: a 1px cobalt underline grows from the left (transform: scaleX, not width), the text wipes to cobalt, and the
    arrow nudges 4px. The line at rest is the same cobalt at low opacity, so the link is always marked. */
@@ -90,8 +90,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .bindu-home .btn-dot, .bindu-home .btn-dot::before, .bindu-home .btn-dot::after, .bindu-home .tlink::after, .bindu-home .tlink-l::before, .bindu-home .tlink-a { transition: none !important; }
-  .bindu-home .btn-primary:hover .btn-dot, .bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: none !important; }
-  .bindu-home .btn-primary:active { transform: none !important; }
+  .bindu-home .bh-btn-primary:hover .btn-dot, .bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: none !important; }
+  .bindu-home .bh-btn-primary:active { transform: none !important; }
 }
 
 /* inline text links inside paragraphs: cobalt on light; on dark white with a cobalt underline (no cobalt text on black) */
@@ -102,7 +102,7 @@
 .bindu-home .chip {
   display: inline-flex; align-items: center; gap: 7px; height: 24px; padding: 0 10px; border-radius: 6px;   /* r17: status labels, not pills */
  
-  font: 500 0.75rem/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
 }
 .bindu-home .chip-live { background: var(--live-bg); color: var(--live-fg); border-color: var(--yellow-outline); }
 .bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
@@ -122,7 +122,7 @@
 
 /* app frame: the product mock window. Cobalt = the system */
 .bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas-soft); border: 1px solid var(--line-white-12); overflow: hidden; color: var(--on-dark); }
-.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--hairline-dark); font: 500 0.8125rem/1 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--hairline-dark); font: 500 13px/1 var(--font-sans); color: var(--on-dark-mute); }
 .bindu-home .app-frame-bar .chip-illus { margin-left: auto; }
 
 /* active step / progress: cobalt */
@@ -180,7 +180,7 @@
 .bindu-home .seg-opt {
   position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
   padding: 0 10px; border: 0; background: transparent; color: var(--on-dark-mute); cursor: pointer;
-  font: 500 0.9375rem/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  font: 500 15px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
   transition: color var(--t-ui) var(--ease-ui);
 }
 .bindu-home .seg-opt:hover, .bindu-home .seg-opt.is-on { color: var(--on-dark); }

@@ -21,7 +21,7 @@
 .bindu-home .ship-stage { gap: clamp(8px, 2svh, 24px); }
 .bindu-home .ship .sec-head { gap: clamp(4px, 1.1svh, 12px); }
 .bindu-home .ship .sec-head h2 { font-size: min(var(--display-md), 6svh); }
-.bindu-home .ship .sec-head .t-soft { margin: 0; font-size: clamp(0.875rem, 2.1svh, var(--body)); line-height: 1.4; }
+.bindu-home .ship .sec-head .t-soft { margin: 0; font-size: clamp(14px, 2.1svh, var(--body)); line-height: 1.4; }
 .bindu-home .ship-cap { margin-top: clamp(6px, 1.6svh, 16px); }
 
 /* the base: coastlines as dim dots, a faint dot field, a thin HUD grid */
@@ -103,8 +103,8 @@
 @media (max-width: 600px) {
   .bindu-home .ship-pin:not(.is-static) .ship-stage { gap: 6px; padding-top: 8px; padding-bottom: 52px; }   /* the bottom space clears the Mockup pill */
   .bindu-home .ship .sec-head { gap: 4px; }
-  .bindu-home .ship .sec-head h2 { font-size: min(1.25rem, 4svh); line-height: 1.1; }
-  .bindu-home .ship .sec-head .t-soft { font-size: 0.8125rem; line-height: 1.35; }
+  .bindu-home .ship .sec-head h2 { font-size: min(20px, 4svh); line-height: 1.1; }
+  .bindu-home .ship .sec-head .t-soft { font-size: 13px; line-height: 1.35; }
   .bindu-home .ship .ship-chips .chip { height: 22px; }
   .bindu-home .ship-pin:not(.is-static) .ship-cols { gap: 6px; }
   .bindu-home .ship-pin:not(.is-static) .ship-svg { width: clamp(150px, calc((100svh - 517px) * 1.4557), 100%); }
@@ -170,8 +170,8 @@
 
 /* r22-12: the journey title steps up one size (display-lg, still limited by the screen height so the section fits one window); the story line is body-lg in full ink */
 .bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6.6svh); }
-.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 60ch; color: var(--on-dark); font-size: clamp(0.9375rem, 2.3svh, 1.25rem); line-height: 1.4; }
-@media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(1.5rem, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: 0.8125rem; line-height: 1.35; } }
+.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 60ch; color: var(--on-dark); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.4; }
+@media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(24px, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: 13px; line-height: 1.35; } }
 
 /* r23-5: the map fills the content container exactly (no bleed) */
 

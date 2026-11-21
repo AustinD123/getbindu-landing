@@ -35,7 +35,7 @@
 .bindu-home .intro.is-out { pointer-events: none; }
 .bindu-home .intro.is-out > * { opacity: 0; }
 /* the first line: mono, mute, fades in over the dot and out before the map draws in */
-.bindu-home .intro-line { position: absolute; left: 50%; bottom: 20vh; margin: 0; transform: translateX(-50%); white-space: nowrap; font: var(--display-weight) clamp(1.5rem, 3.2vw, 2.25rem)/1.2 var(--font-sans); letter-spacing: var(--track-sm); color: var(--on-dark); display: none; }
+.bindu-home .intro-line { position: absolute; left: 50%; bottom: 20vh; margin: 0; transform: translateX(-50%); white-space: nowrap; font: var(--display-weight) clamp(24px, 3.2vw, 36px)/1.2 var(--font-sans); letter-spacing: var(--track-sm); color: var(--on-dark); display: none; }
 @keyframes intro-line { 0% { opacity: 0; } 25% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
 .bindu-home .intro-label { position: absolute; left: var(--gutter); bottom: 18px; margin: 0; max-width: 70%; font: 400 12px/1.4 var(--font-sans); color: var(--on-dark-mute); }
 .bindu-home .intro-skip { position: absolute; top: 16px; right: var(--gutter); min-height: 36px; padding: 0 14px; background: rgb(var(--canvas-rgb) / 0.6); cursor: pointer; }

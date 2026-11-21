@@ -29,7 +29,7 @@
 .bindu-home .r6-right { align-self: stretch; border-left: 1px solid var(--line-white-12); display: flex; flex-direction: column; }
 
 .bindu-home .r6-tag { display: flex; align-items: center; gap: 12px; min-height: 24px; margin: 0 0 var(--s-4); }
-.bindu-home .r6-tag .eyebrow, .bindu-home .r6-inc-h { color: var(--on-dark-mute); margin: 0; }
+.bindu-home .r6-tag .bh-eyebrow, .bindu-home .r6-inc-h { color: var(--on-dark-mute); margin: 0; }
 .bindu-home .r6-inc-h { display: flex; align-items: center; min-height: 24px; }
 
 .bindu-home .r6-price {
@@ -63,24 +63,24 @@
 .bindu-home .r6-inc li:last-child { border-bottom: 0; }
 .bindu-home .r6-inc li::before { content: ""; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--cobalt-signal); }
 /* Live is plain mono text here, not the yellow chip: yellow stays on the one Estimate pill in this section */
-.bindu-home .r6-live { font: 500 0.8125rem/1 var(--font-sans); color: var(--on-dark); }
+.bindu-home .r6-live { font: 500 13px/1 var(--font-sans); color: var(--on-dark); }
 
 .bindu-home .r6-cta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); margin-top: var(--s-5); }
 .bindu-home .r6-trust {
   list-style: none; margin: auto 0 0; padding: var(--s-4) 0 0; display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4);
-  font: 400 0.8125rem/1.6 var(--font-sans); color: var(--on-dark-mute);
+  font: 400 13px/1.6 var(--font-sans); color: var(--on-dark-mute);
 }
 
 /* the EUDR check, under the Estimate pill: a mono audience label, the text link and the source link */
 .bindu-home .r6-check { margin: 0; padding: 0; }
-.bindu-home .r6-check .eyebrow { color: var(--on-dark-mute); margin-bottom: 0; }
+.bindu-home .r6-check .bh-eyebrow { color: var(--on-dark-mute); margin-bottom: 0; }
 .bindu-home .r6-check-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-1) var(--s-5); }
 .bindu-home .link-btn { min-height: 36px; padding: 0; background: none; border: 0; cursor: pointer; font: 400 var(--caption)/1.4 var(--font-sans); }
 .bindu-home .link-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 .bindu-home .r6-source { min-height: 36px; display: inline-flex; align-items: center; font: 400 var(--caption)/1.4 var(--font-sans); }
 
 /* the card keeps one height across the tabs, so the toggle does not move when the tab changes */
-@media (min-width: 861px) { .bindu-home .r6-card { min-height: 30.5rem; } }
+@media (min-width: 861px) { .bindu-home .r6-card { min-height: 488px; } }
 
 /* narrower screens: the halves stack, receipt first */
 @media (max-width: 860px) {
@@ -90,7 +90,7 @@
 }
 @media (max-width: 600px) {
   .bindu-home .r6-pricing .container { padding-right: 36px; } /* clears the fixed Mockup tab at the right edge */
-  .bindu-home .r6-price { font-size: 3.25rem; }
+  .bindu-home .r6-price { font-size: 52px; }
   .bindu-home .r6-left, .bindu-home .r6-right { padding: var(--s-4); }
   .bindu-home .r6-cta .btn { width: 100%; }
 }

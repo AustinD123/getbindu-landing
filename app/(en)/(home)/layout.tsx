@@ -13,6 +13,8 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
   variable: "--font-plex-mono",
   display: "swap",
+  // the arrow (U+2192) is not in the Latin subset; let it fall to the system mono face, as the mockup does, not to a metric-adjusted Arial
+  adjustFontFallback: false,
 });
 
 // Light unless the reader chose dark; the intro plays unless reduced motion is on.

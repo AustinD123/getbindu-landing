@@ -275,6 +275,7 @@ export async function createGL(canvas: HTMLCanvasElement, W: number, H: number, 
   renderer.setPixelRatio(dpr);
   renderer.setSize(W, H);
   renderer.setClearColor(0x000000, 0);
+  renderer.sortObjects = false;   // draw order is the insertion order; sorting would also compute bounding spheres
   const scene = new Scene(), camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);   // unused: the shader places every point itself
   const build = (p: Plan) => {
     const g = new BufferGeometry();

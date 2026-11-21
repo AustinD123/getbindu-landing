@@ -75,7 +75,7 @@ export function Pricing() {
           <div role="tabpanel" id="pricing-panel" aria-labelledby={`pricing-tab-${tab!.id}`} tabIndex={0} className="r6-card" key={tab!.id}>
             <div className="r6-panel r6-left">
               <div className="r6-tag">
-                <p className="eyebrow">{tab!.tag ?? tab!.label}</p>
+                <p className="bh-eyebrow">{tab!.tag ?? tab!.label}</p>
                 {tab!.status === "build" && <Status s={tab!.status} />}
               </div>
               {tab!.price ? (
@@ -97,7 +97,7 @@ export function Pricing() {
               )}
             </div>
             <div className="r6-right">
-              <p className="eyebrow r6-inc-h">What is included</p>
+              <p className="bh-eyebrow r6-inc-h">What is included</p>
               <ul className="r6-inc">
                 {included.map((l) => (
                   <li key={l.t}>
@@ -107,7 +107,7 @@ export function Pricing() {
                 ))}
               </ul>
               <div className="r6-cta">
-                <button type="button" className="btn btn-primary" aria-haspopup="dialog" onClick={(e) => estimate.show(e.currentTarget)}><BtnLabel>{cta.estimate}</BtnLabel></button>
+                <button type="button" className="btn bh-btn-primary" aria-haspopup="dialog" onClick={(e) => estimate.show(e.currentTarget)}><BtnLabel>{cta.estimate}</BtnLabel></button>
                 {tab!.id === "eudr" && <EudrCheck />}
               </div>
               <ul className="r6-trust" aria-label="Pricing notes">

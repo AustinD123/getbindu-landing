@@ -49,7 +49,7 @@ export function BtnLabel({ children }: { children: string }) {
     link.addEventListener("click", burst);
     const st = { x: 0, y: 0 };
     const apply = () => { link.style.translate = `${st.x.toFixed(2)}px ${st.y.toFixed(2)}px`; el.style.translate = `${(st.x * 0.5).toFixed(2)}px ${(st.y * 0.5).toFixed(2)}px`; };
-    const isPrimary = link.classList.contains("btn-primary");
+    const isPrimary = link.classList.contains("bh-btn-primary");
     const move = (e: PointerEvent) => {
       const r = link.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       const dx = e.clientX - cx, dy = e.clientY - cy, near = Math.abs(dx) < r.width / 2 + 80 && Math.abs(dy) < r.height / 2 + 80;
