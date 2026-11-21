@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BinduLandingStory } from "@/features/landing/story/bindu-landing-story";
+import { HomePage } from "@/features/landing/home/home-page";
 import { RedirectIfAuthenticated } from "@/features/landing/chrome/redirect-if-authenticated";
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function LandingPage() {
   return (
     <>
       <RedirectIfAuthenticated />
-      <BinduLandingStory />
+      <HomePage />
     </>
   );
 }

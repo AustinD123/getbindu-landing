@@ -57,6 +57,16 @@ const jsonLd = {
   ],
 };
 
+/** The site-wide Organization + WebSite graph, for a page that renders its own chrome (the homepage). */
+export function LandingJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+
 /**
  * "Skip to content", per locale.
  *
@@ -88,10 +98,7 @@ export function LandingChrome({
 }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <LandingJsonLd />
       {/* overflow-x-clip (not -hidden): clips full-bleed overflow without
           becoming a scroll container, so the document keeps native scrolling
           (back-button restoration, mobile URL-bar collapse, scroll analytics). */}
