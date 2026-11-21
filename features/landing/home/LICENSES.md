@@ -23,11 +23,6 @@ what ships here.
 |---|---|---|
 | Unsplash photo 1605732562742 (shipping containers): the finale photo `public/home/images/port-cargo.webp`, shown through the mask of the wordmark and under the closing line | Unsplash Licence | Commercial use is allowed. **Swap for an unbranded photo before production:** the small "Hapag-Lloyd" door text and container IDs still show. |
 
-## Sounds
-| Item | Licence | Commercial use |
-|---|---|---|
-| Kenney "Interface Sounds" (kenney.nl, via opengameart.org), 22 clips trimmed, level-matched and re-encoded as `public/home/sounds/*.ogg` and `.mp3`. Licence text: `public/home/sounds/Kenney-Interface-Sounds-License.txt` | CC0 (public domain) | Yes, no credit needed (credited here anyway) |
-
 ## Own work
 The container ship, the product walk-through frame, the QR-style pattern (made
 up, not a real code), the worked-example tags, the ink strike, the dot wipe

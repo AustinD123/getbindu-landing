@@ -6,8 +6,7 @@
 
 /* estimate-before-book: nav pair (both outline; the nav never adds a filled pill) */
 .bindu-home .nav-drawer-book { display: none; }
-@media (max-width: 860px) { .bindu-home .sound-toggle { margin-left: auto; } }
-.bindu-home .sound-toggle[aria-pressed="true"] { color: var(--cobalt-signal); }
+@media (max-width: 860px) { .bindu-home .theme-toggle { margin-left: auto; } }
 @media (max-width: 520px) {
   .bindu-home .nav .nav-book { display: none; }
   .bindu-home .nav-drawer-book { display: block; }

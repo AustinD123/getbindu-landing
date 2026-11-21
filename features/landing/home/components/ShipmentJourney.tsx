@@ -6,7 +6,6 @@ import { shipHome, mapU } from "../lib/shiphome";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { journey } from "../content";
 import { gsap, reduceMotion } from "../lib/motion";
-import { play } from "../lib/sound";
 import { subscribeTheme } from "../lib/theme";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 import { toRgb } from "../lib/shipcanvas";
@@ -265,8 +264,8 @@ export function ShipmentJourney() {
       const a = at.current;
       if (!a) return;
       const b = brk.current.v;
-      if (b >= 0.4 && !formed) { formed = true; play("chime"); } else if (b < 0.34) formed = false;
-      if (b >= 0.5 && !left) { left = true; play("dash"); } else if (b < 0.45) left = false;
+      if (b >= 0.4 && !formed) { formed = true; } else if (b < 0.34) formed = false;
+      if (b >= 0.5 && !left) { left = true; } else if (b < 0.45) left = false;
       shipHome.dock = sm01((b - 0.9) / 0.1) * shipHome.pres;
       shipHome.brk = b; shipHome.markOn = b > 0.4 && !isStatic; shipHome.markFilled = live && lastT >= 0.995;
       if (b > 0.4) { const r = fEl.getBoundingClientRect(); frOff.x = r.left; frOff.y = r.top; }

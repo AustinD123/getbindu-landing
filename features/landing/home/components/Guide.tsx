@@ -5,7 +5,6 @@ import { useEffect, useRef } from "react";
 import { gsap, reduceMotion } from "../lib/motion";
 import { rng, smoothPath } from "../lib/guide";
 import { isPaused, subscribePause } from "../lib/pause";
-import { play, playNote } from "../lib/sound";
 import { shipHome, fin, FINP, flyU, mapU, sm01, sunSlot, SUN_DOT } from "../lib/shiphome";
 import { subscribeTheme } from "../lib/theme";
 import { track } from "../lib/pos";
@@ -57,7 +56,7 @@ export function Guide() {
     let trail = { y: new Float32Array(0), x: new Float32Array(0), r: new Float32Array(0), o: new Float32Array(0) };
     let proofsData: { y: number; x: number; u: number }[] = [];
     let raf = 0, lastKey = "";
-    let lastSide = -1, lastTy = -1;
+    let lastTy = -1;
     // r23-4: a living wake. The faster the page scrolls, the more cobalt dots the ship sheds, each drifting up to 6px sideways and fading over about 1.5s
     // (r24: a fixed pool, nothing allocated while it runs)
     const NW = 110, wT = new Float64Array(NW).fill(-1e9), wX = new Float32Array(NW), wY = new Float32Array(NW), wDx = new Float32Array(NW), wR = new Float32Array(NW);
@@ -220,7 +219,6 @@ export function Guide() {
       // proof dot with a cobalt ring (the chime). A pure function of ty, so scrolling back un-swirls it.
       proofsData.forEach((pd, pi) => {
         const u = rm ? 1 : clamp((ty - (pd.y - 50)) / 150);
-        if (!rm && pd.u >= 0 && ((u >= 0.75) !== (pd.u >= 0.75))) playNote(pi * 2 + 3, "chime");   // a pentatonic climb down the page, a descent going back up
         pd.u = u;
         const py = pd.y - s;
         if (py < -30 || py > vh + 130) return;
@@ -245,18 +243,6 @@ export function Guide() {
       if (mm.band) {
         const [bt, bb] = mm.band;
         vis = ty <= bt ? 1 - sm((ty - (bt - 120)) / 120) : ty < bb ? 0 : sm((ty - bb) / 120);
-      }
-      // r22-18, r28-7: the dash cue plays when the ship's position on its path reaches a transition point: 60px before the map (where it fades out) and 60px after it
-      // (where it fades back in): a pure function of the path position ty (with 6px of hysteresis), once per crossing in each direction. Nothing else triggers it.
-      if (mm.band && !rm) {
-        const e0 = mm.band[0] - 60, e1 = mm.band[1] + 60;
-        let side = lastSide;
-        if (side < 0) side = ty < e0 ? 0 : ty < e1 ? 1 : 2;
-        else if (side === 0 && ty >= e0 + 6) side = ty >= e1 + 6 ? 2 : 1;
-        else if (side === 1) { if (ty < e0 - 6) side = 0; else if (ty >= e1 + 6) side = 2; }
-        else if (side === 2 && ty < e1 - 6) side = ty < e0 - 6 ? 0 : 1;
-        if (lastSide >= 0 && side !== lastSide) play("dash");
-        lastSide = side;
       }
       // r24-4, r29-3: at the end of the map the dots of the mark stream into the gutter ship, which builds itself from them here; it fades out over the last 120px of the band
       const bk = rm ? 0 : shipHome.brk, handing = !phone && !!mm.band && ty < mm.band[1] && bk > 0.4 && shipHome.markOn;   // r35: no map to ship hand-off on phones
@@ -374,7 +360,6 @@ export function Guide() {
     const near = (e: MouseEvent) => shipAt.a > 0.3 && Math.hypot(e.clientX - shipAt.x, e.clientY - (shipAt.y - 8 * shipAt.sc)) < Math.max(18, 28 * shipAt.sc);
     const onClick = (e: MouseEvent) => {
       if (!near(e)) return;
-      play("horn");
       gsap.killTweensOf(rock);
       gsap.to(rock, { keyframes: [{ a: -7, duration: 0.13 }, { a: 5, duration: 0.2 }, { a: -2, duration: 0.2 }, { a: 0, duration: 0.12 }], ease: "power2.out", onUpdate: kick });
     };

@@ -2,7 +2,6 @@ import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { reduceMotion } from "../lib/motion";
-import { play } from "../lib/sound";
 
 /* Round 21, item 4 (r31-1 reworked): "What the rules let through, and what they stop." as a split-flap departures board. Eight rows adapted
    from getbindu.com's worked examples (the wording is theirs). The section pins and each scroll step reveals ONE row: it flaps in, settles
@@ -95,7 +94,6 @@ export function Examples() {
         paint(i, r);
         const done = r >= 1;
         if (done) c = i;
-        if (done && !settled[i]) { const n = 1 + Math.floor(Math.random() * 3); for (let k = 0; k < n; k++) window.setTimeout(() => play("clack", 0.8), k * 70); }   // a random number of flaps
         settled[i] = done;
       });
       if (c !== last) { last = c; setCur(c); }

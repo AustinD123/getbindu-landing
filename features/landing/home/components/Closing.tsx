@@ -1,7 +1,6 @@
 import { getRoot } from "../lib/root";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
-import { play } from "../lib/sound";
 import { track } from "../lib/pos";
 import { fin, FIN, FINP, landed, sunSlot, NDOT, SUN_DOT, shipHome } from "../lib/shiphome";
 import { faq, finaleWordmark } from "../content";
@@ -118,7 +117,7 @@ export function Finale() {
         dot.style.transform = r!.dot; dot.style.setProperty("--g", r!.g);   // the dot of the i rides the same mapping (same origin, same scale) and fades out once the mask is about twice its size
       }
       if (grad.current) grad.current.style.opacity = String(ct);
-      if (p > 0.92 && !resolved) { resolved = true; play("resolve"); } else if (p < 0.85) resolved = false;
+      if (p > 0.92 && !resolved) { resolved = true; } else if (p < 0.85) resolved = false;
     }
 
     // where things are: the mask at fit size, the dot's place (the guide reads it), the growth
@@ -146,8 +145,8 @@ export function Finale() {
     function paint() {
       const T = fin.t;
       for (let j = 0; j < NDOT; j++) { const a = landed(T, j).toFixed(3); if (dotDots[j]!.dataset.a !== a) { dotDots[j]!.dataset.a = a; dotDots[j]!.style.opacity = a; } }
-      if (T >= FIN.formed && !formed) { formed = true; stage.classList.add("is-formed"); play("chime"); } else if (T < FIN.formed - 0.05 && formed) { formed = false; stage.classList.remove("is-formed"); }
-      if (T > 0.1 && !dashed) { dashed = true; play("dash"); } else if (T < 0.05) dashed = false;
+      if (T >= FIN.formed && !formed) { formed = true; stage.classList.add("is-formed"); } else if (T < FIN.formed - 0.05 && formed) { formed = false; stage.classList.remove("is-formed"); }
+      if (T > 0.1 && !dashed) { dashed = true; } else if (T < 0.05) dashed = false;
     }
     /* r32-1: the master time is a pure function of the scroll position, scrubbed (0.8): fin.t runs 0 to its resting time over 120vh of the pin (after a 20vh hold with the ship docked
        in its gutter), so the ship comes apart (about the first 30%), the dots travel in curves (about the next 50%) and the sunflower settles and holds (the last 20%); the zoom starts

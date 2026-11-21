@@ -30,7 +30,6 @@ export const nav = {
 export const intro = {
   dot: "Every proof is a dot.",
   tag: "BINDU · TRADE COMPLIANCE OS",
-  skip: "Skip intro",
 };
 
 export const hero = {

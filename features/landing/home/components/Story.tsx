@@ -4,7 +4,6 @@ import { beforeAfter, statement } from "../content";
 import { reduceMotion } from "../lib/motion";
 import { Mark } from "./bits";
 import { track } from "../lib/pos";
-import { play } from "../lib/sound";
 
 /* Round 19, item 3: the statement lights up with the scroll (scrubbed, so it reverses on scroll up; nothing is a one-way trigger).
    Words go from muted to full ink one by one; the Bindu chip's outline goes from hairline to a yellow fill and the dots of the
@@ -114,7 +113,7 @@ export function BeforeAfter() {
     const update = () => {
       raf = 0;
       const vh = window.innerHeight, sy = window.scrollY;
-      rows.forEach((r, i) => { const s = c01((vh * 0.82 - (tks[i]!.rectTop(sy) + tks[i]!.h * 0.3)) / (vh * 0.22)); if (s === lastS[i]) return; const was = lastS[i]; lastS[i] = s; set(r, s); if (was! >= 0 && was! < 0.02 && s >= 0.02) play("dash"); });
+      rows.forEach((r, i) => { const s = c01((vh * 0.82 - (tks[i]!.rectTop(sy) + tks[i]!.h * 0.3)) / (vh * 0.22)); if (s === lastS[i]) return; const was = lastS[i]; lastS[i] = s; set(r, s); });
     };
     const kick = () => { if (!raf) raf = tRaf(update); };
     window.addEventListener("scroll", kick, { passive: true });

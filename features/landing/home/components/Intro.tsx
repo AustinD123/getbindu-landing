@@ -58,7 +58,6 @@ export function Intro() {
         <div className={`intro${phase === "out" ? " is-out" : ""}`} role="region" aria-label="Introduction" onClick={finish}>
           <p className="intro-line">{text.dot}</p>
           <p className="intro-label">Illustration: a dot becomes a filing. Not live data.</p>
-          <button type="button" className="btn btn-outline intro-skip" onClick={finish}>{text.skip}</button>
         </div>
       )}
     </>
