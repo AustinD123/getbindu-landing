@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { DEMO_URL, cta, nav } from "../content";
 import { BtnLabel, Logo } from "./bits";
 import { getTheme, setTheme, useTheme } from "../lib/theme";
-import { NAV_PAGES } from "../links";
+import { NAV_BLOG, NAV_REGULATIONS } from "../links";
 
 /* round 13: the light or dark switch. The icon shows the theme it switches to (a moon in light, a sun in dark). */
 function ThemeToggle() {
@@ -17,6 +17,57 @@ function ThemeToggle() {
         <path className="ic-moon" d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z" />
       </svg>
     </button>
+  );
+}
+
+/* r38-1: the Regulations disclosure. A button (aria-expanded, aria-controls) over a plain list of links. Opens on click, and
+   on hover after a short delay for a mouse; closes on Esc (focus returns to the button), a click outside, or focus leaving.
+   Arrow keys, Home and End move between the items. */
+function RegulationsMenu() {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const btn = useRef<HTMLButtonElement>(null);
+  const timer = useRef<number | undefined>(undefined);
+  const items = () => Array.from(root.current?.querySelectorAll<HTMLAnchorElement>(".nav-reg-panel a") ?? []);
+  const clear = () => window.clearTimeout(timer.current);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e: PointerEvent) => { if (!root.current?.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("pointerdown", away);
+    return () => document.removeEventListener("pointerdown", away);
+  }, [open]);
+  useEffect(() => clear, []);
+  const onKey = (e: React.KeyboardEvent) => {
+    const list = items();
+    const i = list.indexOf(document.activeElement as HTMLAnchorElement);
+    if (e.key === "Escape" && open) { e.preventDefault(); setOpen(false); btn.current?.focus(); return; }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      if (!open) { setOpen(true); requestAnimationFrame(() => items()[e.key === "ArrowDown" ? 0 : list.length - 1]?.focus()); return; }
+      const next = e.key === "ArrowDown" ? (i + 1) % list.length : (i <= 0 ? list.length - 1 : i - 1);
+      list[next]?.focus();
+    } else if (open && (e.key === "Home" || e.key === "End") && i >= 0) {
+      e.preventDefault(); list[e.key === "Home" ? 0 : list.length - 1]?.focus();
+    }
+  };
+  const hover = (on: boolean) => (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    clear();
+    timer.current = window.setTimeout(() => setOpen(on), on ? 120 : 200);
+  };
+  return (
+    <div ref={root} className={`nav-reg${open ? " is-open" : ""}`} onKeyDown={onKey}
+      onPointerEnter={hover(true)} onPointerLeave={hover(false)}
+      onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false); }}>
+      <button ref={btn} type="button" className="nav-reg-btn" aria-expanded={open} aria-controls="nav-reg-panel"
+        onClick={() => { clear(); setOpen(!open); }}>
+        {nav.regulations}
+        <svg aria-hidden="true" viewBox="0 0 12 12" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>
+      </button>
+      <div id="nav-reg-panel" className="nav-reg-panel" hidden={!open}>
+        {NAV_REGULATIONS.map((l) => <a key={l.u} href={l.u} onClick={() => setOpen(false)}>{l.t}</a>)}
+      </div>
+    </div>
   );
 }
 
@@ -46,7 +97,8 @@ export function Nav() {
         <a className="nav-brand" href="#top" aria-label="Bindu, back to top"><Logo size={24} /><span>Bindu</span></a>
         <nav className="nav-links" aria-label="Site sections and pages">
           {nav.links.map((l) => <a key={l.href} href={l.href}>{l.t}</a>)}
-          {NAV_PAGES.map((l) => <a key={l.u} href={l.u}>{l.t}</a>)}
+          <RegulationsMenu />
+          <a href={NAV_BLOG.u}>{NAV_BLOG.t}</a>
         </nav>
         <ThemeToggle />
         <a className="btn bh-btn-primary nav-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
@@ -56,7 +108,11 @@ export function Nav() {
       </div>
       <div id="nav-drawer" ref={drawer} className="nav-drawer" hidden={!open}>
         {nav.links.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.t}</a>)}
-        {NAV_PAGES.map((l) => <a key={l.u} href={l.u} onClick={() => setOpen(false)}>{l.t}</a>)}
+        <p className="nav-drawer-head" id="nav-drawer-reg">{nav.regulations}</p>
+        <div role="group" aria-labelledby="nav-drawer-reg" className="nav-drawer-group">
+          {NAV_REGULATIONS.map((l) => <a key={l.u} href={l.u} onClick={() => setOpen(false)}>{l.t}</a>)}
+        </div>
+        <a href={NAV_BLOG.u} onClick={() => setOpen(false)}>{NAV_BLOG.t}</a>
         <a className="btn bh-btn-primary nav-drawer-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
       </div>
     </header>

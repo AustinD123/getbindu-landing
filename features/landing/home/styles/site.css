@@ -21,9 +21,20 @@
 .bindu-home .nav.is-scrolled { background: rgb(var(--canvas-rgb) / 0.96); border-bottom-color: var(--hairline-dark); }
 .bindu-home .nav-in { max-width: 1320px; margin: 0 auto; height: 56px; padding: 0 var(--gutter); display: flex; align-items: center; gap: var(--s-5); }
 .bindu-home .nav-brand { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font: 500 16px/1 var(--font-sans); letter-spacing: -0.01em; min-height: 44px; }
-.bindu-home .nav-links { display: flex; gap: var(--s-4); margin-left: auto; font: 400 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; }
-.bindu-home .nav-links a { text-decoration: none; color: var(--on-dark-mute); padding: 12px 2px; }
-.bindu-home .nav-links a:hover { color: var(--on-dark); }
+/* r38-1: nav type per DESIGN.md: sans, sentence case, body-sm, 500, muted; full contrast on hover and while open. No mono, caps or tracking. */
+.bindu-home .nav-links { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; font: 500 var(--body-sm)/1 var(--font-sans); letter-spacing: 0; text-transform: none; }
+.bindu-home .nav-links a, .bindu-home .nav-reg-btn { text-decoration: none; color: var(--on-dark-mute); padding: 12px 2px; }
+.bindu-home .nav-links a:hover, .bindu-home .nav-reg-btn:hover, .bindu-home .nav-reg.is-open .nav-reg-btn { color: var(--on-dark); }
+.bindu-home .nav-reg { position: relative; }
+.bindu-home .nav-reg-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; letter-spacing: inherit; background: none; border: 0; cursor: pointer; white-space: nowrap; transition: color var(--t-fast) var(--ease-out); }
+.bindu-home .nav-reg-btn svg { transition: transform 200ms var(--ease-ui); }
+.bindu-home .nav-reg.is-open .nav-reg-btn svg { transform: rotate(180deg); }
+.bindu-home .nav-reg-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
+.bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: var(--r-sm); }
+.bindu-home .nav-reg-panel[hidden] { display: none; }
+.bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: 8px; text-decoration: none; }
+.bindu-home .nav-links .nav-reg-panel a:hover, .bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: rgb(var(--canvas-rgb) / 0.6); }
+@media (prefers-reduced-motion: reduce) { .bindu-home .nav-reg-btn svg { transition: none; } }
 .bindu-home .nav-demo { min-height: 38px; }
 /* r36-3: a shorter bar (56px, like parallel.ai's ~60): the demo pill and the theme toggle 36px on desktop; phones keep 44px (mobile.css) */
 .bindu-home .nav .nav-book, .bindu-home .nav .theme-toggle { height: 36px; min-height: 36px; }
@@ -35,6 +46,9 @@
 .bindu-home .nav-drawer { border-top: 1px solid var(--hairline-dark); background: rgb(var(--canvas-rgb) / 0.96); padding: 8px var(--gutter) 20px; display: grid; }
 .bindu-home .nav-drawer a { padding: 14px 0; border-bottom: 1px solid var(--hairline-dark); text-decoration: none; font-size: 18px; }
 .bindu-home .nav-drawer[hidden] { display: none; }
+.bindu-home .nav-drawer-head { margin: 0; padding: 14px 0 4px; font: 500 var(--body-sm)/1.2 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .nav-drawer-group { display: grid; }
+.bindu-home .nav-drawer-group a { padding-left: var(--s-4); }
 @media (max-width: 860px) { .bindu-home .nav-links { display: none; } .bindu-home .nav-demo { margin-left: auto; } .bindu-home .nav-menu { display: inline-flex; } }
 @media (max-width: 420px) { .bindu-home .nav .nav-brand > span:last-child { display: none; } .bindu-home .nav-in { gap: 10px; } .bindu-home .nav-demo, .bindu-home .nav-menu { padding: 0 14px; } }
 

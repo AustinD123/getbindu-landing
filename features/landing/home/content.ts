@@ -22,6 +22,7 @@ export const nav = {
     { t: "Pricing", href: "#pricing" },
     { t: "FAQ", href: "#faq" },
   ],
+  regulations: "Regulations",
   menu: "Menu",
   close: "Close",
 };
