@@ -122,7 +122,7 @@ export const how = {
 };
 
 /* Round 36 (r36-4): "Ask your supply chain", between How it works and the journey. The question, the answer lines and the reference
-   numbers are made up (Illustration). The supplier exchange is in build, so the caption says so. Scenario 3 states no regulation date:
+   numbers are made up (Illustration). The section is live (Austin, r36-4 fix), so no in-build note. Scenario 3 states no regulation date:
    "mandatory since Feb 2025" could not be confirmed from a public EUR-Lex page (see DECISIONS.md, round 36). */
 export const ask = {
   title: "Stop chasing documents. Just ask.",
@@ -131,7 +131,7 @@ export const ask = {
   stageLabel: "Illustration of a question going out to three suppliers and a signed answer coming back",
   beats: ["You ask.", "The question goes out.", "Their data stays with them.", "A person approves the answer.", "You get it back, signed."],
   illus: "Illustration",
-  caption: "Made-up question, reference numbers and certificate numbers. The supplier exchange is in build.",
+  caption: "Made-up question, reference numbers and certificate numbers.",
   asker: "You",
   learn: "They will learn:",
   yes: "Yes",
