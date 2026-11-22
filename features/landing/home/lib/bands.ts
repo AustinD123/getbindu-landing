@@ -8,7 +8,7 @@ import { gsap, ScrollTrigger, reduceMotion } from "./motion";
 import { track } from "./pos";
 import { tRaf, tCaf } from "./loop";
 
-const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "canvas", examples: "canvas", pricing: "canvas", faq: "panel", demo: "canvas" };
+const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", ask: "canvas", shipment: "canvas", examples: "canvas", pricing: "canvas", faq: "panel", demo: "canvas" };
 
 export function startBands(): () => void {
   const secs = Array.from(document.querySelectorAll<HTMLElement>("main > section")).filter((s) => BANDS[s.id]);
@@ -49,7 +49,6 @@ export function startBands(): () => void {
   const pick = (id: string, sel: string) => { const s = secs.find((x) => x.id === id); return s ? Array.from(s.querySelectorAll<HTMLElement>(sel)) : []; };
   const groups: [string, HTMLElement[]][] = [
     ["pains", pick("pains", ".sec-head > *:not(h2), .container > *:not(.sec-head)")],
-    ["how", pick("how", ".sec-head > *:not(h2)")],
     ["examples", pick("examples", ".ex-head > *:not(h2)")],
     ["pricing", pick("pricing", ".sec-head > *:not(h2), .container > *:not(.sec-head)")],
     ["faq", pick("faq", ".sec-head > *:not(h2), .faq-item")],

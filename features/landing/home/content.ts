@@ -82,59 +82,6 @@ export const pains = {
   ],
 };
 
-export const how = {
-  /* r36-5: the File step's record lines, each with a thread back to the made-up document it came from (Illustration). */
-  trace: {
-    label: "Record lines and the document each one came from",
-    hint: "Select a line to see the document behind it.",
-    from: "from",
-    illus: "Illustration",
-    lines: [
-      { line: "Fibre composition", doc: "Fibre composition sheet", by: "mill" },
-      { line: "Mill and dye house", doc: "Dye house declaration", by: "dye house" },
-      { line: "Care and repair data", doc: "Care and repair sheet", by: "mill" },
-      { line: "Supplier declaration", doc: "Supplier declaration", by: "supplier" },
-    ],
-  },
-  eyebrow: "How it works",
-  title: "One sentence in. The proof comes back.",
-  frame: "Workspace · example shipment",
-  illus: "Illustration",
-  steps: [
-    { n: "01", t: "Describe", d: "Tell Bindu about the shipment in plain words. It works out which EU rules apply and what proof each one needs." },
-    { n: "02", t: "Prove", d: "Bindu asks your suppliers by WhatsApp or email, with no login for them, for exactly what's missing. Each document is checked against its rule, and each line of your record points back to the document it came from." },
-    { n: "03", t: "File", d: "Bindu builds one compliance record. Some rules are still in build." },
-  ],
-  describeText: "Two containers of cocoa beans from Ecuador to Antwerp, arriving in June.",
-  describeRules: [
-    { t: "EUDR", s: "Live" }, { t: "Textile passports", s: "Live" },
-    { t: "CBAM", s: "In build" }, { t: "REACH", s: "In build" }, { t: "PPWR", s: "In build" }, { t: "Battery passports", s: "In build" },
-  ],
-  pieces: [
-    { k: "wa", t: "Material certificate", m: "WhatsApp · supplier" },
-    { k: "mail", t: "Re: supplier declaration", m: "Email · supplier" },
-    { k: "pdf", t: "Invoice_final_v3.pdf", m: "PDF" },
-    { k: "img", t: "Photo of the product label", m: "Image · WhatsApp" },
-    { k: "xls", t: "product_data (2).xlsx", m: "Spreadsheet" },
-    { k: "wa", t: "Packing list, two containers", m: "WhatsApp · supplier" },
-  ],
-  record: "Compliance record",
-  recordRows: ["What it is and how much", "Who supplied it", "Where it was made", "Supplier declaration"],
-  plotsTitle: "Each document checked against its rule",
-  plotsDone: "4 of 4 checks pass",
-  path: ["Supplier", "Check", "Filing"],
-  refLabel: "Reference number for customs",
-  ref: "EXAMPLE-26-0000-0142",
-  refNote: "Made-up number",
-  filed: "Filed",
-  feed: [
-    { t: "now", e: "Compliance record filed, reference issued" },
-    { t: "4s", e: "Check 4 passed: documents match the rule" },
-    { t: "8s", e: "Supplier answered on WhatsApp" },
-    { t: "12s", e: "Request sent to supplier, no login needed" },
-  ],
-};
-
 /* Round 36 (r36-4): "Ask your supply chain", between How it works and the journey. The question, the answer lines and the reference
    numbers are made up (Illustration). The section is live (Austin, r36-4 fix), so no in-build note. Scenario 3 states no regulation date:
    "mandatory since Feb 2025" could not be confirmed from a public EUR-Lex page (see DECISIONS.md, round 36). */

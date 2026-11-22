@@ -23,10 +23,6 @@
   /* the soft scrim behind section headings is not needed on a phone (the page behind them is solid; the guide's lane is gone) */
   .bindu-home main h2:not(.wm)::before { display: none; }
 
-  /* How it works: a shorter pin */
-  .bindu-home .how-pin { height: 200vh; height: 200svh; }
-  .bindu-home .how-pin.is-static { height: auto; }
-
   /* Ask your supply chain: no pin and no stage; the heading, the tabs, the example in words and the three answer cards */
   .bindu-home .sec.ask { padding-top: var(--section-y); }
   .bindu-home .qa-pin, .bindu-home .qa-pin.is-static { height: auto; }
