@@ -87,3 +87,14 @@ Severity: A = visible to the reader, B = drift that will bite the next change, C
 - Heading phone sizes in use: 20, 24, 28, 32px (journey, board, how it works, md and lg tokens). Fix: two sizes only, 28 for titles and 32 for the statement.
 - Lead measure: 38ch (`mobile.css:21`), 44ch (`r6-pricing.css:16`), 60ch (`shipment.css:173`), 736px (`site.css:17`), 640px (`site.css:189`). Fix: one `--measure` token for leads (736px) and one for running text (640px), `ch` only on phones.
 - Not covered here (outside the Consistency rules): canvas drawings (guide, map, burst), the intro and the calculator dialog's internals (`styles/site.css:77-135`). The dialog panel itself follows R-panel (16px, hairline).
+
+## r36-6 scan
+
+Scanner: `node .claude/skills/avoid-ai-design/scripts/detect.mjs` over `features/landing/home/` (70 files): 5 findings, none in the round 36 sections (nav, Ask, File-step threads). Not fixed here.
+
+- `components/bits.tsx:70` (M4, elastic easing): the magnetic button settles with `elastic.out(1, 0.45)`. Fix: `power3.out` over 0.8s, or keep and record it as a deliberate play moment.
+- `components/Hero.tsx:76` (SD5, one word accented in the headline): the last word carries the accent. Fix: accent the whole clause, or none, or log it as the brand's yellow full stop.
+- `components/HowItWorks.tsx:149, 206, 207` (SD4d, middle-dot meta strings): "log · illustration", "signed · did:web:... (illustration)", "Made-up code · Illustration". Fix: use the `.chip-illus` chip for the label and drop the dots.
+- `content.ts:32, 100, 113, 114` (+6) (SD4d): the same middle-dot joins in copy. Fix: split into separate spans or sentences.
+- `styles/site.css:76` (K3, backdrop-blur): the calculator dialog backdrop blurs 4px. Fix: a flat shade is enough; drop the blur.
+- Round 36 sections: nothing failed the hallmark, antislop-ui or make-interfaces-feel-better checks on read (tokens only, no `transition: all`, one focus ring, 44px phone targets, nav blur not used, the nav only changes background-color).
