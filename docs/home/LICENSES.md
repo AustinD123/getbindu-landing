@@ -53,3 +53,13 @@ The container ship, the product walk-through frame, the QR-style pattern (made u
 ## Tooling
 - Tooling (not shipped): paralect/saas-skills product-demo, MIT; ffmpeg-static (GPL binary, local use only)
 - Tooling (not shipped): educlopez/ui-craft skills (ui-craft, ui-craft-adapt, ui-craft-audit), MIT, instructions only; commercial use fine
+
+## Slop-check skills (round 36, item 2; instructions only, reviewed before install, none shipped in the site)
+Installed in `.claude/skills/`. Each carries a header: bindu-design wins every conflict.
+
+| Name | URL | Licence | Commercial use | Date |
+|---|---|---|---|---|
+| hallmark (SKILL.md and references/gates.md only) | https://github.com/Nutlope/hallmark | MIT | Yes | 2026-11-22 |
+| avoid-ai-design (with scripts/detect.mjs, read-only scanner) | https://github.com/funboy322/avoid-ai-design | MIT | Yes | 2026-11-22 |
+| antislop, antislop-ui (core and UI skills only) | https://github.com/miqdadbadjuber/anti-slop | MIT | Yes | 2026-11-22 |
+| make-interfaces-feel-better | https://github.com/jakubkrehel/make-interfaces-feel-better | MIT | Yes | 2026-11-22 |
