@@ -118,31 +118,6 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
        and filing rings take this factor on top of the hero fade-in. */
     const heroBox = track(document.getElementById("top") ?? el);
     const shipFade = () => 1 - clamp((-heroBox.rectTop()) / (0.6 * Math.max(1, heroBox.h)));
-    /* r40-3: behind content the map is blurred and dimmed (8px, 35% strength), ramped by the same scroll measure as shipFade (0 in the hero, 1 once it is 60% out).
-       The blur is rendered once into a cached bitmap (a second canvas, the static dot layer drawn through blur(8px)), never a live CSS filter: a live full-screen blur
-       cost about 14 ms a frame while scrolling in the headless software compositor. The ramp is two opacities (sharp canvas 1 to 0, soft canvas 0 to 0.35), written only
-       when the quantised step changes. In the hero the soft canvas is at 0 and the sharp map is untouched. Rebuilt on resize and theme change. */
-    const soft = document.createElement("canvas"), sctx = soft.getContext("2d");
-    soft.className = "scene-soft"; soft.setAttribute("aria-hidden", "true"); soft.style.opacity = "0";
-    el.after(soft);
-    const canFilter = !!sctx && typeof (sctx as CanvasRenderingContext2D).filter === "string";
-    const buildSoft = () => {
-      if (!sctx) return;
-      soft.width = bg.width; soft.height = bg.height;
-      sctx.clearRect(0, 0, soft.width, soft.height);
-      if (canFilter) { sctx.filter = `blur(${8 * dpr}px)`; sctx.drawImage(bg, 0, 0); sctx.filter = "none"; soft.style.filter = ""; }
-      else { sctx.drawImage(bg, 0, 0); soft.style.filter = "blur(8px)"; }   // no canvas filter (older Safari): the one static layer is filtered by CSS instead
-    };
-    let softQ = -1;
-    const softMap = () => {
-      if (!sctx) return;
-      const q = Math.round((1 - shipFade()) * 40);
-      if (q === softQ) return;
-      softQ = q;
-      const u = q / 40;
-      el.style.opacity = u >= 1 ? "0" : u > 0 ? String(+(1 - u).toFixed(3)) : "";
-      soft.style.opacity = String(+(0.35 * u).toFixed(3));
-    };
     const size = () => {
       VW = window.innerWidth; VH = window.innerHeight;
       dpr = isPhone() ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);   // r35: 1 on phones
@@ -160,7 +135,6 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       paintLandDots(bctx, f, col.cobalt, LAND_A);
       paintStatic(bctx, f, col, 1);
       buildVeil();
-      buildSoft();
     };
 
     /* the fade: a soft radial shade centred on the hero copy's measured rect (the union of its children) and on the
@@ -323,17 +297,16 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     io.observe(heroEl);
     const onVis = () => kick();
     // reduced motion has no frame loop: the still hero is redrawn on scroll only while its shipment fade changes
-    const onScroll = () => { softMap(); if (still && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
+    const onScroll = () => { if (still && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
     window.addEventListener("scroll", onScroll, { passive: true });
     // a theme change re-reads the colours and repaints the cached layer; the timeline keeps running
     const unsubTheme = subscribeTheme(() => { readColours(); paintBase(); draw(); });
     const onResize = () => { size(); gl.current?.rig?.resize(VW, VH, plan); draw(); };
     document.addEventListener("visibilitychange", onVis);
     window.addEventListener("resize", onResize);
-    softMap(); draw(); kick();
+    draw(); kick();
     return () => {
       done = true;
-      soft.remove(); el.style.opacity = "";
       tCaf(raf); io.disconnect(); control.current = null; kickRef.current = () => {};
       document.removeEventListener("visibilitychange", onVis); window.removeEventListener("resize", onResize); window.removeEventListener("scroll", onScroll);
       unsubTheme();
