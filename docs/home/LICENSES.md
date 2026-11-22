@@ -63,3 +63,7 @@ Installed in `.claude/skills/`. Each carries a header: bindu-design wins every c
 | avoid-ai-design (with scripts/detect.mjs, read-only scanner) | https://github.com/funboy322/avoid-ai-design | MIT | Yes | 2026-11-22 |
 | antislop, antislop-ui (core and UI skills only) | https://github.com/miqdadbadjuber/anti-slop | MIT | Yes | 2026-11-22 |
 | make-interfaces-feel-better | https://github.com/jakubkrehel/make-interfaces-feel-better | MIT | Yes | 2026-11-22 |
+
+## Performance tooling (23 Nov 2026)
+- addyosmani/web-quality-skills (https://github.com/addyosmani/web-quality-skills): MIT, commercial use yes. Installed skills: performance, core-web-vitals, web-quality-audit, best-practices (instructions + one read-only shell script, reviewed).
+- ChromeDevTools/chrome-devtools-mcp (https://github.com/ChromeDevTools/chrome-devtools-mcp): Apache-2.0, commercial use yes. Dev-only MCP server in `.mcp.json`, pinned to 1.12.0; not shipped with the site.
