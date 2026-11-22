@@ -184,7 +184,7 @@
 /* phones: the hero (headline, sub-line and CTA) has to clear the fixed caption and pause control at 375 x 667 */
 @media (max-width: 600px) {
   .bindu-home .hero { padding-top: 84px; }
-  .bindu-home .hero-h { font-size: clamp(33.6px, 9.6vw, 44px); margin-bottom: var(--s-3); }
+  .bindu-home .hero-h { margin-bottom: var(--s-3); }
   .bindu-home .hero-sub { font-size: 16px; line-height: 1.45; margin-bottom: var(--s-4); }
 }
 
@@ -270,7 +270,7 @@
 
 /* r22-15: the hero headline on exactly two lines at 768 and up (one sentence per line); at 375 up to three lines */
 @media (min-width: 768px) {
-  .bindu-home .hero-h { max-width: none; font-size: clamp(36px, 5.4vw, 76px); }
+  .bindu-home .hero-h { max-width: none; }
   .bindu-home .hero-line { white-space: nowrap; }
 }
 

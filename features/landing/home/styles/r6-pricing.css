@@ -17,7 +17,7 @@
 
 /* 2. the toggle: the shared segmented control (components.css, round 15 item 14) */
 .bindu-home .r6-tabs { margin: 0 auto var(--s-6); max-width: 640px; }
-.bindu-home .r6-card:focus-visible { outline: var(--focus-dark); outline-offset: 3px; }
+.bindu-home .r6-card:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 
 /* 3. one card, two equal halves on one top line */
 .bindu-home .r6-cardwrap { position: relative; border-radius: var(--r-lg); }

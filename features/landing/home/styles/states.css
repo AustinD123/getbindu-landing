@@ -9,8 +9,8 @@
 @media (prefers-reduced-motion: no-preference) {
   /* hover: subtle lift on buttons; text-link arrow nudges 2px (round 7 item 1, restored at the human's request) */
   .bindu-home .btn:not(:is(:disabled, [aria-disabled="true"])):hover { transform: translateY(var(--lift)); }
-  /* press: 1px down, not a scale (bindu-design) */
-  .bindu-home .btn:not(:is(:disabled, [aria-disabled="true"])):active { transform: translateY(var(--press-down)); }
+  /* press: scale .98 on every .btn (DESIGN.md, one press state) */
+  .bindu-home .btn:not(:is(:disabled, [aria-disabled="true"])):active { transform: scale(0.98); }
 }
 
 /* disabled: dimmed, no lift, no pointer */

@@ -98,3 +98,24 @@ Scanner: `node .claude/skills/avoid-ai-design/scripts/detect.mjs` over `features
 - `content.ts:32, 100, 113, 114` (+6) (SD4d): the same middle-dot joins in copy. Fix: split into separate spans or sentences.
 - `styles/site.css:76` (K3, backdrop-blur): the calculator dialog backdrop blurs 4px. Fix: a flat shade is enough; drop the blur.
 - Round 36 sections: nothing failed the hallmark, antislop-ui or make-interfaces-feel-better checks on read (tokens only, no `transition: all`, one focus ring, 44px phone targets, nav blur not used, the nav only changes background-color).
+
+## r37-3 status
+
+Done (token and class level, screenshots pixel-identical at 1440 and 375, both themes):
+- Hero: one headline size (`--hero-h-size`); the 84, 44 and the duplicate phone overrides removed.
+- Cross-cutting: one press state (`scale(.98)`, `states.css`); the `translateY` press is gone (the hover lift stays).
+- FAQ and global: one focus ring (`--focus-ring-dark` and `--focus-ring-light`, global, `.opt`, range, IT summary, pricing card); the `.it` panel border uses `--line-white-12`.
+- Radii: `.it-layers code` 5px to 6px; `.ship-note::before` 10px to `--r-sm`.
+- Stale: `.btn-dot` rules, the sheen and dot-to-arrow comments, `.step-n`, `r8-slop.css` (`.roles`), `--t-sheen`, `--press-down`, the light base comment (`#F1ECE1`).
+- r36-6 scan: calculator backdrop blur dropped.
+
+Skipped (each would visibly change a layout, motion or copy, which this round forbids):
+- Section title sizes (How it works, Sound familiar, journey, board, statement, `.ba-ans`): tried the tokens on How it works; the title wrapped to three lines at 1440. Needs a layout round.
+- Illustration chips (map, intro, log, made-up code, `how-cap`, journey, board): markup and layout change.
+- Tabs on phones and the pricing tab row width: layout.
+- Nav drawer link size, `.nav-demo` height: nav is under 36-3 and recorded there.
+- `.cta .btn` height, `.faq .sec-head` margin, `.ba-h` wrapper, `.ex-head h2` cap, board phone title and lead sizes, journey lead and phone titles, pricing padding, statement chip radius, `kt-*` 13px declarations, `.r6-tag` duplicates, footer link rows and `.foot-mark`, the `.on-photo` scope, lead measures: layout or structure changes.
+- IT drawer mono caps and `.ph` / `code` mono: visible typography change.
+- Text-shadow on the hero (kept, scrim not enough on the map), tokens mono-caps comments and the DESIGN.md front matter regeneration (docs round).
+- r36-6: elastic easing (motion), accented last word and middle-dot copy (copy).
+

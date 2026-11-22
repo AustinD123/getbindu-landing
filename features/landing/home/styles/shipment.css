@@ -184,7 +184,7 @@
    in body-sm in the soft ink token (max 32ch). The current step's title is cobalt with a small yellow dot; past steps are muted but readable (on-dark-body, AA); steps not yet
    reached are not shown (the script keeps them at opacity 0). */
 .bindu-home .ship-txt .ship-note { display: grid; gap: 3px; width: max-content; max-width: min(32ch, 36vw); white-space: normal; text-align: left; color: var(--on-dark-body); }
-.bindu-home .ship-txt .ship-note::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: 10px; background: color-mix(in srgb, var(--canvas) 78%, transparent); filter: blur(4px); }
+.bindu-home .ship-txt .ship-note::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: var(--r-sm); background: color-mix(in srgb, var(--canvas) 78%, transparent); filter: blur(4px); }
 .bindu-home .ship-txt .ship-note b { font: 600 var(--body)/1.25 var(--font-sans); color: var(--on-dark); letter-spacing: var(--track-sm); }
 .bindu-home .ship-txt .ship-note i { font: 400 var(--body-sm)/1.35 var(--font-sans); font-style: normal; color: var(--on-dark-body); max-width: 32ch; }
 .bindu-home .ship-txt .ship-note[data-state="current"] b { color: var(--cobalt-signal); }

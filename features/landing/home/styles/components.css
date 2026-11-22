@@ -47,8 +47,7 @@
 .bindu-home .btn-icon { width: var(--btn-h); height: var(--btn-h); padding: 0; border-radius: 50%; background: var(--canvas-mid); color: var(--on-dark); border: 1px solid var(--line-white-12); }
 
 /* ---------- round 15 item 11: the filled pill and the text link ----------
-   Filled pill: yellow, sans label, a small navy dot at the right end. Hover: the dot slides 4px and becomes an arrow
-   (r17: the sheen sweep and the label wipe are gone). Reduced motion: no slide; the states swap at once. */
+   Filled pill: yellow, sans label, a plain arrow after it that nudges 4px on hover. Reduced motion: no slide; the states swap at once. */
 .bindu-home .bh-btn-primary {
   position: relative; overflow: hidden; isolation: isolate;
   transition: background-color var(--t-ui) var(--ease-ui), border-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui), transform var(--t-ui) var(--ease-ui);
@@ -57,9 +56,7 @@
 /* r22-9: a plain arrow after the label; it nudges 4px right on hover (no colour change) */
 .bindu-home .btn-arrow { flex: none; display: inline-grid; place-items: center; width: 14px; height: 14px; transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) { .bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover .btn-arrow { transform: translateX(4px); } }
-/* the dot (a 12px slot; the dot and the arrow share it) */
-/* press and focus: scale .98; a 2px cobalt ring with an offset */
-.bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):active { transform: scale(0.98); }
+/* focus: a 2px cobalt ring with an offset (the press state is in states.css) */
 .bindu-home .bh-btn-primary:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 3px; }
 /* disabled: a muted fill, no motion */
 .bindu-home .bh-btn-primary:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); border-color: var(--line-white-12); color: var(--on-dark-mute); opacity: 1; box-shadow: none; }
@@ -89,8 +86,8 @@
 .bindu-home .band-light .tlink, .bindu-home .band-soft .tlink { color: var(--ink); --link-wipe: var(--brand-cobalt); }
 
 @media (prefers-reduced-motion: reduce) {
-  .bindu-home .btn-dot, .bindu-home .btn-dot::before, .bindu-home .btn-dot::after, .bindu-home .tlink::after, .bindu-home .tlink-l::before, .bindu-home .tlink-a { transition: none !important; }
-  .bindu-home .bh-btn-primary:hover .btn-dot, .bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: none !important; }
+  .bindu-home .tlink::after, .bindu-home .tlink-l::before, .bindu-home .tlink-a { transition: none !important; }
+  .bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: none !important; }
   .bindu-home .bh-btn-primary:active { transform: none !important; }
 }
 
@@ -127,7 +124,6 @@
 
 /* active step / progress: cobalt */
 .bindu-home .step { display: flex; gap: 14px; align-items: baseline; padding: 14px 0; border-top: 1px solid var(--hairline-dark); color: var(--on-dark-mute); }
-.bindu-home .step .step-n { font: 500 var(--mono-eyebrow)/1 var(--font-mono); }
 .bindu-home .step.is-active { color: var(--on-dark); border-top-color: var(--cobalt-signal); }
 .bindu-home .progress { height: 2px; background: var(--hairline-dark); border-radius: 2px; overflow: hidden; }
 .bindu-home .progress > i { display: block; height: 100%; background: var(--cobalt-signal); }

@@ -16,7 +16,8 @@
   .bindu-home .seg-opt { min-height: 44px; }
 
   /* type: the hero headline in at most three lines; the sections' headings come from the smaller tokens above */
-  .bindu-home .hero-h { font-size: clamp(30px, 8.4vw, 38.4px); max-width: none; }
+  .bindu-home { --hero-h-size: clamp(30px, 8.4vw, 38.4px); }
+  .bindu-home .hero-h { max-width: none; }
   .bindu-home .hero-sub { max-width: 38ch; }
   .bindu-home .sec-head p, .bindu-home .ex-head p, .bindu-home .ba-n { max-width: 38ch; }
   /* the soft scrim behind section headings is not needed on a phone (the page behind them is solid; the guide's lane is gone) */

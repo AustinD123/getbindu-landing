@@ -7,7 +7,6 @@ import { faq, finaleWordmark } from "../content";
 import { Footer } from "./Footer";
 import { MASK } from "../lib/maskdata";
 import "../styles/r3-qa.css";
-import "../styles/r8-slop.css";
 
 export function Faq() {
   return (
