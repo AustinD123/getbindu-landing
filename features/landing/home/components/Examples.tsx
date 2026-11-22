@@ -1,7 +1,7 @@
 import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { reduceMotion } from "../lib/motion";
+import { useReducedMotion } from "../lib/motion";
 
 /* Round 21, item 4 (r31-1 reworked): "What the rules let through, and what they stop." as a split-flap departures board. Eight rows adapted
    from getbindu.com's worked examples (the wording is theirs). The section pins and each scroll step reveals ONE row: it flaps in, settles
@@ -56,7 +56,7 @@ export function Examples() {
   const pin = useRef<HTMLDivElement>(null);
   const board = useRef<HTMLTableElement>(null);
   const headEl = useRef<HTMLSpanElement>(null);
-  const [isStatic] = useState(() => reduceMotion());
+  const isStatic = useReducedMotion();
   const [cur, setCur] = useState(isStatic ? N - 1 : -1);   // the current row (-1: none settled yet)
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function Examples() {
         });
       });
     };
-    if (isStatic) { rows.forEach((_, i) => paint(i, 1)); return; }
+    if (isStatic) { rows.forEach((_, i) => paint(i, 1)); setCur(N - 1); return; }
     rows.forEach((_, i) => paint(i, 0));
     const el = pin.current!;
     let raf = 0, visible = false, last = -2;

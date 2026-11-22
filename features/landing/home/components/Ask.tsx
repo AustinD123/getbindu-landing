@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { ask } from "../content";
-import { reduceMotion } from "../lib/motion";
+import { useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
 import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
@@ -48,7 +48,7 @@ export function Ask() {
   const pin = useRef<HTMLDivElement>(null);
   const stage = useRef<SVGSVGElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [isStatic] = useState(reduceMotion);
+  const isStatic = useReducedMotion();
   const [phone, setPhone] = useState(false);
   const [idx, setIdx] = useState(0);
   const [step, setStep] = useState(4);

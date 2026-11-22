@@ -1,6 +1,6 @@
 import { getRoot } from "../lib/root";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
+import { gsap, ScrollTrigger, useReducedMotion } from "../lib/motion";
 import { track } from "../lib/pos";
 import { fin, FIN, FINP, landed, sunSlot, NDOT, SUN_DOT, shipHome } from "../lib/shiphome";
 import { faq, finaleWordmark } from "../content";
@@ -90,7 +90,7 @@ export function Finale() {
   const ph = useRef<HTMLDivElement>(null);
   const dotEl = useRef<HTMLElement>(null);
   const grad = useRef<HTMLDivElement>(null);
-  const [isStatic] = useState(reduceMotion);
+  const isStatic = useReducedMotion();
 
   useEffect(() => {
     const sec = pin.current!, stage = stg.current!, photo = ph.current!, dot = dotEl.current!;

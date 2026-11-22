@@ -2,7 +2,7 @@ import { getRoot } from "../lib/root";
 import { tRaf, tCaf } from "../lib/loop";
 import { useEffect, useRef, useState } from "react";
 import { hero } from "../content";
-import { reduceMotion } from "../lib/motion";
+import { useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { setPaused } from "../lib/pause";
 import { track } from "../lib/pos";
@@ -74,7 +74,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
   const kickRef = useRef<() => void>(() => {});
   const control = useRef<((on: boolean) => void) | null>(null);
   const pausedRef = useRef(false);
-  const [still] = useState(() => reduceMotion());
+  const still = useReducedMotion();
   const [playing, setPlaying] = useState(true);
 
   /* the intro ends: the dust freezes where it is and fades out (CSS), then its WebGL context is released */

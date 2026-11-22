@@ -2,11 +2,17 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
+import { useSyncExternalStore } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 export const reduceMotion = (): boolean =>
   typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* For render. Server and first client render say false, so the markup always hydrates cleanly; a reduced-motion reader
+   then gets true on the next render. Use this in markup and state; reduceMotion() stays for effects and handlers. */
+const noop = () => () => {};
+export const useReducedMotion = (): boolean => useSyncExternalStore(noop, reduceMotion, () => false);
 
 export const finePointer = (): boolean =>
   typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches;

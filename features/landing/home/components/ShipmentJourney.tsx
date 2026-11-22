@@ -5,7 +5,7 @@ import { track } from "../lib/pos";
 import { shipHome, mapU } from "../lib/shiphome";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { journey } from "../content";
-import { gsap, reduceMotion } from "../lib/motion";
+import { gsap, useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 import { toRgb } from "../lib/shipcanvas";
@@ -39,7 +39,7 @@ const getPaths = () => (paths ??= { LAND: new Path2D(COAST_D), GRAT: new Path2D(
 const NOTE_OFF: [number, number][] = [[16, -26], [-16, 30], [16, -26], [-16, 30], [16, -26], [-16, 30]];
 
 export function ShipmentJourney() {
-  const [isStatic] = useState(reduceMotion);
+  const isStatic = useReducedMotion();
   const pin = useRef<HTMLDivElement>(null);
   const frameEl = useRef<HTMLDivElement>(null);
   const cv = useRef<HTMLCanvasElement>(null);
@@ -311,7 +311,7 @@ export function ShipmentJourney() {
 
     if (isStatic) {
       // reduced motion: the full route, every milestone, the ship already at the port with the sunflower filed; no easing
-      measure();
+      measure(); setCurrent(MILESTONES.length - 1);
       Object.assign(view.current, target);
       render(1);
       return detach;

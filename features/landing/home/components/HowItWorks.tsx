@@ -2,7 +2,7 @@ import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { how } from "../content";
-import { reduceMotion } from "../lib/motion";
+import { useReducedMotion } from "../lib/motion";
 import { rng } from "../lib/guide";
 
 /* Round 21, item 5: How it works as kinetic typography (replaces the r19 app window). One pinned section; Describe, Prove, File on the left.
@@ -65,7 +65,7 @@ export function HowItWorks() {
   const segs = useRef<(HTMLSpanElement | null)[]>([]);
   const cards = useRef<(HTMLElement | null)[]>([]);
   const qr = useRef<(SVGCircleElement | null)[]>([]);
-  const [isStatic] = useState(reduceMotion);
+  const isStatic = useReducedMotion();
   const [step, setStep] = useState(0);
   /* r36-5: which record line is pointed at (hover or focus) and which is pinned (click or tap); the readout shows the pointed one first */
   const [hov, setHov] = useState<number | null>(null);
