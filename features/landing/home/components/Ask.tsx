@@ -14,7 +14,10 @@ import { track } from "../lib/pos";
    Reduced motion: no pin; the stage is the composed final frame as authored below, and the tabs still swap the words.
    The markup is authored in that final frame, so no script, a crawler or reduced motion all get the whole scene. */
 
+/* each beat owns an equal fifth of the pin: the scene plays through the first two thirds of it, then holds (the last third) before the next beat starts */
+const HOLD_AT = 2 / 3;
 const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
+const frame = (p: number) => { const b = Math.min(4, Math.floor(p * 5)); return (b + clamp((p * 5 - b) / HOLD_AT)) * 0.2; };
 const sm = (x: number) => { const t = clamp(x); return t * t * (3 - 2 * t); };
 const io = (x: number) => { const t = clamp(x); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
 
@@ -47,6 +50,7 @@ function Cube({ cls, x, y, children }: { cls: string; x: number; y: number; chil
 export function Ask() {
   const pin = useRef<HTMLDivElement>(null);
   const stage = useRef<SVGSVGElement>(null);
+  const beats = useRef<HTMLOListElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const isStatic = useReducedMotion();
   const [phone, setPhone] = useState(false);
@@ -91,7 +95,7 @@ export function Ask() {
       g.setAttribute("opacity", (t > 0 && t < 1 ? Math.min(1, t * 10, (1 - t) * 10) : 0).toFixed(2));
     };
 
-    /* one frame, from the scroll progress p alone (0 to 1, five beats of 0.2 each) */
+    /* one frame, from the scroll progress p alone (0 to 1, five beats of 0.2 each; frame() holds the end of each beat) */
     const draw = (p: number) => {
       // beat 1: the question is written out in the chip
       const w = parseFloat(q<SVGRectElement>(".qa-chip-rect").getAttribute("width") || "0");
@@ -132,12 +136,13 @@ export function Ask() {
       const range = tk.h - (window.innerHeight - 64);
       const p = range > 0 ? clamp((64 - tk.rectTop()) / range) : 0;
       prog.current = p;
-      if (Math.abs(p - last) > 0.0002) { last = p; draw(p); }
-      const b = Math.min(4, Math.floor(p * 5));
+      const b = Math.min(4, Math.floor(p * 5)), q = frame(p);
+      if (Math.abs(q - last) > 0.0002) { last = q; draw(q); }
+      beats.current?.style.setProperty("--qa-fill", p.toFixed(4));
       if (b !== lastStep) { lastStep = b; setStep(b); }
     };
     const kick = () => { if (!raf) raf = tRaf(update); };
-    redraw.current = () => { last = -1; draw(prog.current); };
+    redraw.current = () => { last = -1; draw(frame(prog.current)); };
     const obs = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) kick(); });
     obs.observe(el);
     window.addEventListener("scroll", kick, { passive: true });
@@ -146,7 +151,7 @@ export function Ask() {
     return () => {
       obs.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); redraw.current = null;
       // leave the composed final frame behind (reduced motion, a phone, or a remount)
-      draw(1); chip.removeAttribute("clip-path");
+      draw(1); chip.removeAttribute("clip-path"); beats.current?.style.removeProperty("--qa-fill");
       setStep(4);
     };
   }, [isStatic, phone]);
@@ -165,15 +170,15 @@ export function Ask() {
     <section className="band-dark sec ask" id="ask" aria-labelledby="ask-h" data-guide-anchor="ask" data-guide-side="r">
       <div ref={pin} className={`qa-pin${isStatic ? " is-static" : ""}`}>
         <div className="qa-win container">
-          <div className="qa-left">
+          <div className="qa-head">
             <h2 id="ask-h" className="t-display-md">{ask.title}</h2>
             <p className="t-body-lg t-soft qa-lead">{ask.lead}</p>
-            <ol className="how-steps qa-beats" aria-label="The five steps">
-              {ask.beats.map((b, i) => (
-                <li key={b} className={`how-step qa-beat${i === step ? " is-on" : ""}`}><h3>{b}</h3></li>
-              ))}
-            </ol>
           </div>
+          <ol ref={beats} className="qa-beats" aria-label="The five steps">
+            {ask.beats.map((b, i) => (
+              <li key={b} className={`qa-beat${i === step ? " is-on" : i < step ? " is-past" : " is-next"}`} aria-current={i === step ? "step" : undefined}><h3>{b}</h3></li>
+            ))}
+          </ol>
           <div className="qa-right">
             <div className="seg-track qa-seg">
               <div className="seg-in" role="tablist" aria-label={ask.tabsLabel} onKeyDown={onTabKey} style={{ "--n": ask.scenarios.length, "--i": idx } as CSSProperties}>
@@ -195,7 +200,7 @@ export function Ask() {
               </div>
             </div>
             <div id="ask-panel" role="tabpanel" aria-labelledby={`ask-tab-${s.id}`} className="qa-panel">
-              <svg ref={stage} className="qa-stage" viewBox="0 0 900 380" role="img" aria-label={ask.stageLabel}>
+              <svg ref={stage} className="qa-stage" viewBox="0 0 900 380" preserveAspectRatio="xMinYMid meet" role="img" aria-label={ask.stageLabel}>
                 <defs>
                   <clipPath id="ask-clip"><rect x="30" y="60" width="520" height="70" /></clipPath>
                 </defs>
