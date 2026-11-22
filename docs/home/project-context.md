@@ -2,7 +2,7 @@ Bindu landing page: project context
 
 Read this before planning or writing anything. It is the source of truth for facts, design and rules. Decisions here override older notes, skills and earlier rounds. When something here is wrong or out of date, update this file.
 
-Last updated: 22 Nov 2026 (r36-1; folds in rounds 17 to 35)
+Last updated: 22 Nov 2026 (r36 done; folds in rounds 17 to 36)
 
 1. The project
 What: the redesigned Bindu homepage (`/`), designed in a separate mockup repo and ported into this repo in `features/landing/home/` (React + TypeScript in Next.js, GSAP + ScrollTrigger, Lenis, three.js for WebGL). Where this brief mentions sub-pages, those were mockup-only: this repo's real pages are used instead.
@@ -44,6 +44,7 @@ Goods: coffee, cocoa, rubber, textiles, batteries, chemicals, packaged goods.
 Top pains: suppliers won't send data; unsure which rules apply and by when; fear of goods held at customs; cost; no staff for it; trust in a small vendor.
 6. Messaging rules
 The homepage is NOT EUDR-specific. Present Bindu's core technology across all regulations. EUDR detail belongs only in the EUDR tab, the EUDR story in the shipment journey, and the EUDR sub-page.
+Main angle (r36): traceability through documents. Every line of the record points back to the supplier document behind it. Not EUDR-specific.
 Customer is the hero; Bindu is the guide. Plain language for business owners.
 Headlines ≤ 8 words. Explain a term before naming it.
 Use buyer words: shipment, supplier, proof, record, filing, reference number, customs, due diligence statement (EUDR only).
@@ -70,7 +71,7 @@ Spacing: 4px base (`--s-1` 4 to `--s-10` 120), container 1200px, gutter 16 to 32
 Buttons: one `.btn` set, 44px tall. Primary = yellow pill, ink sans label 15px/500, a plain arrow after the label that nudges 4px on hover; magnetic pull on fine pointers; a dot burst on click; the label stays still (r34-1); press scales .98; 2px cobalt focus ring. Text links: a cobalt underline grows from the left, the text wipes to cobalt, the arrow nudges 4px. One easing `cubic-bezier(0.22,1,0.36,1)`, 200ms for colour and arrow; reduced motion = instant swaps.
 Tabs (journey stories, pricing toggle): one component, `.seg-track`: muted sans labels 15px, active = full contrast with a 2px cobalt underline that slides, one hairline under the row. No fill, glow or dots.
 Headings: SplitText line masks on every `main h2` (reveal scrubbed to the scroll, r22-6); the full stop of a heading is a small yellow dot (r22-17); a soft canvas scrim sits behind headings (not on phones).
-Motif: "Bindu = dot". The dot of the dotless ı in the finale is a sunflower of 34 dots (yellow centre, cobalt rim); the guide ship is built from the same 34 dots; the nav and footer mark is a 61-dot sunflower (yellow inside, cobalt outside, needs Bindu's OK before production).
+Motif: "Bindu = dot". The dot of the dotless ı in the finale is a sunflower of 34 dots (yellow centre, cobalt rim); the guide ship is built from the same 34 dots; the nav and footer logo is Bindu's official sunflower (r36-3: `public/home/bindu-logo-*.webp`, from GetBindu/Bindu `assets/bindu_logo.png`); the dot `Mark` stays only on the statement chip.
 The ink ship guide (r17 to r30): a small container ship drawn in ink sails a dashed lane in the gutter (straight 4px dashes, 6px gap, perpendicular ticks), tilts up to 3 degrees, bobs up to 2px, and is drawn on one fixed canvas. It stops at each section anchor and drops yellow proof dots. Where the gutter is under 50px it is a 10px yellow dot with an ink ring. The hand-offs (map to gutter ship, ship to the ı dot) are pure functions of the scroll position, so they play at any speed and reverse on scroll up. The scroll-progress dot rail sits in the right gutter from 1100px.
 Motion: calm, readable, scroll-linked and reversible; GSAP + ScrollTrigger + Lenis; the hero's pause button freezes the guide and the map; reduced motion = composed end states, no pins; canvases cap DPR at 1.5 (1 on phones); WebGL lazy-loaded. Sounds are not part of this repo (removed after the port). Recreate reference effects in our own code.
 Phones (r35): everything behind `@media (max-width: 767px)` in `styles/mobile.css` or the shared `isPhone()`; 768px and up is untouched. Gutter 20px, body-small 16px, display-lg 32px, display-md 28px, tap targets 44px, safe-area padding. Shorter pins: how it works 200svh, journey 220svh, departures board 100svh + 18svh per row, finale 285svh. See `docs/home/mobile-critique.md`.
@@ -79,11 +80,12 @@ Phones (r35): everything behind `@media (max-width: 767px)` in `styles/mobile.cs
 Source of truth: `features/landing/home/home-page.tsx`. Update this list when it changes.
 
 Intro (first visit, about one second): one dot blooms into the mark, then hands off to the hero. Returning visits and reduced motion skip it.
-Nav: fixed, 64px; mark and wordmark (the wordmark collapses once scrolled), links, theme toggle, "Book a demo", a drawer on phones. No sound button, no skip-intro button.
+Nav (r36-3, ref parallel.ai): fixed, 56px; 24px official logo and wordmark (the wordmark collapses once scrolled), 12px muted mono-caps links grouped together, 36px theme toggle, 36px "Book a demo" pill, a drawer on phones (44px targets). No sound button, no skip-intro button.
 1. Hero (`#top`): centred headline word by word, one sub-line, the demo button, a pause button, over the dot-map with yellow shipments that fade out with the hero (r33-3). No selector (r34-3).
 2. Statement (`#statement`): "Describe a shipment once. Bindu works out the rules and the HS code, gathers the evidence and prepares the filing." Words, the yellow Bindu chip and the mark light up from the scroll position.
 3. Sound familiar? (`#pains`): three rows, pain left struck through, Bindu's answer right; scrubbed, dotted cobalt rule between rows. The third answer carries "For EUDR today."
-4. How it works (`#how`): pinned (330svh, 200svh on phones). Left: "One sentence in. The proof comes back.", then Describe, Prove, File (the active step in full contrast, the others muted). Right: kinetic sentence, a streaming event log of made-up events, then a QR passport of 169 dots that fly in (labelled Illustration). Generic, not EUDR.
+4. How it works (`#how`): pinned (330svh, 200svh on phones). Left: "One sentence in. The proof comes back.", then Describe, Prove, File (the active step in full contrast, the others muted). Right: kinetic sentence, a streaming event log of made-up events, then a QR passport of 169 dots that fly in (labelled Illustration). Generic, not EUDR. File step (r36-5): four record lines, each with a thin cobalt thread back to its source document; hover, focus or tap shows "from <document> · <supplier>" (Illustration).
+4b. Ask your supply chain (r36-4, `Ask.tsx`): "Stop chasing documents. Just ask." Pinned 300svh, scrubbed by scroll; left: heading, lead, five captions; right: scenario tabs (coffee, textiles, batteries) and the stage. Live (it is on getbindu.com). Phones: no pin, tabs and three answer cards.
 5. One shipment from origin to customs (`#shipment`): pinned (420svh, 220svh on phones); tab row EUDR, CBAM, DPP, REACH, PPWR; each tab has its own route, cargo and milestones (Illustration). The ship arrives, dissolves into the mark's dots, and the dots stream to the gutter ship. Phones: no hand-off.
 6. Departures board (`#examples`): "What the rules let through, and what they stop." Pinned, one row per scroll step (8 rows, 4 let through, 4 stopped; EUDR, DPP, Battery), each with its story; flaps on the page canvas; phones show five rows at a time. Battery stories say "In build". All Illustration.
 7. What each filing costs (`#pricing`): centred head + tab row; one bordered card split in two (receipt left, included list and "Estimate your cost" right); odometer price; no beam. Only "Estimate your cost"; the EUDR check is a text link.
@@ -120,6 +122,7 @@ Full Circle-style "pick an act, it plays itself" storytelling.
 The shipment journey animation; scroll-linked motion that replays.
 Clean, minimal, editorial layouts (x.ai, Together AI, Apple).
 Motion quality bar: Rothfinder; restraint: Walbi (Awwwards).
+parallel.ai's compact header; the old "Ask your supply chain" questions theatre.
 
 Rejected (don't bring these back):
 
@@ -141,7 +144,7 @@ Effects library: Hyperiux Vault (free effects only, marked commercial-friendly).
 Free MIT libraries (ideas rebuilt in our code; record any copied code in LICENSES.md): Magic UI, Uiverse, HyperUI, Flowbite core. Check Aceternity and Preline licences first.
 Galleries (look only; maxibestof is personal-viewing only): maxibestof.one, unsection.com, Awwwards inspiration (pricing: Finsight, Klub, Good Fella, HeyOrca; buttons: Strakk, Edifis, Modulus).
 Licences: see docs/home/LICENSES.md (created r15): GSAP standard no-charge, Lenis MIT, three.js MIT (replaced OGL, Unlicense), React MIT, Inter and IBM Plex Mono OFL 1.1.
-Skills installed in the repo: frontend-design, bindu-design, polish / impeccable, Unslop, UI/UX Pro Max (layout only, not its palettes), strategic-narrative.
+Skills installed in the repo: frontend-design, bindu-design, polish / impeccable, Unslop, UI/UX Pro Max (layout only, not its palettes), strategic-narrative; slop checks (r36-2, MIT, gates only): hallmark, avoid-ai-design (scanner `scripts/detect.mjs`), antislop + antislop-ui, make-interfaces-feel-better.
 15. Later: SEO
 
 Not now. After the design is final: pre-render pages (SSG), text in HTML not only in canvas, keep existing URLs/blog rankings with redirects, per-page titles/meta/H1, structured data (Organization, SoftwareApplication with Offer, FAQPage), sitemap, Lighthouse in both themes. Suraj accepts a 2–3% score hit only for deliberate creative choices.
@@ -150,4 +153,5 @@ Not now. After the design is final: pre-render pages (SSG), text in HTML not onl
 16. Recent rounds
 19 Nov 2026 · r14 to r16: pinned journey with own routes; pricing split card; warm ivory light theme; Inter + IBM Plex Mono.
 Rounds 17 to 35 (branch v3-story, one story): ink-and-paper restyle with no glows (r17); ink ship guide, straight dashes, staged hand-offs as pure functions of scroll (r18 to r30); How it works with kinetic type, event log and QR passport (r21, r28); departures board, one row per scroll step (r31, r33); page bands that crossfade (r29-7); the finale as a photo through the wordmark with the 34-dot sunflower ı (r28 to r34); performance passes (r24, r25); phone pass (r35). Details: DECISIONS.md.
-22 Nov 2026 · r36 (in progress): docs consolidated into this brief and a consistency rule set in DESIGN.md (r36-1); then slop skills, a smaller nav with the official logo, the "Ask your supply chain" section (live on the site, so live here), a traceability piece, and a slop pass. Spec: `docs/home/rounds/round-36.md`.
+22 Nov 2026 · r36: brief consolidated + consistency rules (r36-1); slop-check skills (r36-2); official logo + 56px nav (r36-3); Ask your supply chain section (r36-4); traceability threads in the File step + trace copy in hero, statement, Prove, FAQ (r36-5); slop pass, nothing failed (r36-6).
+22 Nov 2026 · r37: shorter hero sub-line, console errors, consistency-audit fixes. Spec: `docs/home/rounds/round-37.md`.
