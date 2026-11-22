@@ -10,15 +10,16 @@ import type { Theatre as Controller } from "../lib/theatre-fx";
 /* Round 39 (r39-2): "Full Circle", in the slot How it works had (id `how`). Ported from the older story page's theatre and restyled to the home tokens.
    Round 40 (r40-1): it is scroll-driven now. One pin; the three acts (The Fabric, The Bean, The Circle) play in order, every scene a pure function of
    the scroll position (it reverses on scroll up). Nothing plays by itself, so there is no play button and the site's pause control has nothing to stop.
+   Round 41 (r41-2): the pin plays ONE act at a time (the tabs swap it; The Fabric is the default), 100svh of scroll per scene, scrub smoothed.
    Each scene owns an equal share of the pin (PER svh); the motion plays through the first two thirds of it, the last third holds. The tab row is the
    progress indicator and the jump links (a click scrolls to that act's first scene). The layout differs from the Ask section next to it: the head
    (title and lead left, tabs right), the stage across the whole container, then the current caption in one line with a row of scene dots.
    The motion lives in lib/theatre-fx.ts and is loaded on demand. Phones (767px and under) and reduced motion do not pin: the stage is the composed
    final frame of the current act, every caption is listed, and the tabs still swap the act. */
 const SCENES = c.acts.map((a) => a.beats.length);
-const TOTAL = SCENES.reduce((n, k) => n + k, 0);
-const STARTS = SCENES.map((_, i) => SCENES.slice(0, i).reduce((n, k) => n + k, 0));
-const PER = 55;   // svh of scroll for each scene
+const MAX = Math.max(...SCENES);   // r41-2: the pin covers ONE act, as long as the longest one; shorter acts hold their last scene
+const PER = 100;   // svh of scroll for each scene
+const TAU = 0.3;   // s: the smoothed scrub (about 1s to settle), so a small wheel tick moves the scene a little
 const HOLD_AT = 2 / 3;
 const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 
@@ -58,45 +59,57 @@ export function Theatre() {
   /* reduced motion or a phone: the composed final frame of the chosen act */
   useEffect(() => { if (ready && flat) ctl.current?.still(act); }, [ready, flat, act]);
 
-  /* the pin: one coalesced reader of the scroll position, nothing else */
+  /* the pin: one coalesced reader of the scroll position, eased (r41-2) toward the target so a small wheel tick never runs a whole scene.
+     It plays the chosen act only; the tabs swap the act. */
+  const actRef = useRef(0);
+  const prog = useRef({ cur: 0, last: 0 });
+  useEffect(() => { actRef.current = act; }, [act]);
   useEffect(() => {
     const el = pin.current;
     if (!el || !ready || flat) return;
     const tk = track(el);
     let raf = 0, visible = true, lastA = -1, lastS = -1, lastQ = -1;
-    const update = () => {
+    const st = prog.current;
+    const update = (now: number) => {
       raf = 0;
       if (!visible) return;
       const range = tk.h - (window.innerHeight - 64);
-      const p = range > 0 ? clamp((64 - tk.rectTop()) / range) : 0;
-      const x = p * TOTAL, idx = Math.min(TOTAL - 1, Math.floor(x)), local = x - idx;
-      let ai = 0;
-      STARTS.forEach((s, i) => { if (s <= idx) ai = i; });
-      const si = idx - STARTS[ai]!;
-      const q = idx + clamp(local / HOLD_AT);
+      const target = range > 0 ? clamp((64 - tk.rectTop()) / range) : 0;
+      const dt = st.last ? Math.min(0.1, (now - st.last) / 1000) : 0.016;
+      st.last = now;
+      st.cur += (target - st.cur) * (1 - Math.exp(-dt / TAU));
+      if (Math.abs(target - st.cur) < 0.0002) st.cur = target;
+      const ai = actRef.current, n = SCENES[ai]!;
+      const x = st.cur * MAX, idx = Math.min(MAX - 1, Math.floor(x));
+      const si = Math.min(n - 1, idx), local = idx >= n ? 1 : x - idx;
+      const q = si + clamp(local / HOLD_AT);
       if (Math.abs(q - lastQ) > 0.0002 || ai !== lastA) { lastQ = q; ctl.current?.at(ai, si, local); }
-      if (ai !== lastA) { lastA = ai; setAct(ai); }
+      lastA = ai;
       if (si !== lastS) { lastS = si; setStep(si); }
+      if (st.cur !== target) raf = tRaf(update); else st.last = 0;
     };
     const kick = () => { if (!raf) raf = tRaf(update); };
     const obs = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) kick(); });
     obs.observe(el);
     window.addEventListener("scroll", kick, { passive: true });
     window.addEventListener("resize", kick);
+    kickRef.current = () => { lastQ = -1; lastS = -1; st.cur = 0; kick(); };
     kick();
-    return () => { obs.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
+    return () => { kickRef.current = () => {}; obs.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
   }, [ready, flat]);
 
-  /* a tab: scroll to that act's first scene (or, flat, swap the act) */
+  /* a tab: swap the stage to that act's first scene at once, and put the scroll at the pin's start (or, flat, just swap the act) */
+  const kickRef = useRef<() => void>(() => {});
   const pick = (i: number) => {
-    if (flat) { setAct(i); setStep(0); return; }
+    setAct(i); setStep(0); actRef.current = i;
+    if (flat) return;
     const el = pin.current;
     if (!el) return;
     const tk = track(el);
-    const range = tk.h - (window.innerHeight - 64);
-    const y = tk.top - 64 + range * (STARTS[i]! / TOTAL) + 2;
+    const y = tk.top - 64 + 2;
     const l = getLenis();
-    if (l) l.scrollTo(y, { duration: 1.2 }); else window.scrollTo({ top: y, behavior: "smooth" });
+    if (l) l.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y });
+    kickRef.current();
   };
 
   // the ARIA tab pattern: arrow keys, Home and End move the focus; Enter or Space (a click) goes to the act
@@ -110,7 +123,7 @@ export function Theatre() {
 
   return (
     <section className="band-dark sec how th" id="how" aria-labelledby="how-h" data-guide-anchor="how" data-guide-side="r">
-      <div ref={pin} className={`th-pin${flat ? " is-flat" : ""}`} style={{ "--th-n": TOTAL, "--th-per": PER } as CSSProperties}>
+      <div ref={pin} className={`th-pin${flat ? " is-flat" : ""}`} style={{ "--th-n": MAX, "--th-per": PER } as CSSProperties}>
         <div className="th-win container">
           <div className="th-head">
             <div className="th-title">
