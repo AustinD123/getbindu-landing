@@ -15,6 +15,7 @@ import "./styles/r13-cta.css";
 import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
+import "./styles/ask.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
@@ -25,6 +26,7 @@ import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { ShipmentJourney } from "./components/ShipmentJourney";
 import { HowItWorks } from "./components/HowItWorks";
+import { Ask } from "./components/Ask";
 import { Pricing } from "./components/Pricing";
 import { Faq, Finale } from "./components/Closing";
 import { Examples } from "./components/Examples";
@@ -74,6 +76,7 @@ export function HomePage() {
         <Statement />
         <BeforeAfter />
         <HowItWorks />
+        <Ask />
         <ShipmentJourney />
         <Examples />
         <Pricing />

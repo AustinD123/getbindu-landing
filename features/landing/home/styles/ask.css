@@ -1,0 +1,66 @@
+/* ---------- r36-4: Ask your supply chain (pinned, five beats; the stage is a pure function of scroll, see components/Ask.tsx) ----------
+   Colours only from tokens. Yellow = the question and the signed answer; cobalt = the pipes, the relay and the supplier nodes.
+   Never set opacity or transform on the stage's groups here: the script writes them as attributes (final frame = authored). */
+.bindu-home .sec.ask { padding-top: 0; padding-bottom: var(--section-y); }
+.bindu-home .qa-pin { position: relative; height: 300vh; height: 300svh; }
+.bindu-home .qa-pin.is-static { height: auto; }
+.bindu-home .qa-win { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); gap: var(--s-7); align-items: center; }
+.bindu-home .qa-pin.is-static .qa-win { position: static; height: auto; padding-top: var(--s-8); }
+.bindu-home .qa-left { display: grid; gap: var(--s-5); align-content: center; min-width: 0; }
+.bindu-home .qa-left h2 { margin: 0; font-size: clamp(28px, 2.9vw, 40px); text-wrap: balance; }
+.bindu-home .qa-lead { margin: 0; max-width: 38ch; }
+.bindu-home .qa-beats .how-step h3 { font: 500 clamp(17px, 1.5vw, 20px)/1.3 var(--font-sans); letter-spacing: var(--track-sm); }
+.bindu-home .qa-beats { gap: var(--s-2); }
+.bindu-home .qa-right { display: grid; gap: var(--s-4); min-width: 0; align-content: center; }
+.bindu-home .qa-seg { max-width: none; }
+.bindu-home .qa-panel { min-width: 0; }
+.bindu-home .qa-stage { display: block; width: 100%; height: auto; overflow: visible; }
+.bindu-home .qa-cap { margin: 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+.bindu-home .qa-cards { display: none; }
+
+/* the same example as words: read by screen readers on desktop, shown on phones (mobile.css) */
+.bindu-home .qa-ex { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* svg text: sans for words, mono for references; sizes are in stage units (900 wide, about 0.78 on a laptop) */
+.bindu-home .qa-stage text { font-family: var(--font-sans); fill: var(--on-dark); }
+.bindu-home .qa-pipe, .bindu-home .qa-back { fill: none; stroke: var(--cobalt-signal); stroke-width: 3; stroke-linecap: round; }
+.bindu-home .qa-back { stroke-opacity: 0.5; stroke-dasharray: 2 8; }
+.bindu-home .qa-puck { fill: var(--canvas); stroke: var(--cobalt-signal); stroke-width: 2.5; }
+.bindu-home .qa-cube { stroke-width: 2; stroke-linejoin: round; }
+.bindu-home .qa-asker { stroke: var(--on-dark-mute); }
+.bindu-home .qa-asker .qa-fl, .bindu-home .qa-asker .qa-fr { fill: var(--canvas-mid); }
+.bindu-home .qa-asker .qa-ft { fill: var(--canvas-soft); }
+.bindu-home .qa-sup { stroke: var(--cobalt-signal); }
+.bindu-home .qa-sup .qa-fl { fill: var(--cobalt-tint); }
+.bindu-home .qa-sup .qa-fr { fill: var(--canvas-soft); }
+.bindu-home .qa-sup .qa-ft { fill: var(--canvas-mid); }
+.bindu-home .qa-data polygon { stroke: none; }
+.bindu-home .qa-dl { fill: var(--cobalt-signal); }
+.bindu-home .qa-dr { fill: var(--brand-cobalt); }
+.bindu-home .qa-dt { fill: var(--cobalt-signal); }
+.bindu-home .qa-stage .qa-name { font-size: 18px; font-weight: 500; }
+.bindu-home .qa-stage .qa-role { font-size: 15px; fill: var(--on-dark-mute); }
+.bindu-home .qa-stage .qa-why { font-size: 15px; fill: var(--on-dark-mute); }
+.bindu-home .qa-chip-rect { fill: var(--brand-yellow); stroke: var(--yellow-outline); stroke-width: 1; }
+.bindu-home .qa-stage .qa-qtext { font-size: 17px; font-weight: 500; fill: var(--ink); }
+.bindu-home .qa-env rect { fill: var(--brand-yellow); stroke: var(--yellow-outline); stroke-width: 1.5; }
+.bindu-home .qa-env path, .bindu-home .qa-env circle { stroke: var(--ink); stroke-width: 1.5; stroke-linecap: round; }
+.bindu-home .qa-card > rect:first-child { fill: var(--canvas-soft); stroke: var(--hairline-dark); stroke-width: 1.5; }
+.bindu-home .qa-answer > rect:first-child { stroke: var(--yellow-outline); }
+.bindu-home .qa-stage .qa-fact { font-size: 16px; font-weight: 500; }
+.bindu-home .qa-stage .qa-ref { font-family: var(--font-mono); font-size: 14px; fill: var(--on-dark-body); }
+.bindu-home .qa-yes { fill: var(--cobalt-signal); }
+.bindu-home .qa-stage .qa-yes-t { font-size: 15px; font-weight: 500; fill: var(--on-cobalt); }
+.bindu-home .qa-decline circle, .bindu-home .qa-decline path { stroke: var(--on-dark-mute); stroke-width: 2; stroke-linecap: round; }
+.bindu-home .qa-stage .qa-signed { font-size: 15px; font-weight: 500; fill: var(--on-dark-body); }
+.bindu-home .qa-seal circle { fill: var(--brand-yellow); stroke: var(--yellow-outline); stroke-width: 1; }
+.bindu-home .qa-seal path { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* tablets (768 to 900px): the heading above, the stage below, the captions in a row */
+@media (max-width: 900px) {
+  .bindu-home .qa-win { grid-template-columns: 1fr; gap: var(--s-4); align-content: start; padding-top: var(--s-4); }
+  .bindu-home .qa-left { gap: var(--s-3); }
+  .bindu-home .qa-left h2 { font-size: clamp(24px, 6vw, 36px); }
+  .bindu-home .qa-beats { grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: var(--s-2); }
+  .bindu-home .qa-beats .how-step h3 { font-size: 13px; }
+}

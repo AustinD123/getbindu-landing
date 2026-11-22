@@ -121,6 +121,37 @@ export const how = {
   ],
 };
 
+/* Round 36 (r36-4): "Ask your supply chain", between How it works and the journey. The question, the answer lines and the reference
+   numbers are made up (Illustration). The supplier exchange is in build, so the caption says so. Scenario 3 states no regulation date:
+   "mandatory since Feb 2025" could not be confirmed from a public EUR-Lex page (see DECISIONS.md, round 36). */
+export const ask = {
+  title: "Stop chasing documents. Just ask.",
+  lead: "Type a question. Your suppliers' own systems work out the answer, a person on their side approves it, and you get it back signed. Nobody emails files around.",
+  tabsLabel: "Example questions",
+  stageLabel: "Illustration of a question going out to three suppliers and a signed answer coming back",
+  beats: ["You ask.", "The question goes out.", "Their data stays with them.", "A person approves the answer.", "You get it back, signed."],
+  illus: "Illustration",
+  caption: "Made-up question, reference numbers and certificate numbers. The supplier exchange is in build.",
+  asker: "You",
+  learn: "They will learn:",
+  yes: "Yes",
+  no: "said no",
+  signed: "signed",
+  cards: [
+    { w: "Unread.", l: "Sealed to you", d: "Answers are sealed to the asker. Bindu carries the envelope and cannot open it." },
+    { w: "Allowed.", l: "They stay in control", d: "Before anything leaves, your supplier sees exactly what you'll learn, and can say no. Their files never move." },
+    { w: "Provable.", l: "Signed at the source", d: "Every answer is signed by the company that gave it. Paste it in your filing, show it to your auditor." },
+  ],
+  scenarios: [
+    { id: "coffee", tab: "Coffee", asker: "importer", nodes: ["co-op", "trader", "mill"], q: "DDS reference numbers for order PO-2214?", why: "your own filing cites them, checked in TRACES",
+      ap: ["DDS ref 25NL7K3X9M", "verification nr V-99DK2"], aw: ["Answer · order PO-2214", "DDS 25NL7K3X9M · V-99DK2 · co-op", "DDS 25DE4Q8V2C · V-84HF1 · trader"] },
+    { id: "textiles", tab: "Textiles", asker: "brand", nodes: ["spinner", "fabric mill", "garment maker"], q: "Valid GRS transaction certificate for lot F-88?", why: "no valid certificate, no recycled claim on the label",
+      ap: ["TC GRS-2026-4471 · valid", "65% recycled polyester"], aw: ["Answer · lot F-88", "TC GRS-2026-4471, valid · spinner", "65% rPET · 35% cotton · fabric mill"] },
+    { id: "batteries", tab: "Batteries", asker: "carmaker", nodes: ["refinery", "cathode plant", "cell maker"], q: "Carbon footprint of cell model NC-811?", why: "a number your own paperwork can point to",
+      ap: ["61 kg CO₂e per kWh", "third-party verified"], aw: ["Answer · cell NC-811", "61 kg CO₂e/kWh, verified · cell maker", "cathode share 38 kg · cathode plant"] },
+  ],
+};
+
 /* Round 13, item 6: one shipment, five regulation stories. Every story runs along the same example route (Guayaquil to
    Antwerp) with six milestones, so the animation is the same for each. live: false means the last milestone says
    "coming" and the dots do not turn into a filing. Status chips follow the status list (EUDR and textile passports Live). */

@@ -26,6 +26,23 @@
   .bindu-home .how-pin { height: 200vh; height: 200svh; }
   .bindu-home .how-pin.is-static { height: auto; }
 
+  /* Ask your supply chain: no pin and no stage; the heading, the tabs, the example in words and the three answer cards */
+  .bindu-home .sec.ask { padding-top: var(--section-y); }
+  .bindu-home .qa-pin, .bindu-home .qa-pin.is-static { height: auto; }
+  .bindu-home .qa-win, .bindu-home .qa-pin.is-static .qa-win { position: static; height: auto; padding-top: 0; gap: var(--s-5); }
+  .bindu-home .qa-beats, .bindu-home .qa-stage { display: none; }
+  .bindu-home .qa-lead { max-width: 38ch; }
+  .bindu-home .qa-ex { position: static; width: auto; height: auto; margin: var(--s-4) 0 0; overflow: visible; clip: auto; white-space: normal; display: grid; gap: var(--s-2); padding: var(--s-5); background: var(--canvas-soft); border: 1px solid var(--line-white-12); border-radius: var(--r-sm); }
+  .bindu-home .qa-ex p { margin: 0; }
+  .bindu-home .qa-ex-q { font: 500 18px/1.3 var(--font-sans); }
+  .bindu-home .qa-ex-why { font-size: var(--body-sm); color: var(--on-dark-mute); }
+  .bindu-home .qa-ex-a { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: 4px; font: 400 13px/1.4 var(--font-mono); color: var(--on-dark-body); }
+  .bindu-home .qa-ex-a li:last-child { color: var(--on-dark); font-family: var(--font-sans); font-weight: 500; }
+  .bindu-home .qa-cards { display: grid; gap: var(--s-3); }
+  .bindu-home .qa-card-m { padding: var(--s-5); background: var(--canvas-soft); border: 1px solid var(--line-white-12); border-radius: var(--r-sm); display: grid; gap: var(--s-2); }
+  .bindu-home .qa-card-m h3, .bindu-home .qa-card-m p { margin: 0; }
+  .bindu-home .qa-card-l { font-size: var(--caption); color: var(--on-dark-mute); }
+
   /* the journey: a shorter pin, a full-width map, the current step's title and sentence big under it instead of the six-title index */
   .bindu-home .ship-pin:not(.is-static) { height: 220vh; height: 220svh; }
   .bindu-home .ship-pin:not(.is-static) .ship-svg { width: clamp(200px, calc((100svh - 450px) * 1.4557), 100%); }
