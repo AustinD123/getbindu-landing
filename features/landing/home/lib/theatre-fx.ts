@@ -1,7 +1,7 @@
 /* r39-2: Full Circle, the motion. Ported from features/landing/story/theatre.tsx (the original is untouched). Loaded on demand by
    components/Theatre.tsx, so the six GSAP plugins it needs never weigh on the first load.
-   Three paused GSAP timelines, one per act, built once. The component drives them through the controller below: tabs, the scene dots, the
-   play button, the site's pause control, and whether the section is in view. Every starting state is set here with gsap.set (the markup
+   Three paused GSAP timelines, one per act, built once. The component sets their time from the scroll position (r40-1: nothing autoplays; see the
+   controller at the bottom). Every starting state is set here with gsap.set (the markup
    and the CSS carry none), so a reader without script, or one who prefers reduced motion, gets the composed final frame instead.
    Pacing (r39-2): the original scenes were 10s apart with the words on the stage. Here each scene is 13s: every tween keeps its offset
    inside the scene, and T() adds 3s per scene boundary, so the motion settles by about 9s and the words sit for at least 3.5s after. */
@@ -21,22 +21,18 @@ export const SCENES = [5, 4, 5] as const;
 /* an authored time (scenes 10s apart) to the paced time (scenes 13s apart) */
 const T = (t: number) => t + Math.floor((t + 1e-6) / 10) * (SCENE - 10);
 
-export type TheatreState = { playing: boolean; done: boolean };
-export type TheatreHooks = {
-  onStep: (act: number, step: number) => void;
-  onFill: (f: number) => void;
-  onState: (s: TheatreState) => void;
-};
+/* the last tween of any scene ends 9.0s into it; the motion is mapped to 9.2s, then the scene holds. The first two thirds of a scene's scroll
+   share play the motion, the last third holds (the same split as the Ask section) */
+const SETTLE = 9.2;
+export const HOLD_AT = 2 / 3;
+
 export type Theatre = {
-  show: (act: number, still: boolean) => void;
-  jump: (scene: number) => void;
-  toggle: () => void;
-  setVisible: (v: boolean) => void;
-  setSitePaused: (v: boolean) => void;
+  at: (act: number, scene: number, local: number) => void;
+  still: (act: number) => void;
   destroy: () => void;
 };
 
-export function buildTheatre(root: HTMLElement, hooks: TheatreHooks): Theatre {
+export function buildTheatre(root: HTMLElement): Theatre {
   const q = <E extends Element>(sel: string) => root.querySelector<E>(sel);
   const ctx = gsap.context(() => {}, root);
   const acts: { tl: gsap.core.Timeline; panel: HTMLElement | null; n: number }[] = [];
@@ -239,60 +235,26 @@ export function buildTheatre(root: HTMLElement, hooks: TheatreHooks): Theatre {
     acts.push({ tl: t1, panel: q("#act1"), n: SCENES[0] }, { tl: t2, panel: q("#act2"), n: SCENES[1] }, { tl: t3, panel: q("#act3"), n: SCENES[2] });
   });
 
-  /* ---------- the controller ---------- */
-  let current = 0, still = false, visible = false, sitePaused = false, userPaused = false, lastStep = -1, ready = true;
-  const state = (): TheatreState => {
-    const tl = acts[current]!.tl;
-    return { playing: !tl.paused() && tl.progress() < 1, done: tl.progress() >= 1 };
+  /* ---------- the controller ----------
+     Nothing plays by itself. The component hands in the scroll position as (act, scene, local), local being 0 to 1 through the scene's share of
+     the pin, and the timeline of that act is set to the matching time: a pure function of scroll, so it reverses. The motion of a scene is
+     done by SETTLE seconds of its 13; the rest of the scene's scroll share is the hold, so the words sit still while the reader reads. */
+  let current = -1;
+  const select = (i: number) => {
+    if (i === current) return;
+    current = i;
+    acts.forEach((a, j) => a.panel?.classList.toggle("active", j === i));
   };
-  const stepOf = (tl: gsap.core.Timeline, n: number) => Math.min(n - 1, Math.max(0, Math.floor((tl.time() + 0.01) / SCENE)));
-  const push = () => hooks.onState(state());
-
-  acts.forEach((a, i) => {
-    a.tl.eventCallback("onUpdate", () => {
-      if (i !== current || still) return;
-      hooks.onFill(a.tl.progress());
-      const s = stepOf(a.tl, a.n);
-      if (s !== lastStep) { lastStep = s; hooks.onStep(i, s); }
-    });
-    a.tl.eventCallback("onComplete", () => { if (i === current) push(); });
-  });
-
-  /* play only while: the section is in view, the site pause control is off, and the reader has not paused it */
-  const sync = () => {
-    if (!ready) return;
-    const tl = acts[current]!.tl;
-    if (still) { tl.pause(); push(); return; }
-    if (visible && !sitePaused && !userPaused && tl.progress() < 1) tl.play(); else tl.pause();
-    push();
-  };
-
-  const show = (i: number, asStill: boolean) => {
-    current = i; still = asStill; userPaused = false; lastStep = -1;
-    acts.forEach((a, j) => { a.panel?.classList.toggle("active", j === i); a.tl.pause(); });
+  const at = (i: number, scene: number, local: number) => {
+    select(i);
     const a = acts[i]!;
-    if (asStill) { a.tl.progress(1, true); hooks.onFill(1); hooks.onStep(i, a.n - 1); }
-    else { a.tl.pause(0); hooks.onFill(0); hooks.onStep(i, 0); lastStep = 0; }
-    sync();
+    const k = Math.min(1, Math.max(0, local / HOLD_AT));
+    a.tl.time(Math.min(a.n - 1, Math.max(0, scene)) * SCENE + SETTLE * k, false);
   };
 
   return {
-    show,
-    jump: (scene) => {
-      if (still) return;
-      const a = acts[current]!;
-      userPaused = false;
-      a.tl.play(Math.min(a.n - 1, Math.max(0, scene)) * SCENE + 0.01);
-      push();
-    },
-    toggle: () => {
-      if (still) return;
-      const tl = acts[current]!.tl;
-      if (tl.progress() >= 1) { userPaused = false; lastStep = -1; tl.restart(); push(); return; }
-      userPaused = !userPaused; sync();
-    },
-    setVisible: (v) => { visible = v; sync(); },
-    setSitePaused: (v) => { sitePaused = v; sync(); },
-    destroy: () => { ready = false; acts.forEach((a) => a.tl.kill()); ctx.revert(); },
+    at,
+    still: (i) => { select(i); acts[i]!.tl.progress(1, true); },
+    destroy: () => { acts.forEach((a) => a.tl.kill()); ctx.revert(); },
   };
 }

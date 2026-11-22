@@ -89,7 +89,7 @@ export const pains = {
    is marked "In build" and its first caption says "Coming". The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
 export const theatre = {
   title: "Full Circle.",
-  lead: "Follow a shirt and a bag of coffee from supplier paperwork to the shelf and back. Pick an act and it plays itself.",
+  lead: "Scroll to follow a shirt and a bag of coffee from supplier paperwork to the shelf and back.",
   tabsLabel: "Acts",
   stepsLabel: "What happens, step by step",
   dotsLabel: "Scenes",
@@ -119,7 +119,6 @@ export const theatre = {
   caption: "People, places, documents and reference numbers are made up.",
   build: "In build",
   buildNote: "Act three is coming.",
-  play: "Play", pause: "Pause", replay: "Replay",
 };
 
 /* Round 36 (r36-4): "Ask your supply chain", between Full Circle and the journey. The question, the answer lines and the reference

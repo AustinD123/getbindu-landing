@@ -1,22 +1,30 @@
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { theatre as c } from "../content";
-import { useReducedMotion } from "../lib/motion";
+import { getLenis, useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
-import { isPaused, subscribePause } from "../lib/pause";
+import { tRaf, tCaf } from "../lib/loop";
+import { track } from "../lib/pos";
 import { THEATRE_STAGES_HTML } from "../lib/theatre-stages";
-import type { Theatre as Controller, TheatreState } from "../lib/theatre-fx";
+import type { Theatre as Controller } from "../lib/theatre-fx";
 
 /* Round 39 (r39-2): "Full Circle", in the slot How it works had (id `how`). Ported from the older story page's theatre and restyled to the home tokens.
-   Three acts as a tab row (The Fabric, The Bean, The Circle); pick one and it plays itself while the section is in view. It pauses off screen, with
-   the site's pause control (the hero's) and with its own button; a row of scene dots under the stage shows progress and jumps. The captions are one
-   column on the left, one per scene, the current one in full ink with the yellow proof dot on a 2px cobalt line (the Ask section's pattern).
-   The motion lives in lib/theatre-fx.ts and is loaded on demand. Phones (767px and under) and reduced motion do not play: the stage is the composed
-   final frame of the current act, every caption is shown, and the tabs still swap the act. */
+   Round 40 (r40-1): it is scroll-driven now. One pin; the three acts (The Fabric, The Bean, The Circle) play in order, every scene a pure function of
+   the scroll position (it reverses on scroll up). Nothing plays by itself, so there is no play button and the site's pause control has nothing to stop.
+   Each scene owns an equal share of the pin (PER svh); the motion plays through the first two thirds of it, the last third holds. The tab row is the
+   progress indicator and the jump links (a click scrolls to that act's first scene). The layout differs from the Ask section next to it: the head
+   (title and lead left, tabs right), the stage across the whole container, then the current caption in one line with a row of scene dots.
+   The motion lives in lib/theatre-fx.ts and is loaded on demand. Phones (767px and under) and reduced motion do not pin: the stage is the composed
+   final frame of the current act, every caption is listed, and the tabs still swap the act. */
+const SCENES = c.acts.map((a) => a.beats.length);
+const TOTAL = SCENES.reduce((n, k) => n + k, 0);
+const STARTS = SCENES.map((_, i) => SCENES.slice(0, i).reduce((n, k) => n + k, 0));
+const PER = 55;   // svh of scroll for each scene
+const HOLD_AT = 2 / 3;
+const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
+
 export function Theatre() {
-  const win = useRef<HTMLDivElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
   const stages = useRef<HTMLDivElement>(null);
-  const beats = useRef<HTMLOListElement>(null);
-  const bar = useRef<HTMLSpanElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const ctl = useRef<Controller | null>(null);
   const isStatic = useReducedMotion();
@@ -24,7 +32,6 @@ export function Theatre() {
   const [ready, setReady] = useState(false);
   const [act, setAct] = useState(0);
   const [step, setStep] = useState(0);
-  const [st, setSt] = useState<TheatreState>({ playing: false, done: false });
   const flat = isStatic || phone;
   const a = c.acts[act]!;
 
@@ -32,81 +39,102 @@ export function Theatre() {
 
   /* build the timelines once the section is near the screen: the plugins load then, not with the first paint */
   useEffect(() => {
-    const el = win.current, host = stages.current;
+    const el = pin.current, host = stages.current;
     if (!el || !host) return;
-    let dead = false, watch: IntersectionObserver | null = null, unPause = () => {};
+    let dead = false;
     const load = new IntersectionObserver(([e]) => {
       if (!e!.isIntersecting) return;
       load.disconnect();
       import("../lib/theatre-fx").then(({ buildTheatre }) => {
         if (dead) return;
-        const t = buildTheatre(host, {
-          onStep: (_a, s) => setStep(s),
-          onFill: (f) => { beats.current?.style.setProperty("--th-fill", f.toFixed(4)); if (bar.current) bar.current.style.transform = `scaleX(${f.toFixed(4)})`; },
-          onState: setSt,
-        });
-        ctl.current = t;
-        watch = new IntersectionObserver(([w]) => t.setVisible(w!.isIntersecting), { threshold: 0.3 });
-        watch.observe(el);
-        unPause = subscribePause(() => t.setSitePaused(isPaused()));
-        t.setSitePaused(isPaused());
+        ctl.current = buildTheatre(host);
         setReady(true);
       });
     }, { rootMargin: "1200px 0px" });
     load.observe(el);
-    return () => {
-      dead = true; load.disconnect(); watch?.disconnect(); unPause();
-      ctl.current?.destroy(); ctl.current = null; setReady(false);
-    };
+    return () => { dead = true; load.disconnect(); ctl.current?.destroy(); ctl.current = null; setReady(false); };
   }, []);
 
-  /* a new act, or reduced motion or a phone: show it from its first frame (playing) or as its composed final frame (still) */
-  useEffect(() => { if (ready) ctl.current?.show(act, flat); }, [ready, act, flat]);
+  /* reduced motion or a phone: the composed final frame of the chosen act */
+  useEffect(() => { if (ready && flat) ctl.current?.still(act); }, [ready, flat, act]);
 
-  // the ARIA tab pattern: arrow keys, Home and End move the selection and the focus
+  /* the pin: one coalesced reader of the scroll position, nothing else */
+  useEffect(() => {
+    const el = pin.current;
+    if (!el || !ready || flat) return;
+    const tk = track(el);
+    let raf = 0, visible = true, lastA = -1, lastS = -1, lastQ = -1;
+    const update = () => {
+      raf = 0;
+      if (!visible) return;
+      const range = tk.h - (window.innerHeight - 64);
+      const p = range > 0 ? clamp((64 - tk.rectTop()) / range) : 0;
+      const x = p * TOTAL, idx = Math.min(TOTAL - 1, Math.floor(x)), local = x - idx;
+      let ai = 0;
+      STARTS.forEach((s, i) => { if (s <= idx) ai = i; });
+      const si = idx - STARTS[ai]!;
+      const q = idx + clamp(local / HOLD_AT);
+      if (Math.abs(q - lastQ) > 0.0002 || ai !== lastA) { lastQ = q; ctl.current?.at(ai, si, local); }
+      if (ai !== lastA) { lastA = ai; setAct(ai); }
+      if (si !== lastS) { lastS = si; setStep(si); }
+    };
+    const kick = () => { if (!raf) raf = tRaf(update); };
+    const obs = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) kick(); });
+    obs.observe(el);
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    kick();
+    return () => { obs.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
+  }, [ready, flat]);
+
+  /* a tab: scroll to that act's first scene (or, flat, swap the act) */
+  const pick = (i: number) => {
+    if (flat) { setAct(i); setStep(0); return; }
+    const el = pin.current;
+    if (!el) return;
+    const tk = track(el);
+    const range = tk.h - (window.innerHeight - 64);
+    const y = tk.top - 64 + range * (STARTS[i]! / TOTAL) + 2;
+    const l = getLenis();
+    if (l) l.scrollTo(y, { duration: 1.2 }); else window.scrollTo({ top: y, behavior: "smooth" });
+  };
+
+  // the ARIA tab pattern: arrow keys, Home and End move the focus; Enter or Space (a click) goes to the act
   const onTabKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const n = c.acts.length;
     const moves: Record<string, number> = { ArrowRight: (act + 1) % n, ArrowLeft: (act + n - 1) % n, Home: 0, End: n - 1 };
     if (!(e.key in moves)) return;
     e.preventDefault();
-    setAct(moves[e.key]!);
     tabs.current[moves[e.key]!]?.focus();
   };
 
   return (
     <section className="band-dark sec how th" id="how" aria-labelledby="how-h" data-guide-anchor="how" data-guide-side="r">
-      <div ref={win} className={`th-win container${flat ? " is-flat" : ""}`}>
-        <div className="th-head">
-          <h2 id="how-h" className="t-display-md">{c.title}</h2>
-          <p className="t-body-lg t-soft th-lead">{c.lead}</p>
-        </div>
-        <ol ref={beats} className="th-beats" aria-label={c.stepsLabel}>
-          {a.beats.map((b, i) => (
-            <li key={b} className={`th-beat${flat ? "" : i === step ? " is-on" : i < step ? " is-past" : " is-next"}`}>
-              {flat ? <span>{b}</span> : (
-                <button type="button" className="th-beat-btn" aria-current={i === step ? "step" : undefined} onClick={() => ctl.current?.jump(i)}>{b}</button>
-              )}
-            </li>
-          ))}
-        </ol>
-        <div className="th-right">
-          <div className="seg-track th-seg">
-            <div className="seg-in" role="tablist" aria-label={c.tabsLabel} onKeyDown={onTabKey} style={{ "--n": c.acts.length, "--i": act } as CSSProperties}>
-              <span className="seg-ind" aria-hidden="true" />
-              {c.acts.map((t, i) => (
-                <button
-                  key={t.id}
-                  ref={(el) => { tabs.current[i] = el; }}
-                  type="button"
-                  role="tab"
-                  id={`th-tab-${t.id}`}
-                  aria-selected={i === act}
-                  aria-controls="th-panel"
-                  tabIndex={i === act ? 0 : -1}
-                  className={`seg-opt${i === act ? " is-on" : ""}`}
-                  onClick={() => setAct(i)}
-                >{t.tab}</button>
-              ))}
+      <div ref={pin} className={`th-pin${flat ? " is-flat" : ""}`} style={{ "--th-n": TOTAL, "--th-per": PER } as CSSProperties}>
+        <div className="th-win container">
+          <div className="th-head">
+            <div className="th-title">
+              <h2 id="how-h" className="t-display-md">{c.title}</h2>
+              <p className="t-body-lg t-soft th-lead">{c.lead}</p>
+            </div>
+            <div className="seg-track th-seg">
+              <div className="seg-in" role="tablist" aria-label={c.tabsLabel} onKeyDown={onTabKey} style={{ "--n": c.acts.length, "--i": act } as CSSProperties}>
+                <span className="seg-ind" aria-hidden="true" />
+                {c.acts.map((t, i) => (
+                  <button
+                    key={t.id}
+                    ref={(el) => { tabs.current[i] = el; }}
+                    type="button"
+                    role="tab"
+                    id={`th-tab-${t.id}`}
+                    aria-selected={i === act}
+                    aria-controls="th-panel"
+                    tabIndex={i === act ? 0 : -1}
+                    className={`seg-opt${i === act ? " is-on" : ""}`}
+                    onClick={() => pick(i)}
+                  >{t.tab}</button>
+                ))}
+              </div>
             </div>
           </div>
           <div id="th-panel" role="tabpanel" aria-labelledby={`th-tab-${a.id}`} className="th-panel">
@@ -115,15 +143,16 @@ export function Theatre() {
               <div ref={stages} className="th-stages" dangerouslySetInnerHTML={{ __html: THEATRE_STAGES_HTML }} />
             </div>
           </div>
-          {flat ? null : (
-            <div className="th-controls">
-              <button type="button" className="btn btn-outline th-play" onClick={() => ctl.current?.toggle()}>{st.done ? c.replay : st.playing ? c.pause : c.play}</button>
-              <div className="th-dots" role="group" aria-label={c.dotsLabel}>
-                {a.beats.map((b, i) => (
-                  <button key={b} type="button" className={`th-dot${i === step ? " is-on" : ""}`} aria-label={`Scene ${i + 1} of ${a.beats.length}: ${b}`} aria-current={i === step ? "step" : undefined} onClick={() => ctl.current?.jump(i)} />
-                ))}
-              </div>
-              <span className="th-bar" aria-hidden="true"><span ref={bar} /></span>
+          {flat ? (
+            <ol className="th-beats" aria-label={c.stepsLabel}>
+              {a.beats.map((b) => <li key={b} className="th-beat">{b}</li>)}
+            </ol>
+          ) : (
+            <div className="th-capbar">
+              <p key={`${act}-${step}`} className="th-now" aria-live="polite">{a.beats[step]}</p>
+              <ol className="th-dots" aria-label={c.dotsLabel}>
+                {a.beats.map((b, i) => <li key={b} aria-hidden="true" className={`th-dot${i === step ? " is-on" : i < step ? " is-past" : ""}`} />)}
+              </ol>
             </div>
           )}
           <p className="cargo-cap th-cap">

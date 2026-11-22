@@ -1,43 +1,47 @@
-/* ---------- r39-2: Full Circle (id `how`; see components/Theatre.tsx and lib/theatre-fx.ts) ----------
+/* ---------- r39-2: Full Circle (id `how`; see components/Theatre.tsx and lib/theatre-fx.ts). r40-1: scroll-driven, see the pin below ----------
    Colours only from tokens. The art keeps its old roles through the --th-* aliases: pass (the old --leaf) = --board-pass cobalt, stop (--refuse) = --board-stop,
    warn (--ochre) = the proof-dot yellow (--yellow-outline: the same yellow on dark, the darker edge on light, so lines stay visible), ink (--ink) = --line-ink.
    Never set opacity or transform on the art's elements here: GSAP owns them (lib/theatre-fx.ts sets every starting state). The words on the stage are
    sized in cqw (the stage is a size container), so the whole picture scales as one drawing. */
 .bindu-home .th {
   --th-ink: var(--line-ink); --th-mute: var(--on-dark-mute); --th-line: var(--hairline-dark);
-  --th-ok: var(--board-pass); --th-no: var(--board-stop); --th-warn: var(--yellow-outline); --th-paper: var(--canvas-soft);
+  --th-ok: var(--board-pass); --th-no: var(--board-stop); --th-warn: var(--yellow-outline); --th-paper: var(--canvas-mid);
 }
 .bindu-home .sec.th { padding-top: 0; padding-bottom: var(--section-y); }
-/* one window: the head on one row, the captions left, the stage right. The stage is capped by the window height (356px is everything else in the right column). */
-.bindu-home .th-win { min-height: calc(100vh - 64px); min-height: calc(100svh - 64px); display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); grid-template-areas: "head head" "beats right";
-  grid-template-rows: auto auto; column-gap: var(--s-7); row-gap: var(--s-5); align-content: center; align-items: start; padding-block: var(--s-4); box-sizing: border-box; }
-.bindu-home .th-head { grid-area: head; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr); column-gap: var(--s-7); align-items: end; min-width: 0; }
+/* the pin (r40-1): each scene owns --th-per svh of scroll, one window of pin on top; the window is sticky under the nav */
+.bindu-home .th-pin { position: relative; height: calc(var(--th-n) * var(--th-per) * 1vh + 100vh); height: calc(var(--th-n) * var(--th-per) * 1svh + 100svh); }
+.bindu-home .th-win { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: flex; flex-direction: column; gap: var(--s-4); padding-block: var(--s-4); box-sizing: border-box; }
+/* the head: title and lead left, the act tabs right, on one baseline */
+.bindu-home .th-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-6); min-width: 0; flex: none; }
+.bindu-home .th-title { display: grid; gap: var(--s-1); min-width: 0; }
 .bindu-home .th-head h2 { margin: 0; font-size: clamp(28px, min(3.2vw, 5.5svh), 44px); text-wrap: balance; }
-.bindu-home .th-lead { margin: 0; max-width: 62ch; }
-
-/* the captions: the Ask section's pattern. The current one in full ink with the yellow proof dot, past ones muted, coming ones lighter; a 2px cobalt line fills to the current scene */
-.bindu-home .th-beats { grid-area: beats; list-style: none; margin: 0; padding: 0 0 0 var(--s-5); position: relative; display: grid; gap: var(--s-1); --th-fill: 0; }
-.bindu-home .th-beats::before, .bindu-home .th-beats::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; border-radius: 1px; }
-.bindu-home .th-beats::before { background: var(--hairline-dark); }
-.bindu-home .th-beats::after { background: var(--cobalt-signal); transform-origin: top; transform: scaleY(var(--th-fill)); }
-.bindu-home .th-beat { position: relative; padding: var(--s-2) 0; color: var(--on-dark-mute); font: 500 clamp(16px, 1.25vw, 18px)/1.35 var(--font-sans); letter-spacing: var(--track-sm); transition: color var(--t-base) var(--ease-ui); }
-.bindu-home .th-beat.is-next { color: color-mix(in srgb, var(--on-dark-mute) 62%, transparent); }
-.bindu-home .th-beat.is-on { color: var(--on-dark); }
-.bindu-home .th-beat-btn { display: block; width: 100%; margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer; text-wrap: pretty; }
-.bindu-home .th-beat-btn:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 4px; border-radius: 2px; }
-.bindu-home .th-beat::before { content: ""; position: absolute; left: calc(-1 * var(--s-5) - 3.5px); top: calc(var(--s-2) + 0.675em - 4.5px); width: 9px; height: 9px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); opacity: 0; transform: scale(0.6); transition: opacity var(--t-base) var(--ease-ui), transform var(--t-base) var(--ease-ui); }
-.bindu-home .th-beat.is-on::before { opacity: 1; transform: none; }
-/* reduced motion and phones: nothing plays, so every caption reads in full and the line is full */
-.bindu-home .th-win.is-flat .th-beat { color: var(--on-dark); }
-.bindu-home .th-win.is-flat .th-beat::before { display: none; }
-
-.bindu-home .th-right { grid-area: right; display: grid; gap: var(--s-3); min-width: 0; align-content: start; }
-.bindu-home .th-seg { max-width: none; }
-.bindu-home .th-panel { min-width: 0; }
-/* the stage: one panel off the page canvas with one hairline; as wide as the column, but never taller than the window allows */
-.bindu-home .th-stage { position: relative; container-type: inline-size; width: min(100%, max(320px, calc((100svh - 356px) * 1.818))); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); background: var(--canvas); overflow: hidden; }
+.bindu-home .th-lead { margin: 0; max-width: 90ch; }
+.bindu-home .th-seg { width: auto; max-width: none; flex: none; }
+/* the stage: one panel across the container with one hairline, as tall as the window leaves (the art keeps its 1200:660 shape and is centred in it) */
+.bindu-home .th-panel { flex: 1 1 0; min-height: 0; min-width: 0; container-type: size; }
+.bindu-home .th-stage { position: relative; width: 100%; height: 100%; display: grid; place-items: center; box-sizing: border-box; border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); background: var(--canvas-soft); overflow: hidden; }
 .bindu-home .th-stage[data-ready="false"] .th-stages { visibility: hidden; }
-.bindu-home .th-stages { position: relative; width: 100%; aspect-ratio: 1200 / 660; }
+.bindu-home .th-stages { position: relative; container-type: inline-size; width: min(100cqw, calc((100cqh - 2px) * 1.8182)); aspect-ratio: 1200 / 660; }
+/* under the stage: the current caption in one line with the yellow proof dot, the scene dots beside it */
+.bindu-home .th-capbar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-5); flex: none; min-width: 0; }
+.bindu-home .th-now { position: relative; margin: 0; padding-left: var(--s-5); color: var(--on-dark); font: 500 clamp(19px, 1.5vw, 22px)/1.35 var(--font-sans); letter-spacing: var(--track-sm); text-wrap: pretty; animation: th-swap var(--t-base) var(--ease-ui); }
+.bindu-home .th-now::before { content: ""; position: absolute; left: 0; top: 0.675em; width: 10px; height: 10px; margin-top: -5px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); }
+@keyframes th-swap { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+.bindu-home .th-dots { list-style: none; margin: 0; padding: 0; display: flex; align-items: center; gap: var(--s-2); flex: none; }
+.bindu-home .th-dot { width: 10px; height: 10px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid var(--on-dark-mute); transition: background var(--t-base) var(--ease-ui), border-color var(--t-base) var(--ease-ui); }
+.bindu-home .th-dot.is-past { background: var(--cobalt-signal); border-color: var(--cobalt-signal); }
+.bindu-home .th-dot.is-on { background: var(--proof-dot); border-color: var(--yellow-outline); }
+.bindu-home .th-cap { margin: 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; flex: none; }
+/* reduced motion and phones: nothing plays, so every caption of the act is listed under the stage */
+.bindu-home .th-beats { list-style: none; margin: 0; padding: 0 0 0 var(--s-5); position: relative; display: grid; gap: var(--s-1); }
+.bindu-home .th-beats::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; border-radius: 1px; background: var(--cobalt-signal); }
+.bindu-home .th-beat { padding: var(--s-2) 0; color: var(--on-dark); font: 500 clamp(16px, 1.25vw, 18px)/1.35 var(--font-sans); letter-spacing: var(--track-sm); text-wrap: pretty; }
+.bindu-home .th-pin.is-flat { height: auto; }
+.bindu-home .th-pin.is-flat .th-win { position: static; height: auto; padding-top: var(--s-4); }
+.bindu-home .th-pin.is-flat .th-panel { flex: none; container-type: inline-size; }
+.bindu-home .th-pin.is-flat .th-stage { height: auto; }
+.bindu-home .th-pin.is-flat .th-stages { width: min(100cqw, calc((100svh - 300px) * 1.8182)); }
+
 .bindu-home .th-wrap { position: absolute; inset: 0; visibility: hidden; }   /* visibility, not display: MotionPath has to measure the art */
 .bindu-home .th-wrap.active { visibility: visible; }
 .bindu-home .th-sheet { position: relative; width: 100%; height: 100%; }
@@ -46,54 +50,47 @@
 
 /* the words on the stage, in cqw (1cqw = 1/100 of the stage width) */
 .bindu-home .th-stages .ov { position: absolute; margin: 0; color: var(--on-dark); font-family: var(--font-sans); }
-.bindu-home .th-stages .qcard { width: 17%; padding: 0.9cqw 1.1cqw; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font-size: 1.5cqw; line-height: 1.35; }
-.bindu-home .th-stages .qcard .price { font: 600 2.2cqw/1.2 var(--font-sans); letter-spacing: -0.01em; }
+.bindu-home .th-stages .qcard { width: 18%; min-height: 9.2cqw; box-sizing: border-box; padding: 0.9cqw 1.1cqw; background: var(--canvas-mid); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font-size: 1.85cqw; line-height: 1.3; }
+.bindu-home .th-stages .qcard .price { font: 600 2.5cqw/1.2 var(--font-sans); letter-spacing: -0.01em; }
 .bindu-home .th-stages .qcard .meta { margin-top: 0.3cqw; color: var(--on-dark-mute); }
-.bindu-home .th-stages .stamp { padding: 0.5cqw 1cqw; border: 1.5px solid currentColor; border-radius: 0.6cqw; background: var(--canvas-soft); color: var(--on-dark); font: 600 1.5cqw/1.2 var(--font-sans); white-space: nowrap; }
+.bindu-home .th-stages .stamp { padding: 0.5cqw 1cqw; border: 1.5px solid currentColor; border-radius: 0.6cqw; background: var(--canvas-mid); color: var(--on-dark); font: 600 1.85cqw/1.2 var(--font-sans); white-space: nowrap; }
 .bindu-home .th-stages .stamp.ok { border-color: var(--th-ok); }
 .bindu-home .th-stages .stamp.no { border-color: var(--th-no); }
 .bindu-home .th-stages .stamp.warn { border-color: var(--th-warn); }
-.bindu-home .th-stages .panel { padding: 1cqw 1.3cqw; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font: 400 1.45cqw/1.55 var(--font-mono); }
+.bindu-home .th-stages .panel { padding: 1cqw 1.3cqw; background: var(--canvas-mid); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font: 400 1.8cqw/1.5 var(--font-mono); }
 .bindu-home .th-stages .panel.green { border-color: var(--th-ok); }
-.bindu-home .th-stages #a1-twin { font-size: 1.4cqw; line-height: 1.4; }
+.bindu-home .th-stages #a1-twin { font-size: 1.75cqw; line-height: 1.4; }
 .bindu-home .th-stages .panel .th-ph { color: var(--on-dark-mute); font-weight: 500; }
 .bindu-home .th-stages .panel .no { font-weight: 600; }
-.bindu-home .th-stages .hud { font: 500 1.6cqw/1.3 var(--font-mono); color: var(--on-dark-mute); white-space: nowrap; }
-.bindu-home .th-stages #a3-hs { font-size: 2.4cqw; color: var(--on-dark); }
-.bindu-home .th-stages .th-tag { padding: 0.4cqw 1cqw; background: var(--canvas-soft); border: 1px solid var(--th-ok); border-radius: 0.6cqw; font: 500 1.5cqw/1.3 var(--font-sans); white-space: nowrap; }
-.bindu-home .th-stages .pass { width: 24%; padding: 1cqw 1.3cqw; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font-size: 1.55cqw; line-height: 1.4; }
-.bindu-home .th-stages .pass h4 { margin: 0 0 0.4cqw; color: var(--on-dark-mute); font: 600 1.45cqw/1.3 var(--font-sans); }
+.bindu-home .th-stages .hud { font: 500 1.8cqw/1.3 var(--font-mono); color: var(--on-dark-mute); white-space: nowrap; }
+.bindu-home .th-stages #a3-hs { font-size: 2.6cqw; color: var(--on-dark); }
+.bindu-home .th-stages .th-tag { padding: 0.4cqw 1cqw; background: var(--canvas-mid); border: 1px solid var(--th-ok); border-radius: 0.6cqw; font: 500 1.85cqw/1.3 var(--font-sans); white-space: nowrap; }
+.bindu-home .th-stages .pass { width: 27%; padding: 1cqw 1.3cqw; background: var(--canvas-mid); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font-size: 1.85cqw; line-height: 1.4; }
+.bindu-home .th-stages .pass h4 { margin: 0 0 0.4cqw; color: var(--on-dark-mute); font: 600 1.8cqw/1.3 var(--font-sans); }
 .bindu-home .th-stages .pass p { margin: 0; }
-.bindu-home .th-stages .th-soon { white-space: nowrap; }
-
-/* controls under the stage: the play button, one dot per scene, a thin progress line */
-.bindu-home .th-controls { display: flex; align-items: center; gap: var(--s-4); }
-.bindu-home .th-play { min-height: 44px; padding: 0 var(--s-4); min-width: 88px; }
-.bindu-home .th-dots { display: flex; align-items: center; }
-.bindu-home .th-dot { position: relative; width: 28px; height: 44px; padding: 0; border: 0; background: none; cursor: pointer; }
-.bindu-home .th-dot::before { content: ""; position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; border: 1.5px solid var(--on-dark-mute); box-sizing: border-box; transition: background var(--t-base) var(--ease-ui), border-color var(--t-base) var(--ease-ui); }
-.bindu-home .th-dot.is-on::before { background: var(--proof-dot); border-color: var(--yellow-outline); }
-.bindu-home .th-dot:hover::before { border-color: var(--on-dark); }
-.bindu-home .th-dot:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: -2px; border-radius: 6px; }
-.bindu-home .th-bar { flex: 1; height: 2px; background: var(--hairline-dark); border-radius: 1px; overflow: hidden; min-width: 40px; }
-.bindu-home .th-bar > span { display: block; width: 100%; height: 100%; background: var(--cobalt-signal); transform-origin: left; transform: scaleX(0); }
-.bindu-home .th-cap { margin: 0; display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; }
+.bindu-home .th-stages .th-soon { white-space: nowrap; font-size: 1.8cqw; }
 
 /* tablets and phones: the head, the tabs and the stage, then the captions under it */
 @media (max-width: 900px) {
-  .bindu-home .th-win { min-height: 0; grid-template-columns: 1fr; grid-template-areas: "head" "right" "beats"; row-gap: var(--s-5); align-content: start; padding-top: var(--s-4); }
-  .bindu-home .th-head { grid-template-columns: 1fr; row-gap: var(--s-3); }
+  .bindu-home .th-head { flex-direction: column; align-items: stretch; gap: var(--s-3); }
   .bindu-home .th-head h2 { font-size: clamp(28px, 6vw, 36px); }
-  .bindu-home .th-stage { width: 100%; }
+  .bindu-home .th-seg { width: 100%; }
+  .bindu-home .th-win { justify-content: center; }
+  .bindu-home .th-panel { flex: none; container-type: inline-size; }
+  .bindu-home .th-stage { height: auto; }
+  .bindu-home .th-stages { width: 100%; }
+  .bindu-home .th-now { min-height: 2.7em; }
+  .bindu-home .th-pin.is-flat .th-win { justify-content: flex-start; }
 }
 /* phones: a still of the act's final frame; the small words on the stage would not read, so the stage is the drawing and the captions carry the words */
 @media (max-width: 767px) {
   .bindu-home .sec.th { padding-top: var(--section-y); }
-  .bindu-home .th-win { padding-top: 0; row-gap: var(--s-4); }
+  .bindu-home .th-win { padding-top: 0; gap: var(--s-4); }
   .bindu-home .th-lead { max-width: 38ch; }
   .bindu-home .th-beat { font-size: 16px; padding: var(--s-2) 0; }
   .bindu-home .th-stages .th-soon { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bindu-home .th-beat, .bindu-home .th-beat::before, .bindu-home .th-dot::before { transition: none; }
+  .bindu-home .th-now { animation: none; }
+  .bindu-home .th-dot { transition: none; }
 }
