@@ -21,6 +21,32 @@ paths, and only the landing-owned paths travel back.
 - Keep landing-owned files identical in shape to shelley's. Don't rename or
   move them; merge-back is a path-for-path copy.
 
+## Homepage (`/`)
+
+The homepage is a separate design, ported from the mockup repo into
+`features/landing/home/` (route group `app/(en)/(home)/`). It keeps its own
+look (yellow + cobalt, Inter + IBM Plex Mono, ivory and dark themes), so for
+`/` the **`bindu-design` skill wins** over `docs/DESIGN.md`. Every other page
+still follows `docs/DESIGN.md`. The rules above (copy, GSAP, files you must not
+edit) apply to the homepage too.
+
+Read these before any homepage work, in `docs/home/`:
+
+- `project-context.md`: the brief (facts, honesty rules, page structure), with a
+  "Since round 15" section
+- `PRODUCT.md`: who the buyer is and what the page must do
+- `DESIGN.md` and `MOTION.md`: the design system and the motion rules
+- `DECISIONS.md`: every judgement call, rounds 1 to 35 (the newest truth)
+- `mobile-critique.md`: the phone rules
+- `SLOP-AUDIT.md` and `usage-audit.md`: what "looks AI-generated" meant, and the
+  licence audit with the go-live checklist
+- `LICENSES.md`: licences (the current short list is
+  `features/landing/home/LICENSES.md`)
+- `rounds/`: the round specs, history only
+
+Homepage skills, for `/` only: `bindu-design`, `bindu-ideate`, `critique`,
+`audit`, `polish`.
+
 ## Blog posts (same as shelley, set 2026-09-25)
 
 Any work on a post goes through two skill layers, in this order:
