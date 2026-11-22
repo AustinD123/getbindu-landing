@@ -127,3 +127,60 @@ Container 1200px; gutters 16 → 32px; section padding 80 → 160px; 4px spacing
 
 ## Motion
 See `MOTION.md`. Expo-out reveals, in-out scrubs; transforms and opacity only; scroll scenes are pure functions of scroll progress; WebGL lazy-loaded, paused off-screen; reduced motion = static end states.
+
+## Consistency rules (r36-1)
+Measured from the current CSS (`tokens.css`, `components.css`, `story.css`, `site.css`, `r6-pricing.css`, `shipment.css`, `mobile.css`), not invented. Where the prose or front matter above says otherwise (display weight 400, mono-caps eyebrows, buttons and tabs, "Book a 30-minute demo", the cool light theme, `band-light` reading bands), this section and the code win: since r17 the display weight is 600, and eyebrows, buttons, chips and tabs are sentence-case sans. Every new section follows these rules; `docs/home/consistency-audit.md` lists where existing sections still break them.
+
+### Type scale in use
+| Role | Token and value | Used for |
+|---|---|---|
+| Display xl | `--display-xl` clamp 48 to 96, 600, -0.03em, line 1.0 | hero headline only (the hero overrides it to 36 to 76) |
+| Display lg | `--display-lg` clamp 40 to 72 (32 on phones) | statement, journey title |
+| Display md | `--display-md` clamp 32 to 48 (28 on phones), -0.025em, line 1.05 | the section title (`h2.t-display-md`): the one size for a section head |
+| Display sm | `--display-sm` clamp 24 to 32, -0.015em, line 1.12 | step titles, FAQ questions (18.4 to 24) |
+| Lead | `--body-lg` 19, line 1.5 | the line under a section title |
+| Body | `--body` 17, line 1.5 | paragraphs |
+| Body small | `--body-sm` 15 (16 on phones), line 1.45 | captions inside panels, notes |
+| Caption | `--caption` 13 | figure captions, small labels |
+| Label | 12 to 15, sans 500, sentence case, no tracking | eyebrows (14), chips (12), buttons and tabs (15) |
+| Mono | `--font-mono`, 11 to 15, tabular | prices, reference numbers, event log, flaps, map labels; mono-caps only in the board's meta line |
+Never mono paragraphs, never caps headlines. Display tracking comes from the `--track-*` tokens, never per rule.
+
+### Section head: one pattern
+Title, then an optional lead. No eyebrow (r17-2 removed them from section heads).
+- Title: `h2.t-display-md` (32 to 48px, 28px on phones), `text-wrap: balance`, margin 0. It gets the line-mask reveal and the yellow full stop automatically; never style the dot by hand.
+- Lead: `t-body-lg t-soft` (19px, `--on-dark-body`), max 44ch when centred (pricing) or 736px when left-aligned (`.sec-head`, `.ex-head p`); 38ch on phones.
+- Gap title to lead: `--s-3` (12) when centred, `--s-4` (16) for `.sec-head`. Head to content: `--s-8` (64) for a free-flowing head; `--s-6` (32) for a head inside a one-window pin.
+- Alignment: left on the container's edge, except pricing (centred). A pinned head keeps the same sizes; only the `svh` clamps may reduce them to fit one window, and never below the phone sizes above.
+- Container: `.container`, max 1200px, gutter `--gutter` (16 to 32px, 20px on phones). Pinned stages may use 1320px (`.ship-stage`).
+
+### Spacing rhythm
+- Section padding: `--section-y` = `clamp(80px, 11vw, 160px)` top and bottom (96px on phones). Pinned sections take it from the pin (top 0, with `top: 64px` sticky under the nav) and give `--section-y` back after the pin. Exceptions are the pricing window (88px top, `--s-6` bottom, `min-height: 100svh` from 861px) and the FAQ's `--s-5` bottom before the finale.
+- Gaps come from `--s-1..--s-10` (4, 8, 12, 16, 24, 32, 48, 64, 80, 120). Inside a panel use `--s-6` / `--s-7`; between a title and its content `--s-8`; between rows `--s-5` to `--s-8`. No arbitrary pixel gaps outside these.
+- Pin heights: how it works 330svh (200 on phones), journey 420svh (220), departures board 100svh + 40svh per row (18), finale spacer 395svh (285).
+
+### One panel style
+A panel is a surface one step off the page canvas with one 1px hairline.
+- Surface: `--canvas-soft` (cards, the pricing card, the IT drawer) or `--canvas-mid` (nested: the departures board, calculator total).
+- Border: 1px `--line-white-12` (token name is historic; it resolves to a translucent foreground in both themes) or `--hairline-dark`; no shadow, no glow, no blur.
+- Radius: `--r-lg` 16px for a large panel (pricing card, FAQ-style drawer, dialogs, app frame); `--r-sm` 12px for a card or nested panel; 6px for chips; pills only for buttons.
+- Padding: `--s-5` (24) for a card; `--s-6` by `--s-7` for a large two-column panel.
+- Prefer whitespace and hairlines to boxes: How it works, the journey, Sound familiar and the FAQ list sit on the canvas with rules, not panels.
+
+### Buttons
+One `.btn` set: 44px tall (`--btn-h`), 24px side padding (`--btn-px`), pill, sans 500 15px, no tracking. Primary: yellow fill, ink label, `--yellow-outline` edge, one per view, plain arrow after the label that nudges 4px; the label stays still. Outline: transparent, 1px `--line-white-25`. Icon: 44px circle. The nav demo button is the same pill at `min-height: 38px` (44px on phones). Press scales .98; focus is a 2px cobalt ring with 3px offset; disabled is a muted fill with no motion.
+
+### Text links
+`.tlink`: sans 400 15px, 3px bottom padding, a 1px cobalt underline at 40% opacity at rest that grows from the left on hover and focus, text wipes to `--link-wipe`, arrow nudges 4px, 2px ring at 4px offset on focus. Inline links in a paragraph: `.link` (cobalt, 1px underline, 4px offset). Footer and FAQ links are plain `--on-dark-body` with a hairline underline and a cobalt underline on hover.
+
+### Tabs
+One component: `.seg-track` > `.seg-in` > `.seg-opt` + one `.seg-ind`. Max 720px wide, equal columns, 44px tall options, sans 500 15px (11px under 600px), muted `--on-dark-mute`, hover and active `--on-dark`; active gets the 2px `--cobalt-signal` indicator sliding over 250ms; one 1px `--hairline-dark` under the row. ARIA tabs with roving tabindex and arrow keys. The journey and the pricing toggle use it unchanged; a new tab row must too.
+
+### "Illustration" labels
+Every mock, map, chat, log, QR code, board, reference number and certificate number carries one. Use the chip: `<span className="chip chip-illus">Illustration</span>`: 24px tall, 6px radius, sans 500 12px, transparent with a 1px `--line-white-25` (`--line-black-12` on light bands) outline, `--on-dark-mute` text, placed in the figure's caption row (`.cargo-cap`: flex, gap 10px, 12px above the figure) or in the app-frame title bar's right end. A caption sentence may follow it in `t-caption t-muted`. A bare sentence that contains the word "illustration" is not a label.
+
+### Other fixed values
+- Easing: `--ease-ui` and 200ms for colour, arrow, underline; `--ease-out` for reveals; 250ms for the tab indicator and the rail; reduced motion = instant swaps.
+- Heading reveal is automatic for every `main h2`; do not add a second entrance to the title.
+- Tap targets 44px on phones; safe-area padding on the nav and drawer.
+- Colours only from tokens; no hex in a component rule.

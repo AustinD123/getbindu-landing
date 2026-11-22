@@ -2,14 +2,14 @@ Bindu landing page: project context
 
 Read this before planning or writing anything. It is the source of truth for facts, design and rules. Decisions here override older notes, skills and earlier rounds. When something here is wrong or out of date, update this file.
 
-Last updated: 19 Nov 2026 (r16)
+Last updated: 22 Nov 2026 (r36-1; folds in rounds 17 to 35)
 
 1. The project
 What: the redesigned Bindu homepage (`/`), designed in a separate mockup repo and ported into this repo in `features/landing/home/` (React + TypeScript in Next.js, GSAP + ScrollTrigger, Lenis, three.js for WebGL). Where this brief mentions sub-pages, those were mockup-only: this repo's real pages are used instead.
 Who: built by Austin Dcosta (contractor) for Bindu.
 Raahul Dutta: founder, final decisions.
 Suraj Biswas (suraj@getbindu.com): reviewer; daily sync at 8 PM IST.
-Status: ported into getbindu-landing; the live site is still served by shelley until the merge-back. The mockup badge is not part of the port.
+Status: ported into getbindu-landing; the live site is still served by shelley until the merge-back. The mockup badge is not part of the port. Status rule (Austin, 22 Nov 2026): whatever is shown on getbindu.com is live, so "Ask your supply chain" (the questions theatre) is live; round 36-4 ports it into the homepage between How it works and the journey.
 Repo: this repo mirrors shelley's paths for merge-back (see README.md). Keep the homepage portable: no absolute paths; config (cal.com link, theme defaults, copy) in clearly named files (`features/landing/home/config.ts`, `content.ts`).
 Baseline: the dark design that ran on the 5182 build is the approved layout. Light theme = same layout, colours only.
 2. The company (facts, don't change them)
@@ -55,41 +55,42 @@ In build is never shown as live. In build stories end in "coming", never in a co
 Bindu does not take on the customer's legal liability; don't imply it.
 8. Calls to action
 Primary everywhere: "Book a 15-minute demo" (or just "Book a demo"). Never "30-minute". Highlighted (yellow pill or clearly highlighted link).
-Demo CTA only in: nav, hero, final section. No demo buttons repeated in every section.
+Demo CTA only in: nav and hero (r34-4 removed the final-view button at Austin's request). No demo buttons repeated in every section.
 "Estimate your cost" is secondary: only in the pricing section and the calculator popup (which ends with the Book a demo button).
 cal.com link lives in one config value. TODO: need the 15-minute event URL from Bindu.
 9. Design system
-Sources: merged from x.ai (base), Together AI (structure), Apple (polish). Full detail in docs/home/DESIGN.md; tokens in features/landing/home/styles/tokens.css.
-Colours: brand yellow + cobalt. Yellow = main action, Live chips, key numbers, shipments/filing pulses. Cobalt = system: maps, routes, links, active states, progress, diagrams. Placeholders until Bindu sends exact hex: yellow 
-#FFD400, cobalt 
-#0047AB; bright cobalt 
-#3D7BFF for lines/glows on dark. "In build" chips: grey dashed outline.
-Never pure black or pure white (#000 / #fff). Off-white and navy.
-Themes: one site, sun/moon toggle in the nav, saved in localStorage, light is the default, no flash on load (inline head script).
-Dark: the current dark theme from the 5182 build. Keep it exactly.
-Light (r15): warm ivory, calm, low-saturation (never earthy). Base #F5F1E8, panels #FBF8F1, navy text #14213D, cobalt links/active #0A3A8C, yellow #FFD400 with #B38F00 outline; light shipment dots #E0B000 with #8A6A00 outline. Reference: Difault (look only); ClickHouse/Miro for sparing yellow + blue.
-Both themes: identical layout and components; only colour tokens differ.
-Fonts: one display + one mono, self-hosted (Inter + IBM Plex Mono since r16), set only via tokens. No other font declarations.
-Buttons: pills, mono-caps labels, consistent height; real hover, active, focus and disabled states. Primary (r15): yellow pill with a navy dot that slides into an arrow on hover, one sheen sweep, label wipe navy → cobalt. Text links: underline grows from the left, arrow nudges 4px. One easing token cubic-bezier(0.22,1,0.36,1); 200ms colour/arrow, 600ms sheen; reduced motion = instant swaps.
-Tabs / segmented controls (r15): minimalist and identical everywhere: muted mono-caps labels, active = full contrast + 2px cobalt underline that slides, one hairline under the row. No fill, glow, pattern or status dots.
-Motif: "Bindu = dot". Many dots form the sunflower (golden-angle spiral) and the logo; "Every proof is a dot." Label: "BINDU · TRADE COMPLIANCE OS".
-Motion: futuristic but calm and readable. Readability, accessibility and indexability beat animation. Scroll-linked where used; respects prefers-reduced-motion; site-wide pause control; 60fps; WebGL lazy-loaded with static fallbacks. Recreate reference effects in our own code; never copy other sites' code or assets.
+Full detail in docs/home/DESIGN.md (including its "Consistency rules"); tokens in `features/landing/home/styles/tokens.css`. Where DESIGN.md's older prose or this brief disagree with the CSS, the CSS and DECISIONS.md (rounds 17 to 35) win.
+Look (r17 on): ink-and-paper, in the spirit of Notion. Display weight 600 in Inter, tight negative tracking, body line-height 1.5, no glows or shadows (the tokens are set to `none`/`transparent`), one hairline everywhere. Key numbers are plain text colour (`--key-num`); yellow is for the primary pill, the Live chip and the dots.
+Colours: yellow `#FFD400` and cobalt are still placeholders until Bindu sends exact hex. Yellow = the main action, the Live chip, proof dots. Cobalt = the system: lines, links, active states, progress, QR data dots; on dark `--cobalt-signal #3D7BFF`, on light `#1F55C4` for lines and `#08327A` for links and text. "In build" chips: grey dashed outline. Never `#000` or `#fff` as a surface.
+Light theme (default, set in tokens.css, r22-13): canvas `#F1ECE1`, panels `#FBF9F4`, nested `#E7E1D3`, hairline `#CFC8B6`, ink `#0E1A30`, body `#2F3A56`, mute `#434E6A`; yellow stays `#FFD400` with `--yellow-outline` as its edge. Dark theme: canvas `#0A0A0A`, panels `#141416`, nested `#1C1D21`, off-white ink lines `#EDE8DA`. Both themes: identical layout; only colour tokens differ. Saved in localStorage, no flash (inline head script).
+Ink line: `--line-ink` draws the guide ship, the strike lines and the single-line drawings. Dots: `--proof-dot` (yellow, with `--yellow-outline`) and `--route-line` / `--cobalt-signal`.
+Bands (r29-7): the page background is the body colour, crossfaded between `--band-canvas`, `--band-tint` and `--band-panel` as you scroll (`lib/bands.ts`, `bands.css`). Hero canvas, statement tint, Sound familiar canvas, How it works panel, journey canvas, departures board canvas (r33-1: no navy band), pricing canvas, FAQ panel, ending canvas. Fixed tokens: `--navy-*` (same in both themes), `--on-photo*` (white text on the finale photo), `--board-pass #3D7BFF` and `--board-stop #FF6B5E`.
+Type: Inter (sans) + IBM Plex Mono, self-hosted, set only through `--font-sans` and `--font-mono`. Display sizes (clamp): xl 48 to 96, lg 40 to 72, md 32 to 48, sm 24 to 32, xs 20; body-lg 19, body 17, body-sm 15, caption 13. Sentence case everywhere: eyebrows, buttons, chips and tabs are sans (r17-2), not mono caps. Mono is for prices, numbers, reference numbers, the event log, map labels and the departures board flaps.
+Spacing: 4px base (`--s-1` 4 to `--s-10` 120), container 1200px, gutter 16 to 32px (20px on phones), section padding `clamp(80px, 11vw, 160px)` (96px on phones). Radii: cards and inputs 12px (`--r-sm`), large panels 16px (`--r-lg`), pills 9999px (buttons only), chips 6px.
+Buttons: one `.btn` set, 44px tall. Primary = yellow pill, ink sans label 15px/500, a plain arrow after the label that nudges 4px on hover; magnetic pull on fine pointers; a dot burst on click; the label stays still (r34-1); press scales .98; 2px cobalt focus ring. Text links: a cobalt underline grows from the left, the text wipes to cobalt, the arrow nudges 4px. One easing `cubic-bezier(0.22,1,0.36,1)`, 200ms for colour and arrow; reduced motion = instant swaps.
+Tabs (journey stories, pricing toggle): one component, `.seg-track`: muted sans labels 15px, active = full contrast with a 2px cobalt underline that slides, one hairline under the row. No fill, glow or dots.
+Headings: SplitText line masks on every `main h2` (reveal scrubbed to the scroll, r22-6); the full stop of a heading is a small yellow dot (r22-17); a soft canvas scrim sits behind headings (not on phones).
+Motif: "Bindu = dot". The dot of the dotless ı in the finale is a sunflower of 34 dots (yellow centre, cobalt rim); the guide ship is built from the same 34 dots; the nav and footer mark is a 61-dot sunflower (yellow inside, cobalt outside, needs Bindu's OK before production).
+The ink ship guide (r17 to r30): a small container ship drawn in ink sails a dashed lane in the gutter (straight 4px dashes, 6px gap, perpendicular ticks), tilts up to 3 degrees, bobs up to 2px, and is drawn on one fixed canvas. It stops at each section anchor and drops yellow proof dots. Where the gutter is under 50px it is a 10px yellow dot with an ink ring. The hand-offs (map to gutter ship, ship to the ı dot) are pure functions of the scroll position, so they play at any speed and reverse on scroll up. The scroll-progress dot rail sits in the right gutter from 1100px.
+Motion: calm, readable, scroll-linked and reversible; GSAP + ScrollTrigger + Lenis; the hero's pause button freezes the guide and the map; reduced motion = composed end states, no pins; canvases cap DPR at 1.5 (1 on phones); WebGL lazy-loaded. Sounds are not part of this repo (removed after the port). Recreate reference effects in our own code.
+Phones (r35): everything behind `@media (max-width: 767px)` in `styles/mobile.css` or the shared `isPhone()`; 768px and up is untouched. Gutter 20px, body-small 16px, display-lg 32px, display-md 28px, tap targets 44px, safe-area padding. Shorter pins: how it works 200svh, journey 220svh, departures board 100svh + 18svh per row, finale 285svh. See `docs/home/mobile-critique.md`.
 10. Page structure (current homepage, in order)
 
-Check the current build if unsure; update this list when it changes.
+Source of truth: `features/landing/home/home-page.tsx`. Update this list when it changes.
 
-Intro (first visit): one dot → many dots → sunflower → logo → "Every proof is a dot." → "BINDU · TRADE COMPLIANCE OS" → dots scatter into the world map → smooth hand-off into the hero (same canvas).
-Hero: centred; general mission headline (not EUDR); short sub-line; Book a 15-minute demo. World map: dots in cobalt, many yellow shipments on routes across all regions.
-How it works / Describe the shipment: one window; left = heading, then steps Describe · Prove · File on one left edge; right = tall vertical illustration. General, multi-regulation; no EUDR line in step 03.
-Sound familiar?: three full-width rows (01 · 02 · 03), pain left → Bindu answer right, one line each. Layout ref: Rubie (maxibestof).
-Four documents become one record: one window; heading + input-document list (labelled Illustration) on the left; theme-surface panel (near-black / ivory) with dot pattern, animated cobalt beams into one yellow record. Generic documents → one compliance record → reference. Not EUDR.
-One shipment from origin to customs: pinned (also on phones), fits one window at all sizes; minimalist tab row EUDR · CBAM · DPP · REACH · PPWR; each has its own route, cargo and milestones (illustrative).
-What each filing costs: centred head + tab row; one bordered card split in two: receipt left (price, ledger, "Pricing on request" on other tabs), included checklist + "Estimate your cost" + trust notes right; one-time border beam. Only "Estimate your cost"; EUDR check is a text link. Refs: time.fyi (unsection), Made With GSAP.
-Who Bindu is for: role cards.
-Questions owners ask (FAQ): minimal accordion, aligned +/− icons.
-Final CTA + footer: full screen, aligned to one grid.
+Intro (first visit, about one second): one dot blooms into the mark, then hands off to the hero. Returning visits and reduced motion skip it.
+Nav: fixed, 64px; mark and wordmark (the wordmark collapses once scrolled), links, theme toggle, "Book a demo", a drawer on phones. No sound button, no skip-intro button.
+1. Hero (`#top`): centred headline word by word, one sub-line, the demo button, a pause button, over the dot-map with yellow shipments that fade out with the hero (r33-3). No selector (r34-3).
+2. Statement (`#statement`): "Describe a shipment once. Bindu works out the rules and the HS code, gathers the evidence and prepares the filing." Words, the yellow Bindu chip and the mark light up from the scroll position.
+3. Sound familiar? (`#pains`): three rows, pain left struck through, Bindu's answer right; scrubbed, dotted cobalt rule between rows. The third answer carries "For EUDR today."
+4. How it works (`#how`): pinned (330svh, 200svh on phones). Left: "One sentence in. The proof comes back.", then Describe, Prove, File (the active step in full contrast, the others muted). Right: kinetic sentence, a streaming event log of made-up events, then a QR passport of 169 dots that fly in (labelled Illustration). Generic, not EUDR.
+5. One shipment from origin to customs (`#shipment`): pinned (420svh, 220svh on phones); tab row EUDR, CBAM, DPP, REACH, PPWR; each tab has its own route, cargo and milestones (Illustration). The ship arrives, dissolves into the mark's dots, and the dots stream to the gutter ship. Phones: no hand-off.
+6. Departures board (`#examples`): "What the rules let through, and what they stop." Pinned, one row per scroll step (8 rows, 4 let through, 4 stopped; EUDR, DPP, Battery), each with its story; flaps on the page canvas; phones show five rows at a time. Battery stories say "In build". All Illustration.
+7. What each filing costs (`#pricing`): centred head + tab row; one bordered card split in two (receipt left, included list and "Estimate your cost" right); odometer price; no beam. Only "Estimate your cost"; the EUDR check is a text link.
+8. FAQ (`#faq`): minimal accordion, aligned plus/minus icons; head left, list right.
+9. Finale (`#demo`): the photo seen through the letters of "bındu"; the ship breaks into 34 dots that build the sunflower dot of the ı; the mask zooms until the photo fills the screen; then the footer rides up over it. No closing title, no ship, no demo button in the final view (r34-2, r34-4). Footer: link columns, a roles row ("For importers, exporters and co-ops, customs brokers, traders"), legal.
 
-Removed for good: "Start with EUDR" section; "Who's behind Bindu" on the homepage (moved to /about); the old earthy-sunflower theme.
+Removed for good: "Start with EUDR"; "Who's behind Bindu" (moved to /about); "Who Bindu is for" role cards (r17-11); "Four documents become one record" (deleted with r17-8; its idea lives in How it works); the hero selector (r34-3); the old earthy theme; sounds (this repo).
 
 Sub-pages: matching the main site (EUDR, CBAM, REACH, PPWR, passports, blog index, about), same design system, short.
 
@@ -145,21 +146,8 @@ Skills installed in the repo: frontend-design, bindu-design, polish / impeccable
 
 Not now. After the design is final: pre-render pages (SSG), text in HTML not only in canvas, keep existing URLs/blog rankings with redirects, per-page titles/meta/H1, structured data (Organization, SoftwareApplication with Offer, FAQPage), sitemap, Lighthouse in both themes. Suraj accepts a 2–3% score hit only for deliberate creative choices.
 
+
 16. Recent rounds
-19 Nov 2026 · r14: pinned shipment journey with own routes per story; Sound familiar? one row of three; pricing two equal columns; light-theme yellow edges.
-19 Nov 2026 · r15: warm ivory light theme; How it works alignment; Four documents navy panel + animated beams; Sound familiar? pain→answer rows; one title style; journey colours + fits one window; pricing split card (time.fyi) + border beam; smaller Estimate popup; dot-to-arrow buttons and underline links; minimalist tabs; EUDR line removed from step 03; LICENSES.md. Open: reduced-motion gap in Four documents, pause control doesn't cover the pricing beam, check phone map size (~236×162).
-19 Nov 2026 · r16: fonts swapped from Geist to Inter (sans) + IBM Plex Mono; display tracking retuned; Four documents panel now uses theme surfaces instead of navy.
-
-## Since round 15
-This brief was last fully updated around round 15. The standing decisions from `docs/home/DECISIONS.md` rounds 17 to 35 are below, one line each. Where this brief and DECISIONS.md disagree, DECISIONS.md is the newer truth.
-
-- **One story, with the ink ship guide.** Hero, statement, before and after, how it works, the journey, pricing, FAQ, then the wordmark finale. A small container ship drawn in ink sails a dashed lane in the gutter and guides the reader down the page (r17, r18-1, r22-2). On phones it is a 10px yellow dot with an ink ring where the gutter is under 50px.
-- **Straight dashes.** Every dash of the lane is its own straight 4px segment with a 6px gap, and the ticks are straight and perpendicular to the lane (r25-1b, r21-3).
-- **Hand-offs follow the scroll position.** The map to gutter-ship hand-off and the ship to ı-dot hand-off are pure functions of the scroll position, not timed tweens, so they play at any scroll speed and reverse on scroll up (r30-1, r32-1).
-- **Departures board, no colour band.** The board sits on the page canvas, not on a navy band, in both themes. One row per scroll step, each with its story; tiles use theme tokens, with `--board-pass` and `--board-stop` for the verdicts (r31-1, r33-1, r33-2).
-- **Button jiggle, still label.** Primary buttons keep the magnetic pull, the arrow nudge, the click dot-burst and the yellow colour on hover. The letter roll is removed, so the label stays still and its accessible name is unchanged (r34-1). (DECISIONS.md does not use the word "jiggle"; this line lists the motion it says was kept.)
-- **Ending: the photo through the wordmark, then the footer.** The letters of "bindu" are a mask over the cargo photo, which zooms through as you scroll. The final view is the photo and the footer only, with no closing title, no ship and no demo button (r28-3R, r29-1 to r29-6, r34-2, r34-4). The brief's "demo CTA in nav, hero, final section" rule is not edited; r34-4 departs from it at Austin's request.
-- **The ı dot is a sunflower made of dots.** The dot of the dotless ı is an inline SVG of 34 dots on a golden-angle disc, yellow in the middle and cobalt at the rim. The guide ship is built from the same 34 dots and lands in it (r30-2).
-- **Sounds off by default.** Web Audio, off until the reader turns it on, the context created only from a user gesture, recorded Kenney "Interface Sounds" (CC0) clips (r21-1, r22-1, r28-5). In this repo the sound system, the nav sound button and the "Skip intro" button were removed after the port, so the homepage has no sound.
-- **No hero selector.** The hero is the headline, the sub-line and the demo button. The "See what applies" selector and its result card were removed (r34-3).
-- **Phone rules (round 35).** Everything is behind `@media (max-width: 767px)` or the shared `isPhone()`; 768px and up is untouched. The guide draws only its dot and the proof dots, and the pins are shorter (how it works 200svh, journey 220svh, finale 285svh). The journey map is full width, showing the current step's title and sentence. The departures board is a two-column grid showing five rows at a time. Particles are lighter and canvases use DPR 1. Gutter 20px, section padding 96px, body-small 16px, tap targets at least 44px, safe-area padding. The wordmark is 84% of the screen width up to 600px (r35-1 to r35-7, `docs/home/mobile-critique.md`).
+19 Nov 2026 · r14 to r16: pinned journey with own routes; pricing split card; warm ivory light theme; Inter + IBM Plex Mono.
+Rounds 17 to 35 (branch v3-story, one story): ink-and-paper restyle with no glows (r17); ink ship guide, straight dashes, staged hand-offs as pure functions of scroll (r18 to r30); How it works with kinetic type, event log and QR passport (r21, r28); departures board, one row per scroll step (r31, r33); page bands that crossfade (r29-7); the finale as a photo through the wordmark with the 34-dot sunflower ı (r28 to r34); performance passes (r24, r25); phone pass (r35). Details: DECISIONS.md.
+22 Nov 2026 · r36 (in progress): docs consolidated into this brief and a consistency rule set in DESIGN.md (r36-1); then slop skills, a smaller nav with the official logo, the "Ask your supply chain" section (live on the site, so live here), a traceability piece, and a slop pass. Spec: `docs/home/rounds/round-36.md`.
