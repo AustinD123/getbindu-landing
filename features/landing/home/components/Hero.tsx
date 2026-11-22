@@ -73,6 +73,7 @@ export function Hero() {
   return (
     <section className="hero band-dark" id="top" aria-labelledby="hero-h" data-guide-anchor="hero" data-guide-side="l">
       <div className="container hero-in">
+        {/* avoid-ai-design-ignore: SD5 (no word is accented; every word has its own mask span) */}
         <h1 id="hero-h" className="t-display-xl hero-h" tabIndex={-1}>
           {hero.title.map((line, i) => (
             <span key={i} className="hero-line">

@@ -121,9 +121,9 @@ export function buildTheatre(root: HTMLElement): Theatre {
       .to("#a1-plugC", { autoAlpha: 1, duration: 0.3 }, T(31.4))
       .to("#a1-plugC", { x: 180, y: -62, duration: 1.2, ease: "power1.inOut" }, T(31.6))
       .to("#a1-plugC", { x: 196, duration: 0.35, ease: "power2.in" }, T(33.0))
-      .to("#a1-plugC", { x: 180, rotation: 28, transformOrigin: "50% 50%", duration: 0.5, ease: "elastic.out(1, 0.4)" }, T(33.4))
+      .to("#a1-plugC", { x: 180, rotation: 28, transformOrigin: "50% 50%", duration: 0.5, ease: "power3.out" }, T(33.4))
       .to("#a1-plugC", { x: 196, duration: 0.35, ease: "power2.in" }, T(34.2))
-      .to("#a1-plugC", { x: 176, rotation: -18, duration: 0.6, ease: "elastic.out(1, 0.4)" }, T(34.6));
+      .to("#a1-plugC", { x: 176, rotation: -18, duration: 0.6, ease: "power3.out" }, T(34.6));
     stamp(t1, "#a1-stampC", 35.6);
 
     /* scene 5: the importer picks B; A and C fade back */

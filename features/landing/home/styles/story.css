@@ -199,5 +199,6 @@
 /* r41-1: the map is sharp everywhere; each content block past the hero blurs only the map right behind it. A ::before layer 12 to 24px beyond the text, backdrop-filter blur, edges feathered by a mask: no box, border or shadow. Solid panels (Full Circle stage, pricing card, departures board) are left alone. */
 .bindu-home :is(.sec-head, .qa-head, .th-title, .faq-list, .cargo-cap, .ship-cap) { position: relative; isolation: isolate; }
 .bindu-home :is(.sec-head, .qa-head, .th-title, .faq-list, .cargo-cap, .ship-cap)::before { content: ""; position: absolute; z-index: -1; inset: -20px -24px; pointer-events: none;
+  /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
   -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }

@@ -144,11 +144,11 @@ export const ask = {
   ],
   scenarios: [
     { id: "coffee", tab: "Coffee", asker: "importer", nodes: ["co-op", "trader", "mill"], q: "DDS reference numbers for order PO-2214?", why: "your own filing cites them, checked in TRACES",
-      ap: ["DDS ref 25NL7K3X9M", "verification nr V-99DK2"], aw: ["Answer · order PO-2214", "DDS 25NL7K3X9M · V-99DK2 · co-op", "DDS 25DE4Q8V2C · V-84HF1 · trader"] },
+      ap: ["DDS ref 25NL7K3X9M", "verification nr V-99DK2"], aw: ["Answer · order PO-2214", "DDS 25NL7K3X9M · V-99DK2 · co-op", "DDS 25DE4Q8V2C · V-84HF1 · trader"] }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
     { id: "textiles", tab: "Textiles", asker: "brand", nodes: ["spinner", "fabric mill", "garment maker"], q: "Valid GRS transaction certificate for lot F-88?", why: "no valid certificate, no recycled claim on the label",
-      ap: ["TC GRS-2026-4471 · valid", "65% recycled polyester"], aw: ["Answer · lot F-88", "TC GRS-2026-4471, valid · spinner", "65% rPET · 35% cotton · fabric mill"] },
+      ap: ["TC GRS-2026-4471 · valid", "65% recycled polyester"], aw: ["Answer · lot F-88", "TC GRS-2026-4471, valid · spinner", "65% rPET · 35% cotton · fabric mill"] }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
     { id: "batteries", tab: "Batteries", asker: "carmaker", nodes: ["refinery", "cathode plant", "cell maker"], q: "Carbon footprint of cell model NC-811?", why: "a number your own paperwork can point to",
-      ap: ["61 kg CO₂e per kWh", "third-party verified"], aw: ["Answer · cell NC-811", "61 kg CO₂e/kWh, verified · cell maker", "cathode share 38 kg · cathode plant"] },
+      ap: ["61 kg CO₂e per kWh", "third-party verified"], aw: ["Answer · cell NC-811", "61 kg CO₂e/kWh, verified · cell maker", "cathode share 38 kg · cathode plant"] }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
   ],
 };
 
@@ -328,7 +328,7 @@ export const footer = {
     { h: "Product", l: [{ t: "How it works", u: "#how" }, { t: "Pricing", u: "#pricing" }] },
     { h: "Company", l: [{ t: "GitHub", u: "https://github.com/GetBindu/Bindu" }, { t: "raahul@getbindu.com", u: "mailto:raahul@getbindu.com" }] },
   ],
-  legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT",
+  legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT", // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
 };
 
 /* Round 17 (one story). Statement, before and after, the hero selector. Facts only from the brief; statuses as in the brief. */

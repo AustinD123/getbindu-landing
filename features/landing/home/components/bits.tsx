@@ -67,7 +67,7 @@ export function BtnLabel({ children }: { children: string }) {
       const r = link.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       const dx = e.clientX - cx, dy = e.clientY - cy, near = Math.abs(dx) < r.width / 2 + 80 && Math.abs(dy) < r.height / 2 + 80;
       const tx = near ? Math.max(-6, Math.min(6, dx * 0.12)) : 0, ty = near ? Math.max(-6, Math.min(6, dy * 0.12)) : 0;
-      gsap.to(st, { x: tx, y: ty, duration: near ? 0.35 : 0.8, ease: near ? "power3.out" : "elastic.out(1, 0.45)", overwrite: true, onUpdate: apply });
+      gsap.to(st, { x: tx, y: ty, duration: near ? 0.35 : 0.8, ease: "power3.out", overwrite: true, onUpdate: apply });
     };
     if (isPrimary) window.addEventListener("pointermove", move, { passive: true });
     return () => { link.removeEventListener("click", burst); window.removeEventListener("pointermove", move); gsap.killTweensOf(st); link.style.translate = ""; el.style.translate = ""; };

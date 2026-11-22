@@ -67,3 +67,6 @@ Installed in `.claude/skills/`. Each carries a header: bindu-design wins every c
 ## Performance tooling (23 Nov 2026)
 - addyosmani/web-quality-skills (https://github.com/addyosmani/web-quality-skills): MIT, commercial use yes. Installed skills: performance, core-web-vitals, web-quality-audit, best-practices (instructions + one read-only shell script, reviewed).
 - ChromeDevTools/chrome-devtools-mcp (https://github.com/ChromeDevTools/chrome-devtools-mcp): Apache-2.0, commercial use yes. Dev-only MCP server in `.mcp.json`, pinned to 1.12.0; not shipped with the site.
+
+## Slop audit tooling (23 Nov 2026, r41-3)
+- heydamir/unslop (https://github.com/heydamir/unslop): CC-BY-4.0, commercial use yes with attribution. Attribution: "unslop by Damir Sokolovsky (@heydamir), CC BY 4.0." Installed as `.claude/skills/heydamir-unslop/` (SKILL.md, signs, tokens, visuals, refs, LICENSE). Scripts and images not copied. Dev-only; not shipped with the site.
