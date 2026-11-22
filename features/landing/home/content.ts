@@ -86,7 +86,7 @@ export const pains = {
    rewritten in plain buyer words: one short line per scene, no quotes, no in-jokes. The captions are one per scene of the stage, in order, so
    `beats[i]` is what the stage is doing during scene i (lib/theatre-fx.ts has 5, 4 and 5 scenes). The people, places, documents and reference numbers
    are made up (Illustration, labelled once under the stage). Act three is the textile passport, which is on getbindu.com (Austin's rule: on the site = live), so it carries a
-   "Live on getbindu.com" chip (r40-2). Its captions follow the site's passport pages (features/landing/regulation/dpp-textiles-page.tsx and the
+   "Live" chip (r40-2; textile passports are live on getbindu.com). Its captions follow the site's passport pages (features/landing/regulation/dpp-textiles-page.tsx and the
    access-rights section of textiles-story.tsx: one scan, a public view for shoppers, wider views for recyclers and authorities). The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
 export const theatre = {
   title: "Full Circle.",
@@ -118,7 +118,7 @@ export const theatre = {
   ],
   illus: "Illustration",
   caption: "People, places, documents and reference numbers are made up.",
-  live: "Live on getbindu.com",
+  live: "Live",
 };
 
 /* Round 36 (r36-4): "Ask your supply chain", between Full Circle and the journey. The question, the answer lines and the reference
