@@ -217,7 +217,7 @@
 .bindu-home {
   /* r29-7: the page's background bands (the sections sit on these; the page background crossfades between them as you scroll, lib/bands.ts) */
   --band-canvas: var(--canvas);
-  --band-tint: color-mix(in srgb, var(--canvas) 90%, var(--cobalt-signal));   /* a pale cobalt tint of the page colour */
+  --band-tint: #0A1222;             /* r40-4: a cobalt-tinted step of the page colour, OKLCH L .184 vs canvas .145 (a step of .039); text 5.7:1 or better */
   --band-panel: var(--canvas-soft);
   --line-ink: #EDE8DA;
   --night-band: #101D3C;
@@ -228,7 +228,7 @@
   --font-guide: var(--font-sans);
 }
 .bindu-home[data-theme="light"] {
-  --band-tint: #E3E8F3;             /* pale cobalt tint on ivory; navy text 14:1 */
+  --band-tint: #D5E0F4;             /* r40-4: pale cobalt tint on ivory, OKLCH L .904 vs canvas .944 (a step of .040); navy text 6.2:1 or better */
   --line-ink: #0E1A30;   /* r22-13: deeper navy ink lines */
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
   --night-band: #0B1630;

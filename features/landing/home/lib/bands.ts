@@ -8,7 +8,8 @@ import { gsap, ScrollTrigger, reduceMotion } from "./motion";
 import { track } from "./pos";
 import { tRaf, tCaf } from "./loop";
 
-const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "canvas", examples: "canvas", pricing: "canvas", faq: "panel", demo: "canvas" };
+/* r40-4: canvas and a tint or panel alternate down the page, so no two neighbours share a band */
+const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "tint", examples: "canvas", pricing: "tint", faq: "canvas", demo: "panel" };
 
 export function startBands(): () => void {
   const secs = Array.from(document.querySelectorAll<HTMLElement>("main > section")).filter((s) => BANDS[s.id]);
