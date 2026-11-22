@@ -8,7 +8,7 @@ import { gsap, ScrollTrigger, reduceMotion } from "./motion";
 import { track } from "./pos";
 import { tRaf, tCaf } from "./loop";
 
-const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", ask: "canvas", shipment: "canvas", examples: "canvas", pricing: "canvas", faq: "panel", demo: "canvas" };
+const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "canvas", examples: "canvas", pricing: "canvas", faq: "panel", demo: "canvas" };
 
 export function startBands(): () => void {
   const secs = Array.from(document.querySelectorAll<HTMLElement>("main > section")).filter((s) => BANDS[s.id]);

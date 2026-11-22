@@ -82,7 +82,47 @@ export const pains = {
   ],
 };
 
-/* Round 36 (r36-4): "Ask your supply chain", between How it works and the journey. The question, the answer lines and the reference
+/* Round 39 (r39-2): "Full Circle", the section that took over `#how`. Ported from the older story page's theatre (features/landing/story/theatre.tsx) and
+   rewritten in plain buyer words: one short line per scene, no quotes, no in-jokes. The captions are one per scene of the stage, in order, so
+   `beats[i]` is what the stage is doing during scene i (lib/theatre-fx.ts has 5, 4 and 5 scenes). The people, places, documents and reference numbers
+   are made up (Illustration, labelled once under the stage). Act three is what Bindu is building (product passports, batteries, HS codes), so it
+   is marked "In build" and its first caption says "Coming". The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
+export const theatre = {
+  title: "Full Circle.",
+  lead: "Follow a shirt and a bag of coffee from supplier paperwork to the shelf and back. Pick an act and it plays itself.",
+  tabsLabel: "Acts",
+  stepsLabel: "What happens, step by step",
+  dotsLabel: "Scenes",
+  acts: [
+    { id: "fabric", tab: "The Fabric", beats: [
+      "An importer in Amsterdam gets three quotes for the same shirt.",
+      "Supplier A is cheapest but cannot show where the cotton came from.",
+      "Bindu asks supplier B's mill for what is missing. The documents come back.",
+      "Supplier C keeps its data locked in its own system, so nothing comes back.",
+      "The importer picks supplier B, the one with proof it can show.",
+    ] },
+    { id: "bean", tab: "The Bean", beats: [
+      "A coffee importer must show the exact plot every bag came from.",
+      "Satellite images show origin A's plot was cleared in 2022, so it is passed over.",
+      "Origin B's co-op sends every plot. Bindu files it and a reference number comes back.",
+      "Origin C never answers, so it is passed over too.",
+    ] },
+    { id: "circle", tab: "The Circle", beats: [
+      "Coming: a shopper scans the code on the shirt's label.",
+      "The record shows the materials, the care steps and where it was made.",
+      "Later, a recycler scans the same code to see what the shirt is made of.",
+      "At the border, a customs agent can open the same record.",
+      "Every line points back to the document behind it. That is the full circle.",
+    ] },
+  ],
+  illus: "Illustration",
+  caption: "People, places, documents and reference numbers are made up.",
+  build: "In build",
+  buildNote: "Act three is coming.",
+  play: "Play", pause: "Pause", replay: "Replay",
+};
+
+/* Round 36 (r36-4): "Ask your supply chain", between Full Circle and the journey. The question, the answer lines and the reference
    numbers are made up (Illustration). The section is live (Austin, r36-4 fix), so no in-build note. Scenario 3 states no regulation date:
    "mandatory since Feb 2025" could not be confirmed from a public EUR-Lex page (see DECISIONS.md, round 36). */
 export const ask = {

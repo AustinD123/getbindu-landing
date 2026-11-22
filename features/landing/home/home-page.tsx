@@ -16,6 +16,7 @@ import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
 import "./styles/ask.css";
+import "./styles/theatre.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
@@ -25,6 +26,7 @@ import { useRouteWipe } from "./lib/route";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { ShipmentJourney } from "./components/ShipmentJourney";
+import { Theatre } from "./components/Theatre";
 import { Ask } from "./components/Ask";
 import { Pricing } from "./components/Pricing";
 import { Faq, Finale } from "./components/Closing";
@@ -70,10 +72,11 @@ export function HomePage() {
       <Guide />
       <Rail />
       <main id="main">
-        {/* round 17: one story. Hero, statement, before and after, the night-band journey, pricing, FAQ, wordmark finale. */}
+        {/* round 17: one story. Hero, statement, before and after, Full Circle, ask your supply chain, the night-band journey, pricing, FAQ, wordmark finale. */}
         <Hero />
         <Statement />
         <BeforeAfter />
+        <Theatre />
         <Ask />
         <ShipmentJourney />
         <Examples />
