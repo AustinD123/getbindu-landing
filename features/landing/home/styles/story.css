@@ -160,8 +160,9 @@
 }
 
 /* r22-16: a soft feathered scrim behind every section heading and the hero headline: canvas colour, no backdrop-filter (r24: a static gradient is far cheaper while scrolling), edges fading out through a radial mask, no border or box */
-.bindu-home main h2:not(.wm), .bindu-home .hero-h { position: relative; isolation: isolate; }
-.bindu-home main h2:not(.wm)::before, .bindu-home .hero-h::before { content: ""; position: absolute; z-index: -1; inset: -0.35em -0.7em; pointer-events: none;
+/* r40: only the hero keeps it; past the hero the map is blurred and dimmed (r40-3), and a canvas-colour scrim showed as a blob on the tint band */
+.bindu-home .hero-h { position: relative; isolation: isolate; }
+.bindu-home .hero-h::before { content: ""; position: absolute; z-index: -1; inset: -0.35em -0.7em; pointer-events: none;
   background: radial-gradient(closest-side, rgb(var(--canvas-rgb) / 0.85) 55%, rgb(var(--canvas-rgb) / 0) 100%);
   -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); }
 /* r22-17: the full stop of a heading is a small yellow Bindu dot that drops in last */

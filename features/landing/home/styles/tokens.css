@@ -228,7 +228,7 @@
   --font-guide: var(--font-sans);
 }
 .bindu-home[data-theme="light"] {
-  --band-tint: #D5E0F4;             /* r40-4: pale cobalt tint on ivory, OKLCH L .904 vs canvas .944 (a step of .040); navy text 6.2:1 or better */
+  --band-tint: #E3DCCC;             /* r40: a warm step of the ivory (the pale cobalt #D5E0F4 read as the rejected cool light theme), about .035 below the canvas in OKLCH L */
   --line-ink: #0E1A30;   /* r22-13: deeper navy ink lines */
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
   --night-band: #0B1630;
