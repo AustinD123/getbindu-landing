@@ -67,6 +67,11 @@ export function HowItWorks() {
   const qr = useRef<(SVGCircleElement | null)[]>([]);
   const [isStatic] = useState(reduceMotion);
   const [step, setStep] = useState(0);
+  /* r36-5: which record line is pointed at (hover or focus) and which is pinned (click or tap); the readout shows the pointed one first */
+  const [hov, setHov] = useState<number | null>(null);
+  const [sel, setSel] = useState<number | null>(null);
+  const shown = hov ?? sel;
+  const tr = how.trace;
 
   useEffect(() => {
     const type = (d: number) => {
@@ -158,6 +163,37 @@ export function HowItWorks() {
           <li key={l.what + "b"} className="kt-ln st" style={at(0, 0.001)}><time>{GOT[i]}</time><span>received</span><b>{l.what}</b><em>✓ signed by {l.by}</em></li>,
         ])}
       </ul>
+      <div className="kt-trace" onKeyDown={(e) => { if (e.key === "Escape") { setSel(null); setHov(null); } }}>
+        <ul className="kt-tr-list" aria-label={tr.label}>
+          {tr.lines.map((l, i) => (
+            <li key={l.line} className={`kt-tr st${shown === i ? " is-on" : ""}`} style={at(0.4 + i * 0.06, 0.06)}>
+              <button
+                type="button"
+                className="kt-tr-btn"
+                aria-pressed={sel === i}
+                aria-describedby="kt-tr-out"
+                tabIndex={isStatic || step === 2 ? 0 : -1}
+                onMouseEnter={() => setHov(i)}
+                onMouseLeave={() => setHov(null)}
+                onFocus={() => setHov(i)}
+                onBlur={() => setHov(null)}
+                onClick={() => setSel(sel === i ? null : i)}
+              >
+                <svg className="kt-tr-doc" viewBox="0 0 12 14" aria-hidden="true"><path d="M1 1h6.5L11 4.5V13H1z M7.5 1v3.5H11" /></svg>
+                <span className="kt-tr-thread" aria-hidden="true" style={at(0.44 + i * 0.06, 0.12)} />
+                <span className="kt-tr-line">{l.line}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p id="kt-tr-out" className="kt-tr-out st" style={at(0.68)} role="status" aria-live="polite">
+          {shown === null ? (
+            <span className="kt-mute">{tr.hint}</span>
+          ) : (
+            <><span>{tr.from} <b>{tr.lines[shown]!.doc}</b> · {tr.lines[shown]!.by}</span><span className="chip chip-illus">{tr.illus}</span></>
+          )}
+        </p>
+      </div>
       <div className="kt-card">
         <svg className="kt-qr" viewBox="-0.5 -0.5 22 22" aria-hidden="true">
           {QR.map((q, i) => (

@@ -34,7 +34,7 @@ export const intro = {
 
 export const hero = {
   title: ["Describe a shipment.", "Bindu handles the rules."],
-  sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it, whether you import six containers a year or six hundred.",
+  sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it. Every line traces back to the supplier document behind it, whether you import six containers a year or six hundred.",
   mono: "Six containers a year or six hundred.",
   artLabel: "Illustration: every proof is a dot. Together they make the filing.",
   pause: "Pause animation",
@@ -82,13 +82,26 @@ export const pains = {
 };
 
 export const how = {
+  /* r36-5: the File step's record lines, each with a thread back to the made-up document it came from (Illustration). */
+  trace: {
+    label: "Record lines and the document each one came from",
+    hint: "Select a line to see the document behind it.",
+    from: "from",
+    illus: "Illustration",
+    lines: [
+      { line: "Fibre composition", doc: "Fibre composition sheet", by: "mill" },
+      { line: "Mill and dye house", doc: "Dye house declaration", by: "dye house" },
+      { line: "Care and repair data", doc: "Care and repair sheet", by: "mill" },
+      { line: "Supplier declaration", doc: "Supplier declaration", by: "supplier" },
+    ],
+  },
   eyebrow: "How it works",
   title: "One sentence in. The proof comes back.",
   frame: "Workspace · example shipment",
   illus: "Illustration",
   steps: [
     { n: "01", t: "Describe", d: "Tell Bindu about the shipment in plain words. It works out which EU rules apply and what proof each one needs." },
-    { n: "02", t: "Prove", d: "Bindu asks your suppliers by WhatsApp or email, with no login for them, for exactly what's missing. Each document is checked against its rule." },
+    { n: "02", t: "Prove", d: "Bindu asks your suppliers by WhatsApp or email, with no login for them, for exactly what's missing. Each document is checked against its rule, and each line of your record points back to the document it came from." },
     { n: "03", t: "File", d: "Bindu builds one compliance record. Some rules are still in build." },
   ],
   describeText: "Two containers of cocoa beans from Ecuador to Antwerp, arriving in June.",
@@ -316,7 +329,7 @@ export const faq = {
     { q: "Do I need to file if I buy from an EU importer?", a: "", pending: true },
     { q: "Is the simplified declaration enough?", a: "", pending: true },
     { q: "What if a supplier won't share data?", a: "Bindu asks them on WhatsApp or by email, with no login, and shows you what is still missing. A statement can only be filed once the proof is complete.", pending: true },
-    { q: "Do my suppliers need an account?", a: "No. Bindu asks them on WhatsApp or by email, with no login for them. Before anything leaves, they see exactly what you will learn, and they can say no.", pending: false },
+    { q: "Do my suppliers need an account?", a: "No. Bindu asks them on WhatsApp or by email, with no login for them. Before anything leaves, they see exactly what you will learn, and they can say no. Each line of your record then points back to the document they sent.", pending: false },
     { q: "Is my data shared with other companies?", a: "No. Every workspace is single-tenant and your data stays inside it. Nothing crosses to another company until the exchange layer ships, and that layer is still in build.", pending: false },
     { q: "Who's liable?", a: "", pending: true },
   ],
@@ -334,7 +347,7 @@ export const footer = {
 /* Round 17 (one story). Statement, before and after, the hero selector. Facts only from the brief; statuses as in the brief. */
 export const statement = {
   before: "Describe a shipment once.",
-  after: "works out the rules and the HS code, gathers the evidence and prepares the filing.",
+  after: "works out the rules and the HS code, gathers the evidence and prepares the filing, every line traced to its document.",
 };
 
 export const beforeAfter = {
