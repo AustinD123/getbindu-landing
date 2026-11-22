@@ -23,6 +23,19 @@ export function Mark({ size = 28, white = false, label = false }: { size?: numbe
   );
 }
 
+/* r36-3: Bindu's official sunflower logo (public/home/bindu-logo-*.webp, PNG fallback), the brand mark in the nav and the footer. The dot-built Mark above stays for the statement chip.
+   64px copy for the nav (2x at 24px), 128px for the footer (2x at 40px). The link around it carries the accessible name, so the image itself is decorative. */
+export function Logo({ size = 24 }: { size?: number }) {
+  const n = size > 32 ? 128 : 64;
+  return (
+    <picture>
+      <source srcSet={`/home/bindu-logo-${n}.webp`} type="image/webp" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="logo" src={`/home/bindu-logo-${n}.png`} width={size} height={size} alt="" decoding="async" />
+    </picture>
+  );
+}
+
 /* round 22 item 9, r34-1: the filled pill's label stays still (the letter roll is removed). The label is one plain span; the link keeps its accessible name (aria-label).
    On hover the magnetic pull (within about 80px, max 6px, the label 3px further) and the arrow's 4px nudge (CSS) stay, and the click sends a tiny burst of 6 to 8 yellow and
    cobalt dots from the arrow. Those need a fine pointer without reduced motion. The yellow never changes on hover. */

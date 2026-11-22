@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { DEMO_URL, cta, nav } from "../content";
-import { BtnLabel, Mark } from "./bits";
+import { BtnLabel, Logo } from "./bits";
 import { getTheme, setTheme, useTheme } from "../lib/theme";
 import { NAV_PAGES } from "../links";
 
@@ -43,7 +43,7 @@ export function Nav() {
   return (
     <header className={`nav${scrolled ? " is-scrolled" : ""}`}>
       <div className="nav-in">
-        <a className="nav-brand" href="#top" aria-label="Bindu, back to top"><Mark size={28} /><span>Bindu</span></a>
+        <a className="nav-brand" href="#top" aria-label="Bindu, back to top"><Logo size={24} /><span>Bindu</span></a>
         <nav className="nav-links" aria-label="Site sections and pages">
           {nav.links.map((l) => <a key={l.href} href={l.href}>{l.t}</a>)}
           {NAV_PAGES.map((l) => <a key={l.u} href={l.u}>{l.t}</a>)}

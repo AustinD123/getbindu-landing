@@ -32,3 +32,8 @@ converted to SVG paths) are our own SVG, CSS and canvas code.
 Ideas from MIT libraries rebuilt in our own code, no code copied: Magic UI
 (Animated Beam, Border Beam, Shiny Button). The dot wipe is inspired by
 Hyperiux Vault's dot transition (MPL-2.0); the code here is written fresh.
+
+## Brand logo
+The sunflower logo in the nav and the footer (`public/home/bindu-logo-64.*` and `bindu-logo-128.*`, WebP with a PNG fallback)
+is resized from Bindu's own asset, `assets/bindu_logo.png` (499x499) in github.com/GetBindu/Bindu. It is our own brand file,
+not third party. The dot-built mark in `components/bits.tsx` stays for the statement chip.
