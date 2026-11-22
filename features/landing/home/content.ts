@@ -85,8 +85,9 @@ export const pains = {
 /* Round 39 (r39-2): "Full Circle", the section that took over `#how`. Ported from the older story page's theatre (features/landing/story/theatre.tsx) and
    rewritten in plain buyer words: one short line per scene, no quotes, no in-jokes. The captions are one per scene of the stage, in order, so
    `beats[i]` is what the stage is doing during scene i (lib/theatre-fx.ts has 5, 4 and 5 scenes). The people, places, documents and reference numbers
-   are made up (Illustration, labelled once under the stage). Act three is what Bindu is building (product passports, batteries, HS codes), so it
-   is marked "In build" and its first caption says "Coming". The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
+   are made up (Illustration, labelled once under the stage). Act three is the textile passport, which is on getbindu.com (Austin's rule: on the site = live), so it carries a
+   "Live on getbindu.com" chip (r40-2). Its captions follow the site's passport pages (features/landing/regulation/dpp-textiles-page.tsx and the
+   access-rights section of textiles-story.tsx: one scan, a public view for shoppers, wider views for recyclers and authorities). The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
 export const theatre = {
   title: "Full Circle.",
   lead: "Scroll to follow a shirt and a bag of coffee from supplier paperwork to the shelf and back.",
@@ -98,7 +99,7 @@ export const theatre = {
       "An importer in Amsterdam gets three quotes for the same shirt.",
       "Supplier A is cheapest but cannot show where the cotton came from.",
       "Bindu asks supplier B's mill for what is missing. The documents come back.",
-      "Supplier C keeps its data locked in its own system, so nothing comes back.",
+      "Supplier C never sends the documents, so nothing comes back.",
       "The importer picks supplier B, the one with proof it can show.",
     ] },
     { id: "bean", tab: "The Bean", beats: [
@@ -108,17 +109,16 @@ export const theatre = {
       "Origin C never answers, so it is passed over too.",
     ] },
     { id: "circle", tab: "The Circle", beats: [
-      "Coming: a shopper scans the code on the shirt's label.",
-      "The record shows the materials, the care steps and where it was made.",
-      "Later, a recycler scans the same code to see what the shirt is made of.",
-      "At the border, a customs agent can open the same record.",
-      "Every line points back to the document behind it. That is the full circle.",
+      "A shopper scans the code on the shirt's label and sees a public view.",
+      "The record shows what it is made of, where it was cut and how to care for it.",
+      "A recycler scans the same code and sees more, including how to take it apart.",
+      "A customs officer opens the same record and sees the conformity certificates.",
+      "Same record, a different view for each reader. That is the full circle.",
     ] },
   ],
   illus: "Illustration",
   caption: "People, places, documents and reference numbers are made up.",
-  build: "In build",
-  buildNote: "Act three is coming.",
+  live: "Live on getbindu.com",
 };
 
 /* Round 36 (r36-4): "Ask your supply chain", between Full Circle and the journey. The question, the answer lines and the reference

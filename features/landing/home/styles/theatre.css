@@ -68,7 +68,6 @@
 .bindu-home .th-stages .pass { width: 27%; padding: 1cqw 1.3cqw; background: var(--canvas-mid); border: 1px solid var(--hairline-dark); border-radius: 1cqw; font-size: 1.85cqw; line-height: 1.4; }
 .bindu-home .th-stages .pass h4 { margin: 0 0 0.4cqw; color: var(--on-dark-mute); font: 600 1.8cqw/1.3 var(--font-sans); }
 .bindu-home .th-stages .pass p { margin: 0; }
-.bindu-home .th-stages .th-soon { white-space: nowrap; font-size: 1.8cqw; }
 
 /* tablets and phones: the head, the tabs and the stage, then the captions under it */
 @media (max-width: 900px) {
@@ -88,7 +87,6 @@
   .bindu-home .th-win { padding-top: 0; gap: var(--s-4); }
   .bindu-home .th-lead { max-width: 38ch; }
   .bindu-home .th-beat { font-size: 16px; padding: var(--s-2) 0; }
-  .bindu-home .th-stages .th-soon { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .bindu-home .th-now { animation: none; }

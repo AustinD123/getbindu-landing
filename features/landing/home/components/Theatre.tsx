@@ -157,8 +157,8 @@ export function Theatre() {
           )}
           <p className="cargo-cap th-cap">
             <span className="chip chip-illus">{c.illus}</span>
-            {act === 2 ? <span className="chip chip-build">{c.build}</span> : null}
-            <span className="t-caption t-muted">{act === 2 ? `${c.buildNote} ` : ""}{c.caption}</span>
+            {act === 2 ? <span className="chip chip-live">{c.live}</span> : null}
+            <span className="t-caption t-muted">{c.caption}</span>
           </p>
         </div>
       </div>

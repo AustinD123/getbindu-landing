@@ -184,7 +184,7 @@ export function buildTheatre(root: HTMLElement): Theatre {
       .to(["#a2-rC", "#a2-nC", "#a2-lC"], { opacity: 0.15, duration: 1.2 }, T(34.4));
     stamp(t2, "#a2-stampC", 35.4);
 
-    /* ============ ACT III: the circle (in build). Five scenes ============ */
+    /* ============ ACT III: the circle (the textile passport, live on getbindu.com). Five scenes ============ */
     const t3 = fresh(SCENES[2]);
     set(["#a3-p1", "#a3-p2", "#a3-p3", "#a3-sort", "#a3-battp", ".th-tag", "#a3-shop", "#a3-beam", "#a3-conv", "#a3-beam2", "#a3-customs", "#a3-braid", "#a3-fiber"], { autoAlpha: 0 });
     set("#a3-loop", { autoAlpha: 0, drawSVG: "0%" });
@@ -214,7 +214,7 @@ export function buildTheatre(root: HTMLElement): Theatre {
     /* scene 4: customs can open the same record */
     t3.to(["#a3-conv", "#a3-sort", "#a3-battp"], { autoAlpha: 0, duration: 0.5 }, T(30.2))
       .to("#a3-customs", { autoAlpha: 1, duration: 0.6 }, T(30.6))
-      .to("#a3-hs", { duration: 1.6, text: "HS 6109.10" }, T(31.4))
+      .to("#a3-hs", { duration: 1.6, text: "Customs view" }, T(31.4))
       .fromTo("#a3-ch1", { autoAlpha: 0, y: -14 }, { autoAlpha: 1, y: 0, duration: 0.45 }, T(33.2))
       .fromTo("#a3-ch2", { autoAlpha: 0, y: -14 }, { autoAlpha: 1, y: 0, duration: 0.45 }, T(33.6))
       .fromTo("#a3-ch3", { autoAlpha: 0, y: -14 }, { autoAlpha: 1, y: 0, duration: 0.45 }, T(34.0));

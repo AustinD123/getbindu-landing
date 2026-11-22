@@ -1,6 +1,6 @@
 /* r39-2: the stage art of Full Circle, ported from features/landing/story/theatre-stages.ts (the original is untouched).
    Changes: the screenplay slugs and stage captions are gone (the captions are the left column now); colours go through the --th-* art variables in
-   styles/theatre.css; labels are plain words and carry no invented prices or numbers; the QR moved out of act one (passports are in build);
+   styles/theatre.css; labels are plain words and carry no invented prices or numbers; the QR moved out of act one (r40-2: the textile passport is live on the site, act three says so);
    hidden starting states are set by GSAP in lib/theatre-fx.ts, not here. Injected with dangerouslySetInnerHTML (a constant, no user input). */
 export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
   <div class="th-sheet">
@@ -227,8 +227,6 @@ export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
       <h4>Where it was made</h4><p>Field, mill, supplier, shop. Each step has a document.</p>
     </div>
 
-    <div class="ov chip chip-build th-soon" id="a3-soon" style="right:3%; top:4.5%;">In build &#183; coming</div>
-
     <div class="ov panel" id="a3-sort" style="left:54%; top:56%; width:32%;">
       <div class="th-ph">Sorter readout</div>
       <div id="a3-sort1">fibre &#183; cotton + elastane</div>
@@ -240,9 +238,9 @@ export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
       <div>how to take it apart &#10003;</div>
     </div>
 
-    <div class="ov hud" id="a3-hs" style="left:72%; top:22%;"></div>
-    <div class="ov th-tag" id="a3-ch1" style="left:72%; top:33%;">HS code read &#10003;</div>
-    <div class="ov th-tag" id="a3-ch2" style="left:75%; top:40%;">Rules matched &#10003;</div>
-    <div class="ov th-tag" id="a3-ch3" style="left:78%; top:47%;">Record opened &#10003;</div>
+    <div class="ov hud" id="a3-hs" style="left:66%; top:22%;"></div>
+    <div class="ov th-tag" id="a3-ch1" style="left:66%; top:33%;">Conformity certificates &#10003;</div>
+    <div class="ov th-tag" id="a3-ch2" style="left:68%; top:40%;">Inspection reports &#10003;</div>
+    <div class="ov th-tag" id="a3-ch3" style="left:70%; top:47%;">Operator contacts &#10003;</div>
   </div>
 </div>`;
