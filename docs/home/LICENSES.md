@@ -1,0 +1,55 @@
+# Licenses and sources
+
+Third-party code and assets used by the homepage (`features/landing/home/`), with commercial-use status. The shorter, current list for this repo is `features/landing/home/LICENSES.md`.
+
+## Used in the build
+| Item | Licence | Commercial use |
+|---|---|---|
+| GSAP (and ScrollTrigger) | GSAP Standard "no charge" licence | Yes, free for commercial use since 30 Apr 2025 |
+| Lenis | MIT | Yes |
+| OGL | Unlicense | Yes |
+| React, React DOM | MIT | Yes |
+| Inter, IBM Plex Mono (self-hosted via @fontsource; replace Geist in r16) | SIL OFL 1.1 | Yes |
+| Map coastlines (`src/lib/worldmap.ts`, `src/lib/shipmap.ts`) | Own work, hand-typed, simplified | Yes |
+
+## Ideas from MIT libraries, rebuilt in our own code (no code copied)
+- Magic UI: Animated Beam (Four documents), Border Beam (pricing card), Shiny / Shimmer Button (filled pill sheen).
+- The hover-link snippet Austin supplied (source unknown): rewritten from scratch for the text links.
+
+## Reference documents (not shipped)
+| Item | Licence | Commercial use |
+|---|---|---|
+| `docs/references/notion-DESIGN.md` (VoltAgent awesome-design-md, Notion design analysis) | MIT | Reference only; nothing is shipped from it |
+
+GSAP's MotionPathPlugin and DrawSVGPlugin (round 17, the ink guide) ship in the installed `gsap` package and are covered by the same GSAP Standard "no charge" licence listed above.
+
+## Inspiration only, no code or assets copied
+- Rothfinder (rothfinder.com): the idea of one hand-drawn scribble ball that travels the page trailing one line. Our guide is our own procedural scribble, written from scratch.
+- Difault (Webflow template), Rubie (via maxibestof), time.fyi (via unsection), Made With GSAP.
+- The Awwwards references listed in docs/home/project-context.md.
+
+## Photos
+| Item | Licence | Commercial use |
+|---|---|---|
+| Unsplash photo 1605732562742 (shipping containers, original colours): the finale photo `public/images/port-cargo.webp` (r29-2: the right-hand part of the original, 1440 x 3200, full height; framed at 75% down) behind the mask of the wordmark and under the closing line and footer. The big side lettering on the left stacks is cropped out; the small "Hapag-Lloyd" door text and container IDs still show. The original is kept out of the bundle in `docs/references/`. The earlier duotone crop (`port-duotone.*`) is no longer used | Unsplash Licence | Commercial use OK; swap for an unbranded photo before production. |
+
+## Sounds
+| Item | Licence | Commercial use |
+|---|---|---|
+| Kenney "Interface Sounds" (kenney.nl, via opengameart.org), 22 clips used (confirmation, tick, select, click, toggle, scratch, drop, bong): trimmed, level-matched and re-encoded as `public/sounds/*.ogg` and `.mp3` (about 140 KB in all); licence text kept in `public/sounds/Kenney-Interface-Sounds-License.txt` | CC0 (public domain) | Yes, no credit needed (credited here anyway). The "UI Audio" pack was not needed: the Interface Sounds pack covered every cue. |
+
+## Fonts converted to paths
+The mask of the finale wordmark (`src/lib/maskdata.ts`) is Inter 600 (SIL Open Font Licence, already used on the site) converted to SVG paths with fontTools.
+
+## Own work (round 18 and 19)
+The container ship, the product walk-through frame, the QR-style pattern (made up, not a real code), the worked-example tags and the ink strike are our own SVG and CSS. GSAP SplitText (letter roll on buttons, headings in round 20) ships in the installed `gsap` package under the same GSAP Standard no-charge licence as above.
+
+## Map data
+| Item | Licence | Commercial use |
+|---|---|---|
+| Natural Earth 1:50m land (naturalearthdata.com), simplified and quantised into `src/lib/landdata.ts` (about 60 KB) | Public domain | Yes, no attribution required |
+
+
+## Tooling
+- Tooling (not shipped): paralect/saas-skills product-demo, MIT; ffmpeg-static (GPL binary, local use only)
+- Tooling (not shipped): educlopez/ui-craft skills (ui-craft, ui-craft-adapt, ui-craft-audit), MIT, instructions only; commercial use fine
