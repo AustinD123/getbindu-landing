@@ -2,35 +2,13 @@ import type { Metadata } from "next";
 import { HomePage } from "@/features/landing/home/home-page";
 import { RedirectIfAuthenticated } from "@/features/landing/chrome/redirect-if-authenticated";
 import { faq } from "@/features/landing/home/content";
-import { SITE_URL } from "@/features/landing/seo/team";
 
 // Homepage-only schema. Organization and WebSite come from LandingJsonLd in the layout; this adds the
-// product with its one published price (EUDR dossier, EUR, excl. VAT) and the FAQ answers shown on the page.
+// FAQ answers shown on the page. No SoftwareApplication node: Google's rich result needs an
+// aggregateRating or review, we have neither and won't fabricate them (see app/landing-chrome.tsx).
 const homeJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
-    {
-      "@type": "SoftwareApplication",
-      "@id": `${SITE_URL}#app`,
-      name: "Bindu",
-      url: SITE_URL,
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      provider: { "@id": `${SITE_URL}#org` },
-      offers: {
-        "@type": "Offer",
-        name: "EUDR due-diligence dossier",
-        price: "249",
-        priceCurrency: "EUR",
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: "249",
-          priceCurrency: "EUR",
-          valueAddedTaxIncluded: false,
-          unitText: "per EUDR dossier",
-        },
-      },
-    },
     {
       "@type": "FAQPage",
       mainEntity: faq.items
