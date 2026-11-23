@@ -25,3 +25,16 @@ Observed (non-simulated) mobile LCP after the intro skip: about 0.4 to 0.75 s.
 - Finale image and Closing.tsx belong to the other agent. 17 stylesheets not consolidated.
 - Fonts: size-adjust fallbacks not changed (next/font already generates them; CLS is 0).
 - Document-shell font change also affects other pages (their fonts now load on use, not preload).
+
+## Pass 2 (medians of 3, clean machine, production build)
+
+| Run | Perf | LCP | TBT | CLS | JS (transfer) |
+|---|---|---|---|---|---|
+| Mobile, start of pass 2 | 64 | 4.2 s | 1090 ms | 0 | 282 KB |
+| Mobile, after Lenis deferral | 75 | 4.2 s | 460 ms | 0 | 284 KB |
+| Desktop, after | 96 | 1.3 s | 60 ms | 0.003 | 465 KB |
+
+- `perf(home): load Lenis dynamically, on idle after load on phones` (kept: TBT roughly halved).
+- Tried and reverted: phone-idle SplitText for headings (no median change).
+- Not done: below-the-fold section lazy chunks. headings, bands and Guide query the whole `main` DOM at mount, so lazy sections would need those rewritten per section; too risky for the look and pins. Theatre already imports its GSAP plugins lazily. Inter italic preload is in the shared document-shell (affects other pages); left.
+- Desktop measured 96 here, not 88; three.js (OGL) is already its own chunk, loaded inside the intro, left as is. Simulated mobile LCP (4.2 s) is 89% render delay from hydration; observed LCP is ~0.5 s.
