@@ -40,7 +40,7 @@
 /* The stage is a sticky full-viewport layer that stays pinned for the whole section (its height is taken back with a negative margin, so the section's flow is only the spacer and the footer). */
 .bindu-home .finale { position: relative; padding: 0; display: block; text-align: center; }
 .bindu-home .fz-stage { position: sticky; top: 0; height: 100vh; height: 100svh; margin-bottom: -100vh; margin-bottom: -100svh; overflow: hidden; z-index: 0; }
-.bindu-home .fz-photo { position: absolute; inset: 0; background: var(--canvas) var(--photo) 50% 75% / cover no-repeat; }
+.bindu-home .fz-photo { position: absolute; inset: 0; background: var(--canvas) var(--photo) 40% 82% / cover no-repeat; }
 .bindu-home .fz-dot { position: absolute; z-index: 1; opacity: var(--g, 1); pointer-events: none; transform-origin: 50% 50%; }
 /* r30-2: the dot of the i is a golden-angle disc of 34 dots, yellow in the middle blending to cobalt at the rim; each dot appears when its ship dot lands */
 .bindu-home .fz-dot svg { display: block; overflow: visible; }
@@ -54,7 +54,7 @@
 .bindu-home .finale .foot .t-muted { color: var(--on-photo-mute); }
 /* reduced motion: the masked wordmark (no zoom), then the photo filling the view with the footer */
 .bindu-home .finale.is-static .fz-stage { position: relative; margin-bottom: 0; }
-.bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 50% 75% / cover no-repeat; }
+.bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 40% 82% / cover no-repeat; }
 .bindu-home .finale.is-static .fz-after { position: relative; min-height: 100svh; }
 .bindu-home .finale.is-static .fz-dot { opacity: 1; }
 .bindu-home .finale.is-static .fz-dot circle { opacity: 1; }

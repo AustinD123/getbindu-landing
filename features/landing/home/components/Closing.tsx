@@ -61,15 +61,15 @@ const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
     el.style.setProperty(`${pre}mask-size`, size); el.style.setProperty(`${pre}mask-position`, pos);
   }
 };
-/* r29-6: the photo (public/images/port-cargo.webp, 1440 x 3200) is scaled to the wordmark box at rest: the wordmark is 65% of the photo's width, so whole stacks of doors show
+/* r29-6: the image (public/home/images/ship-sketch.webp, 1920 x 1437, Bindu ship sketch) is scaled to the wordmark box at rest: the wordmark is 65% of the photo's width, so whole stacks of doors show
    inside the letters (the point of the photo under the middle of the wordmark is FX, FY of it). During the first quarter of the zoom it grows to the cover size
-   of the full-bleed view (pinned 50% 75%), so it always covers whatever the growing letters show. */
-const IW = 1440, IH = 3200, SHOW = 0.65, FX = 0.5, FY = 0.7, PHOTO_Q = 0.25, STEPS = 1500;
+   of the full-bleed view (pinned 40% 82%), so it always covers whatever the growing letters show. */
+const IW = 1920, IH = 1437, SHOW = 0.65, FX = 0.45, FY = 0.62, PX = 0.4, PY = 0.82, PHOTO_Q = 0.25, STEPS = 1500;
 type Row = { ms: string; mp: string; bs: string; bp: string; dot: string; g: string };
 /* r29-5: everything the zoom needs, worked out once per measure (no arithmetic or string building while scrolling): the row for each of STEPS + 1 points of q */
 function table(L: Lay): Row[] {
   const rows: Row[] = [], u0 = L.mw0 / MASK.w;
-  const sc = Math.max(L.W / IW, L.H / IH), Pwf = IW * sc, Phf = IH * sc, oxf = (L.W - Pwf) / 2, oyf = (L.H - Phf) * 0.75;
+  const sc = Math.max(L.W / IW, L.H / IH), Pwf = IW * sc, Phf = IH * sc, oxf = (L.W - Pwf) * PX, oyf = (L.H - Phf) * PY;
   const Pw0 = L.mw0 / SHOW, Ph0 = (Pw0 * IH) / IW, ox0 = L.W / 2 - FX * Pw0, oy0 = L.y0 + (L.mw0 * MASK.h) / MASK.w / 2 - FY * Ph0;
   for (let i = 0; i < STEPS; i++) {
     const q = i / STEPS, mw = L.mw0 * Math.pow(L.K, q), u = mw / MASK.w, w = smooth(q / PHOTO_Q);
@@ -179,7 +179,7 @@ export function Finale() {
     </>
   );
   return (
-    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l" style={{ "--photo": "url(/home/images/port-cargo.webp)" } as CSSProperties}>
+    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l" style={{ "--photo": "url(/home/images/ship-sketch.webp)" } as CSSProperties}>
       <div ref={stg} className="fz-stage">
         {wordmark}
         {!isStatic && <div ref={grad} className="fz-grad" aria-hidden="true" />}

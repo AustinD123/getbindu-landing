@@ -21,7 +21,8 @@ what ships here.
 ## Photo
 | Item | Licence | Commercial use |
 |---|---|---|
-| Unsplash photo 1605732562742 (shipping containers): the finale photo `public/home/images/port-cargo.webp`, shown through the mask of the wordmark and under the closing line | Unsplash Licence | Commercial use is allowed. **Swap for an unbranded photo before production:** the small "Hapag-Lloyd" door text and container IDs still show. |
+| Bindu ship sketch (from getbindu.com): the finale image `public/home/images/ship-sketch.webp` (copy of `public/images/hero-ship-sketch.webp`), shown through the mask of the wordmark and under the closing line | Bindu's own asset | No third-party licence. |
+| Unsplash photo 1605732562742 (shipping containers) `public/home/images/port-cargo.webp` | Unsplash Licence | No longer used on the page (file kept). Nothing to swap before production. |
 
 ## Own work
 The container ship, the product walk-through frame, the QR-style pattern (made
