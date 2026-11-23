@@ -216,3 +216,23 @@
 .bindu-home .hero .scene-label { bottom: 46px; }
 .bindu-home .hero .scene-btn { bottom: 40px; }
 @media (max-width: 860px) { .bindu-home .hero { padding-bottom: 112px; } .bindu-home .hero .scene-label { bottom: 46px; max-width: 48%; } }
+
+/* round 42: floating instrument bar, section dot, progress rail */
+.bindu-home .nav { background: rgb(var(--canvas-rgb) / 0.72); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); }
+.bindu-home .nav.is-scrolled { background: rgb(var(--canvas-rgb) / 0.72); }
+.bindu-home .nav-in { position: relative; }
+.bindu-home .nav-links { position: relative; }
+.bindu-home .nav-links a[aria-current="location"] { color: var(--on-dark); }
+.bindu-home .nav-dot { position: absolute; left: 0; top: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-yellow); pointer-events: none; }
+.bindu-home .nav-rail { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; overflow: hidden; pointer-events: none; }
+.bindu-home .nav-rail::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--hairline-dark); }
+.bindu-home .nav-rail-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--cobalt-signal); will-change: transform; }
+.bindu-home .nav-rail-tip { position: absolute; left: 0; bottom: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--brand-yellow); will-change: transform; }
+@media (min-width: 768px) {
+  .bindu-home .nav { inset: 12px 0 auto 0; margin-inline: auto; width: min(1320px, calc(100% - 2 * var(--gutter))); border: 1px solid var(--hairline-dark); border-radius: 14px; box-shadow: inset 0 1px 0 rgb(var(--cobalt-rgb) / 0.28); }
+  .bindu-home .nav.is-scrolled { border-color: var(--hairline-dark); }
+  .bindu-home .nav-in { padding: 0 16px; transition: height var(--t-base) var(--ease-out); }
+  .bindu-home .nav.is-scrolled .nav-in { height: 48px; }
+  .bindu-home .nav-rail { border-radius: 0 0 13px 13px; }
+}
+@media (prefers-reduced-motion: reduce) { .bindu-home .nav-in { transition: none; } }
