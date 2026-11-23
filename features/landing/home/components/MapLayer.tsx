@@ -264,7 +264,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     size();
     // the copy's measured rect changes once the webfonts land: re-measure the veil then
     document.fonts?.ready.then(() => { if (!done) { buildVeil(); draw(); } });
-    if (introRef.current) {
+    if (introRef.current && !isPhone()) {   // phones skip the intro (Intro.tsx), so they never download three.js for its dust
       // the intro's dust needs WebGL; the 2D path runs until (or instead of) it. OGL loads on its own chunk.
       const glEl = document.createElement("canvas");
       glEl.className = "intro-gl";
