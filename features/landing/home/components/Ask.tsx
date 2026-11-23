@@ -209,7 +209,7 @@ export function Ask() {
 
                 <g className="qa-relay">
                   <circle className="qa-puck" cx="420" cy="190" r="23" />
-                  <image href="/home/bindu-logo-64.png" x="400" y="170" width="40" height="40" />
+                  <image href="/home/bindu-logo-64.webp" x="400" y="170" width="40" height="40" />
                 </g>
 
                 <g>
