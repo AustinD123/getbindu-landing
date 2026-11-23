@@ -18,9 +18,11 @@ export function Rail() {
     };
     measure(); on();
     window.addEventListener("scroll", on, { passive: true });
-    window.addEventListener("resize", () => { measure(); on(); });
+    const re = () => { measure(); on(); };
+    window.addEventListener("resize", re);
+    window.addEventListener("guide:refresh", re);   // late sections hydrated: their pins moved what is below
     const t = window.setTimeout(() => { measure(); on(); }, 1500);
-    return () => { window.removeEventListener("scroll", on); window.clearTimeout(t); };
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", re); window.removeEventListener("guide:refresh", re); window.clearTimeout(t); };
   }, []);
   return (
     <div className="rail" aria-hidden="true">
