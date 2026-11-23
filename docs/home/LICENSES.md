@@ -70,3 +70,8 @@ Installed in `.claude/skills/`. Each carries a header: bindu-design wins every c
 
 ## Slop audit tooling (23 Nov 2026, r41-3)
 - heydamir/unslop (https://github.com/heydamir/unslop): CC-BY-4.0, commercial use yes with attribution. Attribution: "unslop by Damir Sokolovsky (@heydamir), CC BY 4.0." Installed as `.claude/skills/heydamir-unslop/` (SKILL.md, signs, tokens, visuals, refs, LICENSE). Scripts and images not copied. Dev-only; not shipped with the site.
+
+## SEO tooling (23 Nov 2026)
+- addyosmani/web-quality-skills (https://github.com/addyosmani/web-quality-skills): MIT, commercial use yes. Installed skill: seo (`.claude/skills/seo/`, SKILL.md, references/STRUCTURED-DATA.md, LICENSE.txt). Instructions only, dev-only; not shipped with the site.
+- squirrelscan/skills (https://github.com/squirrelscan/skills): MIT, commercial use yes. Installed skill: squirrelscan (`.claude/skills/squirrelscan/`, SKILL.md, references/, LICENSE.txt). Instructions and reference files for local audit workflows; not shipped with the site.
+- AgriciDaniel/claude-blog (https://github.com/AgriciDaniel/claude-blog): MIT, commercial use yes. Installed skill: blog-analyze (`.claude/skills/blog-analyze/`, SKILL.md, LICENSE.txt). Content and SEO scoring rules for blog articles; not shipped with the site.
