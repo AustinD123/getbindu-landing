@@ -1,7 +1,7 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import Lenis from "lenis";
+import type Lenis from "lenis";
 import { useSyncExternalStore } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -19,43 +19,68 @@ export const finePointer = (): boolean =>
 
 let lenis: Lenis | null = null;
 let stopLenis: (() => void) | null = null;
+let locked = false;
 
 /* Inertial scroll (Lenis) driven by GSAP's ticker so ScrollTrigger scenes stay in sync.
    Off under reduced motion: native scroll, no hijack. Returns a cleanup that puts everything back, so leaving the
    homepage (or a dev remount) leaves no Lenis, ticker callback or click handler behind. */
 export function startSmoothScroll(): () => void {
-  if (reduceMotion() || lenis) return () => {};
-  const l = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false, autoRaf: false });
-  lenis = l;
-  l.on("scroll", ScrollTrigger.update);
-  const tick = (time: number) => l.raf(time * 1000);
-  gsap.ticker.add(tick);
-  gsap.ticker.lagSmoothing(0);
-  // in-page anchors scroll through Lenis
-  const onClick = (e: MouseEvent) => {
-    const a = (e.target as HTMLElement).closest?.('a[href^="#"]') as HTMLAnchorElement | null;
-    if (!a) return;
-    const id = a.getAttribute("href");
-    if (!id || id === "#") return;
-    const el = document.querySelector(id);
-    if (!el) return;
-    e.preventDefault();
-    l.scrollTo(el as HTMLElement, { offset: -64 });
-    history.replaceState(null, "", id);
+  if (reduceMotion() || lenis || stopLenis) return () => {};
+  let dead = false;
+  let cancelWait: () => void = () => {};
+  stopLenis = () => { dead = true; cancelWait(); };
+  /* Lenis is not needed for first paint: on phones (touch scroll is native, Lenis only smooths wheels) it loads on idle, after the load event;
+     elsewhere it loads at once. Its chunk is dynamic so it stays out of the hydration bundle. */
+  const phone = window.matchMedia("(max-width: 767px)").matches;
+  const boot = () => {
+    import("lenis").then(({ default: LenisCtor }) => {
+      if (dead) return;
+      const l = new LenisCtor({ lerp: 0.1, smoothWheel: true, syncTouch: false, autoRaf: false });
+      lenis = l;
+      if (locked) l.stop();
+      l.on("scroll", ScrollTrigger.update);
+      const tick = (time: number) => l.raf(time * 1000);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+      // in-page anchors scroll through Lenis
+      const onClick = (e: MouseEvent) => {
+        const a = (e.target as HTMLElement).closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+        if (!a) return;
+        const id = a.getAttribute("href");
+        if (!id || id === "#") return;
+        const el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        l.scrollTo(el as HTMLElement, { offset: -64 });
+        history.replaceState(null, "", id);
+      };
+      document.addEventListener("click", onClick);
+      stopLenis = () => {
+        document.removeEventListener("click", onClick);
+        gsap.ticker.remove(tick);
+        gsap.ticker.lagSmoothing(500, 33);
+        l.destroy();
+        lenis = null;
+        stopLenis = null;
+      };
+    });
   };
-  document.addEventListener("click", onClick);
-  stopLenis = () => {
-    document.removeEventListener("click", onClick);
-    gsap.ticker.remove(tick);
-    gsap.ticker.lagSmoothing(500, 33);
-    l.destroy();
-    lenis = null;
-    stopLenis = null;
-  };
+  if (!phone) boot();
+  else {
+    const go = () => { cancelWait(); boot(); };
+    const ric = (window as unknown as { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
+    const start = () => {
+      const h = ric ? ric(go, { timeout: 2500 }) : window.setTimeout(go, 1200);
+      cancelWait = () => (ric ? (window as unknown as { cancelIdleCallback: (n: number) => void }).cancelIdleCallback(h) : clearTimeout(h));
+    };
+    if (document.readyState === "complete") start();
+    else { window.addEventListener("load", start, { once: true }); cancelWait = () => window.removeEventListener("load", start); }
+  }
   return () => stopLenis?.();
 }
 
 export function lockScroll(lock: boolean) {
+  locked = lock;
   if (lenis) (lock ? lenis.stop() : lenis.start());
   document.documentElement.style.overflow = lock ? "hidden" : "";
 }
