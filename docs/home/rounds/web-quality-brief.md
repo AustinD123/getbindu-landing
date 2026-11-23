@@ -33,6 +33,23 @@ while scrolling.
 - Must NOT change: the look in either theme, copy, motion choreography, reduced-motion
   and phone behaviour. Performance only.
 
+## SEO skill search (added 23 Nov 2026, before the SEO work starts)
+- Find agent skills for SEO on a Next.js marketing site: technical SEO (metadata, canonical,
+  sitemap, structured data: Organization, SoftwareApplication with Offer, FAQPage), content
+  indexability (text in HTML, not only in canvas), Core Web Vitals as a ranking signal,
+  internal linking between `/` and the regulation pages, and keeping existing blog URLs.
+- Start with: .claude/skills/seo/ is NOT installed yet; the source is
+  github.com/addyosmani/web-quality-skills (skills/seo, MIT). Also look at
+  github.com/GetBindu/awesome-claude-code-and-skills (Marketing & Content section),
+  AgriciDaniel/claude-blog (already used for the blog), squirrelscan/squirrelscan (MIT,
+  site crawler with SEO rules), and any well-maintained alternatives you find.
+- For each candidate: what it does, licence (commercial use?), last update, overlap with
+  what is installed (.claude/skills/), and whether it needs scripts or network access.
+- Do NOT install anything and do NOT change robots.ts or noindex (CLAUDE.md: this copy must
+  never be indexed; SEO work is prepared here and goes live only through shelley).
+- Write docs/home/seo-skills-shortlist.md (under 40 lines): a table plus a recommended set
+  of at most 3, with one line on why.
+
 ## Report
 docs/home/web-quality-report.md, under 50 lines: before/after table (LCP, CLS, INP/TBT,
 JS KB, Lighthouse scores mobile/desktop, both themes), one line per commit, anything not
