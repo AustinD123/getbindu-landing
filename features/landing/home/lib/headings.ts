@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger, SplitText, reduceMotion } from "./motion";
+import { isPending, onReady } from "./ready";
 
 /* Round 20, item 2: one heading system site-wide. Every section heading (h2) reveals line by line: each line slides up 100% inside its own
    mask (60ms stagger, expo-out), tied to the scroll entry and played in reverse when you scroll back above it. GSAP SplitText (lines +
@@ -8,11 +9,14 @@ export function startHeadings(): () => void {
   if (reduceMotion()) return () => {};
   const splits: SplitText[] = [];
   const tls = new Map<Element, gsap.core.Timeline>();
-  let batch: ScrollTrigger[] = [];
-  let dead = false;
+  const batches: ScrollTrigger[][] = [];
+  let dead = false, fontsReady = false;
+  // runs for every heading not split yet; a section that has not hydrated yet is skipped (splitting its text would break hydration) and picked up when it is ready
   const run = () => {
-    if (dead) return;
-    document.querySelectorAll<HTMLElement>("main h2:not(.wm)").forEach((h) => {
+    if (dead || !fontsReady) return;
+    const fresh = Array.from(document.querySelectorAll<HTMLElement>("main h2:not(.wm)")).filter((h) => !tls.has(h) && !isPending(h));
+    if (!fresh.length) return;
+    fresh.forEach((h) => {
       splits.push(SplitText.create(h, {
         type: "lines", mask: "lines", maskClass: "h-mask", autoSplit: true, aria: "auto",
         // r24: one paused timeline per heading (lines up, then the yellow full stop); a single ScrollTrigger.batch plays it forward when the heading
@@ -39,13 +43,15 @@ export function startHeadings(): () => void {
         },
       }));
     });
-    batch = ScrollTrigger.batch(Array.from(tls.keys()) as HTMLElement[], {
+    batches.push(ScrollTrigger.batch(fresh, {
       start: "top 92%",
       onEnter: (els) => els.forEach((e) => tls.get(e)?.play()),
       onLeaveBack: (els) => els.forEach((e) => tls.get(e)?.reverse()),
-    });
-    ScrollTrigger.refresh();
+    }));
+    if (!late) ScrollTrigger.refresh();   // a late section's refresh is the one ready.ts does once per batch
   };
-  (document.fonts?.ready ?? Promise.resolve()).then(run);
-  return () => { dead = true; batch.forEach((t) => t.kill()); splits.forEach((s) => s.revert()); };
+  let late = false;
+  const off = onReady(() => { late = true; run(); });
+  (document.fonts?.ready ?? Promise.resolve()).then(() => { fontsReady = true; run(); late = true; });
+  return () => { dead = true; off(); batches.forEach((b) => b.forEach((t) => t.kill())); splits.forEach((s) => s.revert()); };
 }
