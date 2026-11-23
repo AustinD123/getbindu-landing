@@ -1,6 +1,48 @@
 import type { Metadata } from "next";
 import { HomePage } from "@/features/landing/home/home-page";
 import { RedirectIfAuthenticated } from "@/features/landing/chrome/redirect-if-authenticated";
+import { faq } from "@/features/landing/home/content";
+import { SITE_URL } from "@/features/landing/seo/team";
+
+// Homepage-only schema. Organization and WebSite come from LandingJsonLd in the layout; this adds the
+// product with its one published price (EUDR dossier, EUR, excl. VAT) and the FAQ answers shown on the page.
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${SITE_URL}#app`,
+      name: "Bindu",
+      url: SITE_URL,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web",
+      provider: { "@id": `${SITE_URL}#org` },
+      offers: {
+        "@type": "Offer",
+        name: "EUDR due-diligence dossier",
+        price: "249",
+        priceCurrency: "EUR",
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: "249",
+          priceCurrency: "EUR",
+          valueAddedTaxIncluded: false,
+          unitText: "per EUDR dossier",
+        },
+      },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: faq.items
+        .filter((f) => f.a)
+        .map((f) => ({
+          "@type": "Question",
+          name: f.q,
+          acceptedAnswer: { "@type": "Answer", text: f.a },
+        })),
+    },
+  ],
+};
 
 export const metadata: Metadata = {
   title: {
@@ -31,6 +73,12 @@ export const metadata: Metadata = {
 export default function LandingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(homeJsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <RedirectIfAuthenticated />
       <HomePage />
     </>
