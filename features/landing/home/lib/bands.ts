@@ -7,6 +7,7 @@ import "../styles/bands.css";
 import { gsap, ScrollTrigger, reduceMotion } from "./motion";
 import { track } from "./pos";
 import { tRaf, tCaf } from "./loop";
+import { isPending, onReady } from "./ready";
 
 /* r40-4: canvas and a tint or panel alternate down the page, so no two neighbours share a band */
 const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "tint", examples: "canvas", pricing: "tint", faq: "canvas", demo: "panel" };
@@ -48,21 +49,32 @@ export function startBands(): () => void {
   // the rise-in: the body of each section (not its headline, which has its own reveal) comes up 12px and in, one block after another, as the section enters
   const kills: (() => void)[] = [];
   const pick = (id: string, sel: string) => { const s = secs.find((x) => x.id === id); return s ? Array.from(s.querySelectorAll<HTMLElement>(sel)) : []; };
-  const groups: [string, HTMLElement[]][] = [
-    ["pains", pick("pains", ".sec-head > *:not(h2), .container > *:not(.sec-head)")],
-    ["examples", pick("examples", ".ex-head > *:not(h2)")],
-    ["pricing", pick("pricing", ".sec-head > *:not(h2), .container > *:not(.sec-head)")],
-    ["faq", pick("faq", ".sec-head > *:not(h2), .faq-item")],
-  ];
-  for (const [id, els] of groups) {
-    const sec = secs.find((x) => x.id === id);
-    const list = els.filter((e) => !els.some((o) => o !== e && o.contains(e)));   // outermost blocks only
-    if (!sec || !list.length) continue;
-    gsap.set(list, { y: 12, opacity: 0 });
-    const tl = gsap.to(list, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out", stagger: { each: Math.min(0.06, 0.5 / list.length) }, paused: true });
-    const st = ScrollTrigger.create({ trigger: sec, start: "top 82%", end: "bottom top", onEnter: () => { tl.play(); }, onEnterBack: () => { tl.play(); }, onLeaveBack: () => { tl.reverse(); } });
-    kills.push(() => { st.kill(); tl.kill(); gsap.set(list, { clearProps: "transform,opacity" }); });
-  }
+  const GROUP_SEL: Record<string, string> = {
+    pains: ".sec-head > *:not(h2), .container > *:not(.sec-head)",
+    examples: ".ex-head > *:not(h2)",
+    pricing: ".sec-head > *:not(h2), .container > *:not(.sec-head)",
+    faq: ".sec-head > *:not(h2), .faq-item",
+  };
+  const groups = Object.keys(GROUP_SEL).map((id) => [id] as [string]);
+  const done = new Set<string>();
+  // a section that has not hydrated yet is left alone (hiding its blocks would not survive hydration) and set up when it is ready
+  const setup = () => {
+    for (const [id] of groups) {
+      const sec = secs.find((x) => x.id === id);
+      if (!sec || done.has(id) || isPending(sec)) continue;
+      done.add(id);
+      const els = pick(id, GROUP_SEL[id]!);
+      const list = els.filter((e) => !els.some((o) => o !== e && o.contains(e)));   // outermost blocks only
+      if (!list.length) continue;
+      gsap.set(list, { y: 12, opacity: 0 });
+      const tl = gsap.to(list, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out", stagger: { each: Math.min(0.06, 0.5 / list.length) }, paused: true });
+      const st = ScrollTrigger.create({ trigger: sec, start: "top 82%", end: "bottom top", onEnter: () => { tl.play(); }, onEnterBack: () => { tl.play(); }, onLeaveBack: () => { tl.reverse(); } });
+      kills.push(() => { st.kill(); tl.kill(); gsap.set(list, { clearProps: "transform,opacity" }); });
+    }
+  };
+  setup();
+  const off = onReady(setup);
+  kills.push(off);
   return () => {
     window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); kills.forEach((k) => k());
     root.classList.remove("bands-fx"); root.style.backgroundColor = ""; secs.forEach((s) => delete s.dataset.band);
