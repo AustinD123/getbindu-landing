@@ -52,7 +52,7 @@ function layout(W: number, H: number): Lay {
   const x0 = (W - mw0) / 2, y0 = (H - mh0) / 2, u = mw0 / MASK.w;
   const px = x0 + MASK.origin.x * u, py = y0 + MASK.origin.y * u;
   const R = Math.max(Math.hypot(px, py), Math.hypot(W - px, py), Math.hypot(px, H - py), Math.hypot(W - px, H - py));
-  const K = Math.max(6, (2.7 * R) / (STROKE * u));   // until the stroke is wider than the viewport seen from the origin (a little more for the bend of the bowl)
+  const K = Math.max(6, (1.5 * R) / (STROKE * u));   // until the stroke is wider than the viewport seen from the origin (a little more for the bend of the bowl)
   return { W, H, mw0, x0, y0, px, py, K, dx: x0 + MASK.dot.cx * u, dy: y0 + MASK.dot.cy * u, dw: 2 * MASK.dot.rx * u, dh: 2 * MASK.dot.ry * u };
 }
 const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
@@ -93,6 +93,9 @@ export function Finale() {
 
   useEffect(() => {
     const sec = pin.current!, stage = stg.current!, photo = ph.current!, dot = dotEl.current!;
+    // r42: the photo is fetched only when the finale is about 2 viewports away
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", "url(/home/images/ship-sketch.webp)"); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
+    io.observe(sec);
     const tk = track(sec), dotDots = Array.from(dot.querySelectorAll<SVGCircleElement>("circle"));
     let L = layout(stage.clientWidth, stage.clientHeight), rows: Row[] = [], lastP = -1, willChange = false, formed = false, dashed = false, resolved = false;
     const zp = { p: 0 };
@@ -102,7 +105,7 @@ export function Finale() {
     function apply(p: number) {
       if (p === lastP) return;
       lastP = p; fin.z = p;
-      const q = c01(p / 0.8), ct = smooth((p - 0.78) / 0.22);
+      const q = c01(p), ct = smooth((p - 0.78) / 0.22);
       const zooming = q > 0 && q < 1;
       if (zooming !== willChange) { willChange = zooming; photo.style.willChange = zooming ? "transform" : ""; }
       if (q >= 1) {
@@ -138,7 +141,7 @@ export function Finale() {
     const onResize = () => measure();
     window.addEventListener("resize", onResize);
     measure();
-    if (isStatic) { stage.classList.add("is-formed"); return () => window.removeEventListener("resize", onResize); }
+    if (isStatic) { stage.classList.add("is-formed"); return () => { io.disconnect(); window.removeEventListener("resize", onResize); }; }
 
     // the ship's part: the master time fin.t sets how much of the dot of the i exists (the dots that have flown in) and the sounds
     function paint() {
@@ -164,7 +167,7 @@ export function Finale() {
     let rt = 0, lastTop = tk.top;
     const ro = new ResizeObserver(() => { window.clearTimeout(rt); rt = window.setTimeout(() => { const t = sec.getBoundingClientRect().top + window.scrollY; if (Math.abs(t - lastTop) > 2) { lastTop = t; ScrollTrigger.refresh(); } }, 250); });
     ro.observe(getRoot());
-    return () => { ro.disconnect(); window.clearTimeout(rt); window.removeEventListener("resize", onResize); gsap.killTweensOf(fin); fin.t = 0; fin.z = 0; tween.scrollTrigger?.kill(); tween.kill(); handoff.scrollTrigger?.kill(); handoff.kill(); };
+    return () => { io.disconnect(); ro.disconnect(); window.clearTimeout(rt); window.removeEventListener("resize", onResize); gsap.killTweensOf(fin); fin.t = 0; fin.z = 0; tween.scrollTrigger?.kill(); tween.kill(); handoff.scrollTrigger?.kill(); handoff.kill(); };
   }, [isStatic]);
 
   const wordmark = (
@@ -179,7 +182,7 @@ export function Finale() {
     </>
   );
   return (
-    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l" style={{ "--photo": "url(/home/images/ship-sketch.webp)" } as CSSProperties}>
+    <section ref={pin} className={`band-dark finale${isStatic ? " is-static" : ""}`} id="demo" aria-labelledby="finale-h" data-guide-anchor="finale" data-guide-side="l">
       <div ref={stg} className="fz-stage">
         {wordmark}
         {!isStatic && <div ref={grad} className="fz-grad" aria-hidden="true" />}

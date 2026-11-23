@@ -11,9 +11,10 @@ export const shipHome = { x: 70, y: 500, ship: true, k: 1, dock: 0, pres: 1, brk
 export const FIN = { fly: 1.2, stag: 0.25, formed: 1.45, rests: [0, 1.45] };
 /* r32-1: the ship to dot hand-off plays inside the finale's pin, in viewport heights from the pin start: a short hold (ship docked on the right), then fin.t runs 0 to FIN.formed
    over FINP.span (scrubbed, 0.8), then the zoom begins at FINP.zoom. The Guide holds the ship at its dock until the zoom starts. */
-export const FINP = { hold: 0.2, span: 1.2, zoom: 1.4, zoomLen: 1.5 };
+export const FINP = { hold: 0.2, span: 1.2, zoom: 1.4, zoomLen: 1.55 };
+/* r42: the zoom ends where the footer starts to rise (spacer minus one viewport: 295vh, 185vh on phones), so zoom + zoomLen = that point. */
 /* r35: on phones the finale pins for about 285svh instead of 395 (a 10vh hold, 80vh of hand-off, the zoom from 90vh for 90vh; the CSS spacer matches). Updated when the window crosses 767px. */
-const syncFinp = () => { const p = isPhone(); FINP.hold = p ? 0.1 : 0.2; FINP.span = p ? 0.8 : 1.2; FINP.zoom = p ? 0.9 : 1.4; FINP.zoomLen = p ? 0.9 : 1.5; };
+const syncFinp = () => { const p = isPhone(); FINP.hold = p ? 0.1 : 0.2; FINP.span = p ? 0.8 : 1.2; FINP.zoom = p ? 0.9 : 1.4; FINP.zoomLen = p ? 0.95 : 1.55; };
 syncFinp();
 if (typeof window !== "undefined") onPhoneChange(syncFinp);
 /* t: the master time; z: the zoom's progress 0 to 1 (r28-3) */
