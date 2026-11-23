@@ -2,7 +2,7 @@
 
 /* The homepage, composed in the mockup's section order (v3 App.tsx, minus its hash-route sub-pages and the "Mockup"
    badge). One client boundary: the sections server-render for the text, and everything animated starts in effects. */
-import { useEffect, useLayoutEffect } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect } from "react";
 import "./styles/reset.css";
 import "./styles/tokens.css";
 import "./styles/components.css";
@@ -23,14 +23,9 @@ import { startScenes } from "./lib/scenes";
 import { startHeadings } from "./lib/headings";
 import { startBands } from "./lib/bands";
 import { useRouteWipe } from "./lib/route";
+import { addPending, markReady, gate, guardAnchors, afterSettle } from "./lib/ready";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
-import { ShipmentJourney } from "./components/ShipmentJourney";
-import { Theatre } from "./components/Theatre";
-import { Ask } from "./components/Ask";
-import { Pricing } from "./components/Pricing";
-import { Faq, Finale } from "./components/Closing";
-import { Examples } from "./components/Examples";
 import { Statement, BeforeAfter } from "./components/Story";
 import { Intro } from "./components/Intro";
 import { Guide } from "./components/Guide";
@@ -41,6 +36,30 @@ import "./styles/subpages.css";
 import "./styles/states.css";
 // round 35: phones only (767px and under), after everything else
 import "./styles/mobile.css";
+
+/* Below-the-fold sections hydrate late. Their HTML is in the page from the start (same height, same text), so nothing shifts and the text stays
+   crawlable; only their JS and hydration wait, until the section is within 1.5 viewports or the page is idle (lib/ready.ts). */
+/* On the server the section renders for real, inside the same Suspense boundary, so its HTML is inline (not streamed in later); the client side
+   swaps in a lazy import that waits for the gate. `sync` is a build-time constant: the require is dropped from the client bundle. */
+const late = (id: string, sync: React.ComponentType | null | undefined, load: () => Promise<Record<string, unknown>>, name: string) => {
+  const C = sync ?? lazy(() => gate(id).then(load).then((m) => ({ default: m[name] as React.ComponentType })));
+  const Late = () => {
+    addPending(id);
+    return <Suspense fallback={null}><C /><Ready id={id} /></Suspense>;
+  };
+  return Late;
+};
+function Ready({ id }: { id: string }) {
+  useEffect(() => { markReady(id); }, [id]);
+  return null;
+}
+const Theatre = late("how", typeof window === "undefined" ? (require("./components/Theatre") as Record<string, React.ComponentType>).Theatre : null, () => import("./components/Theatre"), "Theatre");
+const Ask = late("ask", typeof window === "undefined" ? (require("./components/Ask") as Record<string, React.ComponentType>).Ask : null, () => import("./components/Ask"), "Ask");
+const ShipmentJourney = late("shipment", typeof window === "undefined" ? (require("./components/ShipmentJourney") as Record<string, React.ComponentType>).ShipmentJourney : null, () => import("./components/ShipmentJourney"), "ShipmentJourney");
+const Examples = late("examples", typeof window === "undefined" ? (require("./components/Examples") as Record<string, React.ComponentType>).Examples : null, () => import("./components/Examples"), "Examples");
+const Pricing = late("pricing", typeof window === "undefined" ? (require("./components/Pricing") as Record<string, React.ComponentType>).Pricing : null, () => import("./components/Pricing"), "Pricing");
+const Faq = late("faq", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Faq : null, () => import("./components/Closing"), "Faq");
+const Finale = late("demo", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Finale : null, () => import("./components/Closing"), "Finale");
 
 export function HomePage() {
   useRouteWipe();
@@ -55,13 +74,15 @@ export function HomePage() {
     const stop = startScenes();
     const stopHeads = startHeadings();
     const stopBands = startBands();
+    const stopAnchors = guardAnchors();
     // an anchor in the address (/#pricing) scrolls to its section once the page has mounted; otherwise start at the top
     const id = location.hash.slice(1);
     const target = id ? document.getElementById(id) : null;
-    if (target) window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 64, behavior: "auto" });
+    const toTarget = () => window.scrollTo({ top: target!.getBoundingClientRect().top + window.scrollY - 64, behavior: "auto" });
+    if (target) { toTarget(); afterSettle(toTarget); }   // sections above hydrate after this and add their pin spacers: land again once they have
     else window.scrollTo(0, 0);
     return () => {
-      stop(); stopHeads(); stopBands(); stopScroll(); html.style.scrollPaddingTop = "";
+      stop(); stopHeads(); stopBands(); stopAnchors(); stopScroll(); html.style.scrollPaddingTop = "";
     };
   }, []);
   return (

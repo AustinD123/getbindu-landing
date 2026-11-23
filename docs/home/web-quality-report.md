@@ -38,3 +38,17 @@ Observed (non-simulated) mobile LCP after the intro skip: about 0.4 to 0.75 s.
 - Tried and reverted: phone-idle SplitText for headings (no median change).
 - Not done: below-the-fold section lazy chunks. headings, bands and Guide query the whole `main` DOM at mount, so lazy sections would need those rewritten per section; too risky for the look and pins. Theatre already imports its GSAP plugins lazily. Inter italic preload is in the shared document-shell (affects other pages); left.
 - Desktop measured 96 here, not 88; three.js (OGL) is already its own chunk, loaded inside the intro, left as is. Simulated mobile LCP (4.2 s) is 89% render delay from hydration; observed LCP is ~0.5 s.
+
+## Pass 3 (medians of 3, headless Lighthouse, production build; machine noisy, so compare same-session runs)
+
+| Run | Perf | LCP | TBT | CLS |
+|---|---|---|---|---|
+| Mobile, before | 70 | 1.56 s | 2408 ms | 0 |
+| Mobile, after | 79 | 1.52 s | 822 ms | 0 |
+| Desktop, before | 72 | 0.4 s (bimodal, 0.4 or 1.7) | 615 ms | 0.003 |
+| Desktop, after | 73 | 1.56 s (bimodal) | 423 ms | 0.003 |
+
+- Approach: every section stays in the server HTML (same height and text, so no placeholders and no layout shift). Full Circle, Ask, journey, Examples, Pricing, FAQ and finale are `Suspense` + `lazy` boundaries in `home-page.tsx` that hydrate when within 1.5 viewports or on idle (one per idle slot), whichever first. `lib/ready.ts` holds the registry: heading SplitText and band rise-ins skip a section until it hydrates, then pick it up; one debounced `ScrollTrigger.refresh()`, `lenis.resize()` and `guide:refresh` per batch (Guide and Rail re-measure).
+- In-page links (`#how`, `#pricing`, `#faq`) mount everything first, then follow; a cold `/#faq` mounts all and lands again after settling (verified top = 64px at 375 and 1440).
+- Found on the way: the server must render the real component inside the same boundary (build-time `require`, dropped from the client bundle), else sections stream in late; and Lenis caches its scroll limit, so it needs `resize()` after late pins (the page stalled 1.8k px short of the end without it).
+- Checked: reduced motion screenshots identical to before at 6 stops, both viewports; page height identical; wheel scroll reaches the end; no console errors; no horizontal scroll. Motion-mode screenshots differ only by scrub timing.

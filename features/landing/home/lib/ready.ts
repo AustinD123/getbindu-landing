@@ -1,7 +1,7 @@
 /* Late sections. Every section is in the server HTML. Below-the-fold ones hydrate later (home-page.tsx, Lazy), so the page-wide systems that
    query `main` once (heading reveals, band rise-ins) must skip a section until it has hydrated, and pick it up when it does.
    Systems: isPending(el) to skip, onReady(fn) to be told, afterSettle(fn) to run once the layout has settled (pins in, one refresh). */
-import { ScrollTrigger } from "./motion";
+import { ScrollTrigger, getLenis } from "./motion";
 import { invalidatePositions } from "./pos";
 
 const pending = new Set<string>();
@@ -23,6 +23,7 @@ export function markReady(id: string) {
   window.clearTimeout(timer);
   timer = window.setTimeout(() => {
     ScrollTrigger.refresh();
+    getLenis()?.resize();   // Lenis caches the scroll limit; the pin spacers of late sections made the page taller
     invalidatePositions();
     window.dispatchEvent(new Event("guide:refresh"));
     timer = 0;
