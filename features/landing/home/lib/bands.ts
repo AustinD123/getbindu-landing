@@ -10,13 +10,16 @@ import { tRaf, tCaf } from "./loop";
 import { isPending, onReady } from "./ready";
 
 /* r40-4: canvas and a tint or panel alternate down the page, so no two neighbours share a band */
-const BANDS: Record<string, string> = { top: "canvas", statement: "tint", pains: "canvas", how: "panel", ask: "canvas", shipment: "tint", examples: "canvas", pricing: "tint", faq: "canvas", demo: "panel" };
+const BANDS: Record<string, string> = { top: "canvas", statement: "tint", story: "canvas", how: "panel", shipment: "tint", examples: "canvas", voices: "tint", rules: "canvas", pricing: "tint", faq: "canvas", demo: "panel" };
 
 export function startBands(): () => void {
   const secs = Array.from(document.querySelectorAll<HTMLElement>("main > section")).filter((s) => BANDS[s.id]);
-  secs.forEach((s) => { s.dataset.band = BANDS[s.id]; });
+  // a section that has not hydrated yet is not touched (an attribute React did not render breaks its hydration); it is tagged when it is ready
+  const tag = () => secs.forEach((s) => { if (!isPending(s)) s.dataset.band = BANDS[s.id]; });
+  tag();
+  const offTag = onReady(tag);
   const root = getRoot();
-  if (reduceMotion() || secs.length < 2) return () => secs.forEach((s) => delete s.dataset.band);
+  if (reduceMotion() || secs.length < 2) return () => { offTag(); secs.forEach((s) => delete s.dataset.band); };
   root.classList.add("bands-fx");
   const tk = secs.map((s) => track(s));   // cached positions pick the boundaries near the viewport; only those are read fresh
   let raf = 0, last = "";
@@ -50,7 +53,8 @@ export function startBands(): () => void {
   const kills: (() => void)[] = [];
   const pick = (id: string, sel: string) => { const s = secs.find((x) => x.id === id); return s ? Array.from(s.querySelectorAll<HTMLElement>(sel)) : []; };
   const GROUP_SEL: Record<string, string> = {
-    pains: ".sec-head > *:not(h2), .container > *:not(.sec-head)",
+    voices: ".vc-head > *:not(h2)",
+    rules: ".rl-head > *:not(h2)",
     examples: ".ex-head > *:not(h2)",
     pricing: ".sec-head > *:not(h2), .container > *:not(.sec-head)",
     faq: ".sec-head > *:not(h2), .faq-item",
@@ -76,7 +80,7 @@ export function startBands(): () => void {
   const off = onReady(setup);
   kills.push(off);
   return () => {
-    window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); kills.forEach((k) => k());
+    window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); kills.forEach((k) => k()); offTag();
     root.classList.remove("bands-fx"); root.style.backgroundColor = ""; secs.forEach((s) => delete s.dataset.band);
   };
 }
