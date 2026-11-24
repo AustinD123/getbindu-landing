@@ -224,15 +224,30 @@
 .bindu-home .nav-links { position: relative; }
 .bindu-home .nav-links a[aria-current="location"] { color: var(--on-dark); }
 .bindu-home .nav-dot { position: absolute; left: 0; top: 0; width: 6px; height: 6px; border-radius: 50%; background: var(--brand-yellow); pointer-events: none; }
-.bindu-home .nav-rail { position: absolute; left: 0; right: 0; bottom: 0; height: 5px; overflow: hidden; pointer-events: none; }
-.bindu-home .nav-rail::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--hairline-dark); }
-.bindu-home .nav-rail-fill { position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--cobalt-signal); will-change: transform; }
-.bindu-home .nav-rail-tip { position: absolute; left: 0; bottom: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--brand-yellow); will-change: transform; }
 @media (min-width: 768px) {
-  .bindu-home .nav { inset: 12px 0 auto 0; margin-inline: auto; width: min(1320px, calc(100% - 2 * var(--gutter))); border: 1px solid var(--hairline-dark); border-radius: 14px; box-shadow: inset 0 1px 0 rgb(var(--cobalt-rgb) / 0.28); }
+  .bindu-home .nav { inset: 12px 0 auto 0; margin-inline: auto; width: min(1320px, calc(100% - 2 * var(--gutter))); border: 1px solid var(--hairline-dark); border-radius: var(--nav-r); box-shadow: inset 0 1px 0 rgb(var(--cobalt-rgb) / 0.28); }
   .bindu-home .nav.is-scrolled { border-color: var(--hairline-dark); }
   .bindu-home .nav-in { padding: 0 16px; transition: height var(--t-base) var(--ease-out); }
   .bindu-home .nav.is-scrolled .nav-in { height: 48px; }
-  .bindu-home .nav-rail { border-radius: 0 0 13px 13px; }
 }
 @media (prefers-reduced-motion: reduce) { .bindu-home .nav-in { transition: none; } }
+
+/* round 43: the island. GSAP owns width, the pills and the section label; CSS only lays them out. */
+.bindu-home .nav { --nav-r: 14px; }
+.bindu-home .nav-rest { display: contents; }
+@media (min-width: 861px) {
+  .bindu-home .nav-rest { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; flex: none; }
+  .bindu-home .nav.is-island { overflow: clip; }
+  .bindu-home .nav.is-island .nav-in { justify-content: flex-start; }
+  .bindu-home .nav-rest .nav-links { margin-left: 0; }
+  .bindu-home .nav-brand { flex: none; }
+}
+.bindu-home .nav-links > a, .bindu-home .nav-reg { position: relative; z-index: 1; }
+.bindu-home .nav-pill, .bindu-home .nav-hover { position: absolute; left: 0; top: 0; height: 26px; border-radius: 999px; box-sizing: border-box; pointer-events: none; z-index: 0; }
+.bindu-home .nav-pill { height: 28px; background: rgb(var(--cobalt-rgb) / 0.16); border: 1px solid rgb(var(--cobalt-rgb) / 0.55); }
+.bindu-home .nav-hover { height: 28px; background: rgb(var(--fg-rgb) / 0.07); border: 1px solid rgb(var(--fg-rgb) / 0.10); }
+.bindu-home .nav-dot { z-index: 1; }
+.bindu-home .nav-links { gap: 36px; }
+
+/* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
+.bindu-home .nav.is-moving { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(var(--canvas-rgb) / 0.94); }

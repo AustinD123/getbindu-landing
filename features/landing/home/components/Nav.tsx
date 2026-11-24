@@ -73,6 +73,14 @@ function RegulationsMenu() {
   );
 }
 
+const NAV_LINKS = nav.links;
+
+/* r43: a pill box around a link, in the coordinates of the links row (so it works for the Regulations button too). */
+function pillRect(row: HTMLElement, a: HTMLElement) {
+  const r = a.getBoundingClientRect(), o = row.getBoundingClientRect();
+  return { x: r.left - o.left - 22, y: r.top - o.top + r.height / 2 - 14, width: r.width + 34 };
+}
+
 /* x.ai nav: mark + links + the hero treatment (round 3, change 5): an OUTLINE pill for Estimate and a text link for
    the demo. The nav is on every view, so it never adds a filled pill: the filled one belongs to each section's main
    CTA (one filled pill per view). Under 520px the demo link moves into the drawer. Frosted once the page scrolls (Apple). */
@@ -83,17 +91,19 @@ export function Nav() {
   const drawer = useRef<HTMLDivElement>(null);
   const links = useRef<HTMLElement>(null);
   const dot = useRef<HTMLSpanElement>(null);
-  const rail = useRef<HTMLDivElement>(null);
-  const fill = useRef<HTMLSpanElement>(null);
-  const tip = useRef<HTMLSpanElement>(null);
+  const header = useRef<HTMLElement>(null);
+  const navIn = useRef<HTMLDivElement>(null);
+  const restEl = useRef<HTMLDivElement>(null);
+  const brandEl = useRef<HTMLAnchorElement>(null);
+  const pill = useRef<HTMLSpanElement>(null);      // r43: the active pill (slides and resizes under the scroll-spy)
+  const hov = useRef<HTMLSpanElement>(null);       // r43: the quieter hover pill (follows the pointer, returns to the active link)
   const [mounted, setMounted] = useState(false);   // the dot and the rail exist only once GSAP can own them (no CSS hidden states)
   const [current, setCurrent] = useState<string | null>(null);   // r42-2: the section in view (an id from nav.links), or null
   useEffect(() => setMounted(true), []);
   useLayoutEffect(() => {
     if (!mounted) return;
     gsap.set(dot.current, { opacity: 0 });
-    gsap.set(fill.current, { scaleX: 0, transformOrigin: "0 50%" });
-    gsap.set(tip.current, { x: 0 });
+    gsap.set([pill.current, hov.current], { opacity: 0 });
   }, [mounted]);
   /* r42-2: scroll-spy. One ScrollTrigger per anchored section; a section that has not hydrated yet is retried when it is ready. */
   useEffect(() => {
@@ -120,33 +130,134 @@ export function Nav() {
     if (!mounted) return;
     const d = dot.current, nl = links.current;
     if (!d || !nl) return;
+    const activeRect = () => { const a = current ? nl.querySelector<HTMLElement>(`a[href="#${current}"]`) : null; return a && a.offsetWidth ? pillRect(nl, a) : null; };
     const at = () => {
       const a = current ? nl.querySelector<HTMLElement>(`a[href="#${current}"]`) : null;
-      return a && a.offsetWidth ? { x: a.offsetLeft + a.offsetWidth / 2 - 3, y: a.offsetTop + a.offsetHeight - 9 } : null;
+      return a && a.offsetWidth ? { x: a.offsetLeft - 22 + 10, y: a.offsetTop + a.offsetHeight / 2 - 3 } : null;
     };
+    const pl = pill.current;
     const p = at(), jump = reduceMotion();
-    if (!p) { gsap.killTweensOf(d); if (jump) gsap.set(d, { opacity: 0 }); else gsap.to(d, { opacity: 0, duration: 0.25, ease: "power2.out" }); return; }
-    gsap.killTweensOf(d);
-    if (!placed.current || jump) gsap.set(d, { ...p, opacity: 1 });
-    else gsap.to(d, { ...p, opacity: 1, duration: 0.45, ease: "power3.out", overwrite: true });
+    if (!p) {
+      gsap.killTweensOf(d); gsap.killTweensOf(pl);
+      if (jump) gsap.set([d, pl], { opacity: 0 }); else gsap.to([d, pl], { opacity: 0, duration: 0.25, ease: "power2.out" });
+      return;
+    }
+    gsap.killTweensOf(d); gsap.killTweensOf(pl);
+    const pr = activeRect();
+    if (!placed.current || jump) { gsap.set(d, { ...p, opacity: 1 }); if (pr) gsap.set(pl, { ...pr, opacity: 1 }); }
+    else { gsap.to(d, { ...p, opacity: 1, duration: 0.45, ease: "power3.out", overwrite: true }); if (pr) gsap.to(pl, { ...pr, opacity: 1, duration: 0.45, ease: "power3.out", overwrite: true }); }
     placed.current = true;
-    const re = () => { const q = at(); if (q) gsap.set(d, q); };
+    const re = () => { const q = at(); if (q) gsap.set(d, q); const r = activeRect(); if (r) gsap.set(pl, r); };
     window.addEventListener("resize", re);
     return () => window.removeEventListener("resize", re);
   }, [current, mounted]);
-  /* r42-3: the progress rail. Transform only (scaleX on the fill, x on the tip), scrubbed to page scroll by one ScrollTrigger. */
+  /* r43-2: the hover pill. Glides to the hovered (or keyboard-focused) link, and glides back to the active one on leave. */
   useEffect(() => {
     if (!mounted) return;
-    const setFill = gsap.quickSetter(fill.current, "scaleX") as (v: number) => void;
-    const setTip = gsap.quickSetter(tip.current, "x", "px") as (v: number) => void;
-    let w = rail.current?.offsetWidth ?? 0;
-    const apply = (p: number) => { setFill(p); setTip(p * Math.max(0, w - 5)); };
-    const st = ScrollTrigger.create({
-      start: 0, end: "max",
-      onRefresh: (self) => { w = rail.current?.offsetWidth ?? 0; apply(self.progress); },
-      onUpdate: (self) => apply(self.progress),
-    });
-    return () => st.kill();
+    const nl = links.current, h = hov.current;
+    if (!nl || !h) return;
+    let shown = false;
+    const activeEl = () => (current ? nl.querySelector<HTMLElement>(`a[href="#${current}"]`) : null);
+    const target = (t: EventTarget | null) => {
+      const el = t instanceof Element ? t : null;
+      if (!el) return null;
+      if (el.closest(".nav-reg-panel")) return nl.querySelector<HTMLElement>(".nav-reg-btn");
+      return el.closest<HTMLElement>(".nav-links > a, .nav-reg-btn");
+    };
+    const to = (el: HTMLElement | null) => {
+      if (el && el.offsetWidth) {
+        const r = pillRect(nl, el);
+        if (!shown || reduceMotion()) gsap.set(h, { ...r, opacity: 1 });
+        else gsap.to(h, { ...r, opacity: 1, duration: 0.35, ease: "power3.out", overwrite: true });
+        shown = true;
+        return;
+      }
+      const a = activeEl();
+      if (!shown) return;
+      shown = false;
+      if (reduceMotion()) { gsap.set(h, { opacity: 0 }); return; }
+      if (a && a.offsetWidth) gsap.to(h, { ...pillRect(nl, a), opacity: 0, duration: 0.35, ease: "power3.out", overwrite: true });
+      else gsap.to(h, { opacity: 0, duration: 0.2, ease: "power2.out", overwrite: true });
+    };
+    const over = (e: PointerEvent) => { if (e.pointerType === "mouse") to(target(e.target)); };
+    const leave = (e: PointerEvent) => { if (e.pointerType === "mouse") to(null); };
+    const fin = (e: FocusEvent) => { if ((e.target as Element).matches(":focus-visible")) to(target(e.target)); };
+    const fout = () => to(null);
+    nl.addEventListener("pointerover", over); nl.addEventListener("pointerleave", leave);
+    nl.addEventListener("focusin", fin); nl.addEventListener("focusout", fout);
+    return () => {
+      nl.removeEventListener("pointerover", over); nl.removeEventListener("pointerleave", leave);
+      nl.removeEventListener("focusin", fin); nl.removeEventListener("focusout", fout);
+      gsap.killTweensOf(h);
+    };
+  }, [mounted, current]);
+  /* r43-1/3: the island. From 861px, scrolling down past the hero contracts the bar into a round pill that holds only the mark. Scrolling up,
+     hover, or keyboard focus expands it. One timeline on the bar (width and radius, one smooth ease) with the links fading ahead of it;
+     the links never change size, the bar just clips them while it is narrow, so there is no per-frame relayout of the row.
+     Every change kills the last tween and starts from the current values, so it can be interrupted at any point. The bar is fixed. */
+  useEffect(() => {
+    if (!mounted) return;
+    const nav = header.current, rest = restEl.current, brand = brandEl.current, nin = navIn.current;
+    if (!nav || !rest || !brand || !nin) return;
+    const mq = window.matchMedia("(min-width: 861px)");
+    const s = { want: false, hover: false, focus: false, collapsed: false };
+    let tl: gsap.core.Timeline | null = null, st: ScrollTrigger | null = null, leaveT = 0, last = 0, inited = false, off: (() => void)[] = [];
+    const natural = () => { const w0 = nav.style.width; nav.style.width = ""; const w = nav.offsetWidth; nav.style.width = w0; return w; };
+    const compactW = () => 56;
+    const build = (collapsed: boolean, instant: boolean) => {
+      tl?.kill(); s.collapsed = collapsed;
+      const nv = collapsed ? { width: compactW(), "--nav-r": "28px" } : { width: natural(), "--nav-r": "14px" };
+      const done = () => { nav.classList.remove("is-moving"); if (!s.collapsed) { gsap.set(nav, { clearProps: "width" }); nav.classList.remove("is-island"); } else rest.style.visibility = "hidden"; };
+      if (collapsed) nav.classList.add("is-island");
+      if (!collapsed) rest.style.visibility = "";
+      if (!instant) nav.classList.add("is-moving");   // the blur is off while the bar changes size (a backdrop repaint per frame over the canvas is what makes it janky)
+      if (instant) { gsap.set(nav, nv); gsap.set(rest, { opacity: collapsed ? 0 : 1 }); done(); return; }
+      tl = gsap.timeline({ defaults: { overwrite: "auto" }, onComplete: done });
+      if (collapsed) {
+        tl.to(rest, { opacity: 0, duration: 0.22, ease: "power2.out" }, 0).to(nav, { ...nv, duration: 0.7, ease: "power3.inOut" }, 0.06);
+      } else {
+        tl.to(nav, { ...nv, duration: 0.7, ease: "power3.inOut" }, 0).to(rest, { opacity: 1, duration: 0.35, ease: "power2.out" }, 0.3);
+      }
+    };
+    const refresh = (force = false, instant = false) => {
+      const c = s.want && !s.hover && !s.focus;
+      if (c !== s.collapsed || force) build(c, instant || reduceMotion());
+    };
+    const heroPast = (y: number) => y > ((document.querySelector<HTMLElement>(".bindu-home .hero")?.offsetHeight ?? window.innerHeight) * 0.8);
+    const enable = () => {
+      st = ScrollTrigger.create({
+        start: 0, end: "max",
+        onRefresh: (self) => {
+          if (!inited) { inited = true; last = self.scroll(); s.want = heroPast(last); refresh(true, true); }
+          else if (!heroPast(self.scroll()) && s.want) { s.want = false; refresh(); }
+        },
+        onUpdate: (self) => {
+          const y = self.scroll();
+          if (!heroPast(y)) s.want = false;
+          else if (y - last > 6) s.want = true;
+          else if (last - y > 6) s.want = false;
+          else return;
+          last = y; refresh();
+        },
+      });
+      const enter = (e: PointerEvent) => { if (e.pointerType === "touch") return; window.clearTimeout(leaveT); s.hover = true; refresh(); };
+      const out = (e: PointerEvent) => { if (e.pointerType === "touch") return; window.clearTimeout(leaveT); leaveT = window.setTimeout(() => { s.hover = false; refresh(); }, 320); };
+      const fin = (e: FocusEvent) => { if ((e.target as Element).matches(":focus-visible")) { s.focus = true; refresh(); } };
+      const fout = (e: FocusEvent) => { if (!nav.contains(e.relatedTarget as Node | null)) { s.focus = false; refresh(); } };
+      nav.addEventListener("pointerenter", enter); nav.addEventListener("pointerleave", out);
+      nav.addEventListener("focusin", fin); nav.addEventListener("focusout", fout);
+      off = [() => { nav.removeEventListener("pointerenter", enter); nav.removeEventListener("pointerleave", out); nav.removeEventListener("focusin", fin); nav.removeEventListener("focusout", fout); }];
+    };
+    const disable = () => {
+      tl?.kill(); st?.kill(); st = null; window.clearTimeout(leaveT); nav.classList.remove("is-moving"); off.forEach((f) => f()); off = [];
+      s.collapsed = false; s.want = false; s.hover = false; s.focus = false; inited = false;
+      nav.classList.remove("is-island"); nav.style.removeProperty("width"); nav.style.removeProperty("--nav-r");
+      gsap.set(rest, { clearProps: "all" });
+    };
+    const sync = () => { if (mq.matches) enable(); else disable(); };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => { mq.removeEventListener("change", sync); disable(); };
   }, [mounted]);
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 24);
@@ -161,21 +272,21 @@ export function Nav() {
     return () => document.removeEventListener("keydown", esc);
   }, [open]);
   return (
-    <header className={`nav${scrolled ? " is-scrolled" : ""}`}>
-      <div className="nav-in">
-        <a className="nav-brand" href="#top" aria-label="Bindu, back to top"><Logo size={24} /><span>Bindu</span></a>
+    <header ref={header} className={`nav${scrolled ? " is-scrolled" : ""}`}>
+      <div ref={navIn} className="nav-in">
+        <a ref={brandEl} className="nav-brand" href="#top" aria-label="Bindu, back to top"><Logo size={24} /><span>Bindu</span></a>
+        <div ref={restEl} className="nav-rest">
         <nav ref={links} className="nav-links" aria-label="Site sections and pages">
           {nav.links.map((l) => <a key={l.href} href={l.href} aria-current={current === l.href.slice(1) ? "location" : undefined}>{l.t}</a>)}
           <RegulationsMenu />
           <a href={NAV_BLOG.u}>{NAV_BLOG.t}</a>
-          {mounted && <span ref={dot} className="nav-dot" aria-hidden="true" />}
+          {mounted && <><span ref={pill} className="nav-pill" aria-hidden="true" /><span ref={hov} className="nav-hover" aria-hidden="true" /><span ref={dot} className="nav-dot" aria-hidden="true" /></>}
         </nav>
         <ThemeToggle />
-        <a className="btn bh-btn-primary nav-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
+        </div>
         <button ref={btn} type="button" className="btn btn-outline nav-menu" aria-expanded={open} aria-controls="nav-drawer" onClick={() => setOpen(!open)}>
           {open ? nav.close : nav.menu}
         </button>
-        {mounted && <div ref={rail} className="nav-rail" aria-hidden="true"><span ref={fill} className="nav-rail-fill" /><span ref={tip} className="nav-rail-tip" /></div>}
       </div>
       <div id="nav-drawer" ref={drawer} className="nav-drawer" hidden={!open}>
         {nav.links.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.t}</a>)}
