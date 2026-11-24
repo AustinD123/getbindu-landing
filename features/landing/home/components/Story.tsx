@@ -1,6 +1,6 @@
 import { tRaf, tCaf } from "../lib/loop";
 import { useEffect, useRef } from "react";
-import { beforeAfter, statement } from "../content";
+import { statement } from "../content";
 import { reduceMotion } from "../lib/motion";
 import { Mark } from "./bits";
 import { track } from "../lib/pos";
@@ -55,92 +55,4 @@ export function Statement() {
   );
 }
 
-/* Round 19, item 4: "Sound familiar?" scrubbed. Each row is one grid line: the pain on the left (7/12), Bindu's answer in cobalt plus one
-   supporting line on the right (5/12). The strike draws with the scroll (and un-draws when you scroll up); the answer's left to
-   right reveal follows the strike's progress. Reduced motion: strike and answer shown at once.
-   Round 28, item 6: the strike is perfectly straight: one 1.5px ink bar per wrapped line of the sentence (square ends, whole pixels), through the middle of the
-   x-height, drawn left to right and line after line, in proportion to the line widths. The bars are measured from the text (Range rects and the font's own
-   x-height) on load, on resize and when the fonts arrive. The `dash` cue plays when a row's draw progress crosses 2 percent going down (once per crossing;
-   never when scrolling up, never on load). */
-const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-
-/* one bar per wrapped line of the row's sentence, as children of .ba-strikes (position: absolute inside .ba-pain) */
-function buildStrikes(row: HTMLElement) {
-  const box = row.querySelector<HTMLElement>(".ba-strikes"), pain = row.querySelector<HTMLElement>(".ba-pain"), text = row.querySelector<HTMLElement>(".ba-pt");
-  if (!box || !pain || !text) return;
-  const rg = document.createRange();
-  rg.selectNodeContents(text);
-  const pr = pain.getBoundingClientRect(), cs = getComputedStyle(text), fs = parseFloat(cs.fontSize);
-  // the middle of the x-height above the baseline, from the font itself
-  const m = document.createElement("canvas").getContext("2d")!;
-  m.font = cs.font;
-  const ascent = m.measureText("x").fontBoundingBoxAscent, xh = m.measureText("x").actualBoundingBoxAscent;
-  const lines: { l: number; r: number; y: number }[] = [];
-  for (const q of Array.from(rg.getClientRects())) {
-    if (q.width < 2) continue;
-    const y = q.top - pr.top + ascent - xh / 2, hit = lines.find((k) => Math.abs(k.y - y) < fs * 0.3);
-    if (hit) { hit.l = Math.min(hit.l, q.left - pr.left); hit.r = Math.max(hit.r, q.right - pr.left); } else lines.push({ l: q.left - pr.left, r: q.right - pr.left, y });
-  }
-  lines.sort((a, b) => a.y - b.y);
-  const total = lines.reduce((t, k) => t + (k.r - k.l), 0) || 1;
-  box.textContent = "";
-  let acc = 0;
-  for (const k of lines) {
-    const w = k.r - k.l, bar = document.createElement("i");
-    bar.style.left = `${Math.round(k.l - fs * 0.03)}px`; bar.style.width = `${Math.round(w + fs * 0.06)}px`; bar.style.top = `${Math.round(k.y - 0.75)}px`;
-    bar.style.setProperty("--a", (acc / total).toFixed(4)); bar.style.setProperty("--w", (w / total).toFixed(4));
-    box.appendChild(bar);
-    acc += w;
-  }
-}
-
-export function BeforeAfter() {
-  const list = useRef<HTMLUListElement>(null);
-  useEffect(() => {
-    const el = list.current;
-    if (!el) return;
-    const rows = Array.from(el.querySelectorAll<HTMLElement>(".ba-row"));
-    const measure = () => rows.forEach(buildStrikes);
-    measure();
-    document.fonts?.ready.then(measure);
-    const set = (r: HTMLElement, s: number) => {
-      r.style.setProperty("--s", s.toFixed(3));
-      r.style.setProperty("--r", c01((s - 0.35) / 0.65).toFixed(3));
-    };
-    if (reduceMotion()) { rows.forEach((r) => set(r, 1)); window.addEventListener("resize", measure); return () => window.removeEventListener("resize", measure); }
-    let raf = 0;
-    const tks = rows.map((r) => track(r)), lastS = rows.map(() => -1);
-    const update = () => {
-      raf = 0;
-      const vh = window.innerHeight, sy = window.scrollY;
-      rows.forEach((r, i) => { const s = c01((vh * 0.82 - (tks[i]!.rectTop(sy) + tks[i]!.h * 0.3)) / (vh * 0.22)); if (s === lastS[i]) return; const was = lastS[i]; lastS[i] = s; set(r, s); });
-    };
-    const kick = () => { if (!raf) raf = tRaf(update); };
-    window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick);
-    window.addEventListener("resize", measure);
-    update();
-    return () => { window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); window.removeEventListener("resize", measure); tCaf(raf); };
-  }, []);
-  return (
-    <section className="band-dark sec ba" id="pains" aria-labelledby="ba-h" data-guide-anchor="ba" data-guide-side="l">
-      <div className="container">
-        <h2 id="ba-h" className="t-display-md ba-h">{beforeAfter.title}</h2>
-        <ul ref={list} className="ba-list">
-          {beforeAfter.cards.map((c) => (
-            <li key={c.before} className="ba-row">
-              <p className="ba-pain">
-                <span className="ba-pt">{c.before}</span>
-                <span className="ba-strikes" aria-hidden="true" />
-              </p>
-              <div className="ba-right">
-                <p className="ba-ans"><span>{c.after}</span></p>
-                <p className="ba-n">{c.detail}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
+/* r44-1: "Sound familiar?" (BeforeAfter, #pains) is gone; "What Bindu does" (components/Flow.tsx, #story) replaced it. */

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { theatre as c } from "../content";
-import { getLenis, useReducedMotion } from "../lib/motion";
+import { gsap, SplitText, getLenis, useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
 import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
@@ -35,6 +35,33 @@ export function Theatre() {
   const [step, setStep] = useState(0);
   const flat = isStatic || phone;
   const a = c.acts[act]!;
+  /* r44-2: the heading and the lead are per act (a buyer question each). The shown act lags the chosen one by the out-animation: the old lines mask out (0.25s), the text
+     swaps, the new lines mask in (about 0.5s, the same line mask as lib/headings.ts) and the lead crossfades. Reduced motion: an instant swap. This h2 is skipped by
+     lib/headings.ts (data-own), and nothing here runs before hydration. */
+  const [shown, setShown] = useState(0);
+  const titleEl = useRef<HTMLSpanElement>(null);
+  const leadEl = useRef<HTMLParagraphElement>(null);
+  const swap = useRef<{ tl: gsap.core.Timeline | null; split: SplitText | null; first: boolean }>({ tl: null, split: null, first: true });
+  const swapTo = (i: number) => {
+    const s = swap.current, span = titleEl.current, lead = leadEl.current;
+    s.tl?.kill(); s.split?.revert(); s.split = null;
+    if (isStatic || !span || !lead) { setShown(i); return; }
+    s.split = SplitText.create(span, { type: "lines", mask: "lines", maskClass: "h-mask", aria: "none" });
+    s.tl = gsap.timeline({ onComplete: () => setShown(i) })
+      .to(s.split.lines, { yPercent: -110, duration: 0.25, ease: "power2.in", stagger: 0.04 }, 0)
+      .to(lead, { opacity: 0, duration: 0.25, ease: "power1.in" }, 0);
+  };
+  useLayoutEffect(() => {
+    const s = swap.current, span = titleEl.current, lead = leadEl.current;
+    if (s.first) { s.first = false; return; }
+    if (isStatic || !span || !lead) return;
+    s.tl?.kill(); s.split?.revert();
+    s.split = SplitText.create(span, { type: "lines", mask: "lines", maskClass: "h-mask", aria: "none" });
+    s.tl = gsap.timeline()
+      .fromTo(s.split.lines, { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "expo.out", stagger: 0.06 }, 0)
+      .fromTo(lead, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.1);
+  }, [shown, isStatic]);
+  useEffect(() => () => { swap.current.tl?.kill(); swap.current.split?.revert(); }, []);
 
   useEffect(() => { setPhone(isPhone()); return onPhoneChange(() => setPhone(isPhone())); }, []);
 
@@ -102,6 +129,7 @@ export function Theatre() {
   const kickRef = useRef<() => void>(() => {});
   const pick = (i: number) => {
     setAct(i); setStep(0); actRef.current = i;
+    if (i !== act || shown !== i) swapTo(i);
     if (flat) return;
     const el = pin.current;
     if (!el) return;
@@ -127,8 +155,9 @@ export function Theatre() {
         <div className="th-win container">
           <div className="th-head">
             <div className="th-title">
-              <h2 id="how-h" className="t-display-md">{c.title}</h2>
-              <p className="t-body-lg t-soft th-lead">{c.lead}</p>
+              <p className="th-kicker">{c.title}</p>
+              <h2 id="how-h" className="t-display-md" data-own=""><span key={shown} ref={titleEl} className="th-h">{c.acts[shown]!.title}</span></h2>
+              <p key={`lead-${shown}`} ref={leadEl} className="t-body-lg t-soft th-lead">{c.acts[shown]!.lead}</p>
             </div>
             <div className="seg-track th-seg">
               <div className="seg-in" role="tablist" aria-label={c.tabsLabel} onKeyDown={onTabKey} style={{ "--n": c.acts.length, "--i": act } as CSSProperties}>

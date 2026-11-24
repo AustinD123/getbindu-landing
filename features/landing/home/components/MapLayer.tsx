@@ -235,8 +235,10 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
           }
         }
         ctx.globalAlpha = 1;
-        // the veil goes over the routes too, so nothing bright sits under the copy; it ramps in with the copy
-        if (heroA > 0) { ctx.globalAlpha = heroA; ctx.drawImage(veil, 0, 0, VW, VH); ctx.globalAlpha = 1; }
+        // the veil goes over the routes too, so nothing bright sits under the copy; it ramps in with the copy.
+        // r43-4: it leaves with the hero (shipFade), so past the hero the map is sharp and only the per-block blur (story.css) softens it
+        const vA = heroA * drawnFade;
+        if (vA > 0) { ctx.globalAlpha = vA; ctx.drawImage(veil, 0, 0, VW, VH); ctx.globalAlpha = 1; }
         if (!gl.current?.rig && outRef.current < 1) dust(INTRO_END, 1 - ease(outRef.current));
       }
       paintSweep(ctx, VW, VH, -0.15 + 1.3 * (((live ? ic : hc) / 16) % 1), col.cobalt);
@@ -296,8 +298,8 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     }, { threshold: 0 });
     io.observe(heroEl);
     const onVis = () => kick();
-    // reduced motion has no frame loop: the still hero is redrawn on scroll only while its shipment fade changes
-    const onScroll = () => { if (still && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
+    // reduced motion (and the paused map) has no frame loop: the hero is redrawn on scroll only while its shipment and veil fade changes
+    const onScroll = () => { if (!raf && !introRef.current && Math.abs(shipFade() - drawnFade) > 0.001) draw(); };
     window.addEventListener("scroll", onScroll, { passive: true });
     // a theme change re-reads the colours and repaints the cached layer; the timeline keeps running
     const unsubTheme = subscribeTheme(() => { readColours(); paintBase(); draw(); });

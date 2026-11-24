@@ -15,7 +15,8 @@ import "./styles/r13-cta.css";
 import "./styles/r13-pricing.css";
 import "./styles/guide.css";
 import "./styles/story.css";
-import "./styles/ask.css";
+import "./styles/r44.css";
+import "./styles/r47.css";
 import "./styles/theatre.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
@@ -26,7 +27,7 @@ import { useRouteWipe } from "./lib/route";
 import { addPending, markReady, gate, guardAnchors, afterSettle } from "./lib/ready";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
-import { Statement, BeforeAfter } from "./components/Story";
+import { Statement } from "./components/Story";
 import { Intro } from "./components/Intro";
 import { Guide } from "./components/Guide";
 import { Rail } from "./components/Rail";
@@ -54,9 +55,11 @@ function Ready({ id }: { id: string }) {
   return null;
 }
 const Theatre = late("how", typeof window === "undefined" ? (require("./components/Theatre") as Record<string, React.ComponentType>).Theatre : null, () => import("./components/Theatre"), "Theatre");
-const Ask = late("ask", typeof window === "undefined" ? (require("./components/Ask") as Record<string, React.ComponentType>).Ask : null, () => import("./components/Ask"), "Ask");
+const Flow = late("story", typeof window === "undefined" ? (require("./components/Flow") as Record<string, React.ComponentType>).Flow : null, () => import("./components/Flow"), "Flow");
 const ShipmentJourney = late("shipment", typeof window === "undefined" ? (require("./components/ShipmentJourney") as Record<string, React.ComponentType>).ShipmentJourney : null, () => import("./components/ShipmentJourney"), "ShipmentJourney");
 const Examples = late("examples", typeof window === "undefined" ? (require("./components/Examples") as Record<string, React.ComponentType>).Examples : null, () => import("./components/Examples"), "Examples");
+const Voices = late("voices", typeof window === "undefined" ? (require("./components/Voices") as Record<string, React.ComponentType>).Voices : null, () => import("./components/Voices"), "Voices");
+const Rules = late("rules", typeof window === "undefined" ? (require("./components/Rules") as Record<string, React.ComponentType>).Rules : null, () => import("./components/Rules"), "Rules");
 const Pricing = late("pricing", typeof window === "undefined" ? (require("./components/Pricing") as Record<string, React.ComponentType>).Pricing : null, () => import("./components/Pricing"), "Pricing");
 const Faq = late("faq", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Faq : null, () => import("./components/Closing"), "Faq");
 const Finale = late("demo", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Finale : null, () => import("./components/Closing"), "Finale");
@@ -93,14 +96,15 @@ export function HomePage() {
       <Guide />
       <Rail />
       <main id="main">
-        {/* round 17: one story. Hero, statement, before and after, Full Circle, ask your supply chain, the night-band journey, pricing, FAQ, wordmark finale. */}
+        {/* round 44: one story. Hero, statement, what Bindu does (four steps), Full Circle, the shipment map (the supply-chain question is folded into it), the departures board, what buyers say, the rules, pricing, FAQ, wordmark finale. */}
         <Hero />
         <Statement />
-        <BeforeAfter />
+        <Flow />
         <Theatre />
-        <Ask />
         <ShipmentJourney />
         <Examples />
+        <Voices />
+        <Rules />
         <Pricing />
         <Faq />
         <Finale />

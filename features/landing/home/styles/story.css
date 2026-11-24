@@ -17,24 +17,7 @@
 .bindu-home .stmt-chip .stmt-w { color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
 .bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
 
-/* ---------- 7 "Sound familiar?" (r19): one grid line per row, scrubbed ---------- */
-.bindu-home .ba-h { margin-bottom: var(--s-8); }
-.bindu-home .ba-list { list-style: none; margin: 0; padding: 0; display: grid; }
-.bindu-home .ba-row { --s: 0; --r: 0; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--s-5); align-items: start; padding: var(--s-8) 0; border-top: 1px solid var(--hairline-dark); }
-.bindu-home .ba-row:first-child { border-top: 0; padding-top: 0; }
-.bindu-home .ba-pain { grid-column: 1 / span 7; margin: 0; position: relative; justify-self: start; max-width: 100%; font: var(--display-weight) clamp(28px, 3.6vw, 48px)/1.12 var(--font-sans); letter-spacing: var(--track-md); text-wrap: balance; }
-.bindu-home .ba-pt { color: color-mix(in srgb, var(--on-dark-mute) calc(var(--s) * 100%), var(--on-dark)); }
-/* r28-6: one straight 1.5px bar per wrapped line (placed by script), square ends, drawn left to right with the row's progress, line after line */
-.bindu-home .ba-strikes { position: absolute; inset: 0; pointer-events: none; }
-.bindu-home .ba-strikes i { position: absolute; height: 1.5px; background: var(--line-ink); transform-origin: 0 50%; transform: scaleX(clamp(0, (var(--s) - var(--a, 0)) / var(--w, 1), 1)); }
-.bindu-home .ba-right { grid-column: 8 / span 5; display: grid; gap: var(--s-3); align-content: start; }
-.bindu-home .ba-ans { margin: 0; font: 400 clamp(20px, 2vw, 26px)/1.3 var(--font-sans); letter-spacing: var(--track-sm); color: var(--cobalt-signal); text-wrap: balance;
-  clip-path: inset(-0.2em calc(100% - var(--r) * 100%) -0.3em 0); }
-.bindu-home .ba-n { margin: 0; font-size: var(--body); line-height: var(--lh-body, 1.5); color: var(--on-dark-body); opacity: var(--r); transform: translateY(calc((1 - var(--r)) * 8px)); }
-@media (max-width: 860px) {
-  .bindu-home .ba-row { grid-template-columns: 1fr; row-gap: var(--s-4); padding: var(--s-6) 0; }
-  .bindu-home .ba-pain, .bindu-home .ba-right { grid-column: 1; }
-}
+/* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
 
 /* ---------- 13 finale (r28-3R): the photo behind a mask of the wordmark, grown by scroll until the photo fills the screen ---------- */
 /* The stage is a sticky full-viewport layer that stays pinned for the whole section (its height is taken back with a negative margin, so the section's flow is only the spacer and the footer). */
@@ -168,8 +151,6 @@
 /* r22-17: the full stop of a heading is a small yellow Bindu dot that drops in last */
 .bindu-home .dot-stop { display: inline-block; width: 0.15em; height: 0.15em; margin-left: 0.04em; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); vertical-align: baseline; }
 /* r22-13: the dot motif, restrained: dotted section rules and small Bindu dots as bullets (no dot grids) */
-.bindu-home .ba-row { border-top: 0; background: radial-gradient(circle, var(--cobalt-signal) 1.3px, transparent 1.6px) 0 0 / 14px 4px repeat-x; background-position: 0 0; padding-top: calc(var(--s-8) + 4px); }
-.bindu-home .ba-row:first-child { background: none; padding-top: 0; }
 .bindu-home .r6-inc li::before { background: var(--cobalt-signal); }
 
 /* r22-13: the scroll-progress rail */
@@ -197,8 +178,19 @@
 .bindu-home #faq.sec { padding-bottom: var(--s-5); }   /* r26-2: the FAQ's bottom padding was an empty band before the finale */
 
 /* r41-1: the map is sharp everywhere; each content block past the hero blurs only the map right behind it. A ::before layer 12 to 24px beyond the text, backdrop-filter blur, edges feathered by a mask: no box, border or shadow. Solid panels (Full Circle stage, pricing card, departures board) are left alone. */
-.bindu-home :is(.sec-head, .qa-head, .th-title, .faq-list, .cargo-cap, .ship-cap) { position: relative; isolation: isolate; }
-.bindu-home :is(.sec-head, .qa-head, .th-title, .faq-list, .cargo-cap, .ship-cap)::before { content: ""; position: absolute; z-index: -1; inset: -20px -24px; pointer-events: none;
+/* r43-4: Pricing (head, and the tabs from 601px; on phones the tab strip scrolls and would clip the layer) and the Examples head join the list */
+/* r48: one blur layer per content WINDOW instead of one per text block. Per-block layers nested inside each other (double blur) and resized
+   whenever a caption changed length, which made the patch jump; and the gaps between blocks left the map sharp right behind content.
+   Now each section past the hero has one layer the size of its content area (the sticky window for pinned sections), so the map is
+   softly blurred everywhere content sits and sharp in the side gutters. Blur only, no colour, feathered edges. */
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ship .sec-head, .ship-cap, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
+.bindu-home :is(.stmt > .container, .ship .sec-head, .ship-cap, .rl, .r6-pricing > .container, .container.faq,
+  .fl-pin.is-static .fl-win, .th-pin.is-flat .th-win, .ex-pin.is-static .ex-stage, .vc-pin:not(.is-arc) .vc-win) { position: relative; }
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ship .sec-head, .ship-cap, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {
+  content: ""; position: absolute; z-index: -1; inset: -24px -64px; pointer-events: none;
   /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  -webkit-mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); mask-image: radial-gradient(closest-side, #000 70%, transparent 100%); }
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 96px, #000 calc(100% - 96px), transparent), linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 96px, #000 calc(100% - 96px), transparent), linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
+  mask-composite: intersect; }

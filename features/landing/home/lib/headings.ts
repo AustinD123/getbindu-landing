@@ -14,7 +14,7 @@ export function startHeadings(): () => void {
   // runs for every heading not split yet; a section that has not hydrated yet is skipped (splitting its text would break hydration) and picked up when it is ready
   const run = () => {
     if (dead || !fontsReady) return;
-    const fresh = Array.from(document.querySelectorAll<HTMLElement>("main h2:not(.wm)")).filter((h) => !tls.has(h) && !isPending(h));
+    const fresh = Array.from(document.querySelectorAll<HTMLElement>("main h2:not(.wm):not([data-own])")).filter((h) => !tls.has(h) && !isPending(h));
     if (!fresh.length) return;
     fresh.forEach((h) => {
       splits.push(SplitText.create(h, {

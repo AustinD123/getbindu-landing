@@ -56,6 +56,21 @@ export function ShipmentJourney() {
   const geo = SHIP_GEO[story!.id];
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const [current, setCurrent] = useState(isStatic ? MILESTONES.length - 1 : 0);
+  /* r44-3: the supply-chain question folded in. At the proof milestone of each story one small question bubble and its answer line appear on the map (and stay for the
+     next milestone), driven by the existing `current` milestone, so they reverse with the scroll. GSAP owns the start state, set after hydration; static: always shown. */
+  const askEl = useRef<HTMLDivElement>(null);
+  const askSeen = useRef(false);
+  const ask = story!.ask;
+  const askOn = current >= ask.at && current <= ask.at + 1;
+  useEffect(() => {
+    const el = askEl.current;
+    if (!el) return;
+    if (isStatic) { gsap.set(el, { clearProps: "opacity,visibility,transform" }); return; }
+    const first = !askSeen.current;
+    askSeen.current = true;
+    if (first) { gsap.set(el, { autoAlpha: askOn ? 1 : 0, y: askOn ? 0 : 10 }); return; }
+    gsap.to(el, { autoAlpha: askOn ? 1 : 0, y: askOn ? 0 : 10, duration: 0.45, ease: askOn ? "power2.out" : "power2.in", overwrite: true });
+  }, [askOn, story, isStatic]);
   // the camera's framing, eased from one story's framing to the next (so the map animates between them)
   const view = useRef<Frame>({ ...(SHIP_GEO[journey.stories[0]!.id])!.frame });
 
@@ -360,7 +375,7 @@ export function ShipmentJourney() {
       <div ref={pin} className={`ship-pin${isStatic ? " is-static" : ""}`}>
         <div className="ship-stage" data-guide-gutter>
           <div className="sec-head">
-            <h2 id="ship-h" className="t-display-md">{journey.title}</h2>
+            <h2 id="ship-h" className="t-display-md" suppressHydrationWarning>{journey.title}</h2>
             <p className="t-body-lg ship-sub">{story!.sub}</p>
             <div className="seg-track ship-seg">
               <div
@@ -405,6 +420,10 @@ export function ShipmentJourney() {
                     return <span key={`${story!.id}-n${i}`} ref={(el) => { notes.current[i] = el; }} className={`ship-note${coming ? " is-coming" : ""}`}><b>{label}</b><i>{(story!.milestones[i])!.detail}</i></span>;
                   })}
                   {geo!.labels.map((l, i) => <span key={`${story!.id}-${l.text}`} ref={(el) => { labels.current[i] = el; }} className="ship-label">{l.text}</span>)}
+                </div>
+                <div ref={askEl} className="ship-ask">
+                  <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
+                  <p className="ship-ask-a">{ask.a}</p>
                 </div>
               </div>
               <figcaption className="ship-cap">
