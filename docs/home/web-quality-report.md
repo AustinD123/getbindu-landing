@@ -52,3 +52,5 @@ Observed (non-simulated) mobile LCP after the intro skip: about 0.4 to 0.75 s.
 - In-page links (`#how`, `#pricing`, `#faq`) mount everything first, then follow; a cold `/#faq` mounts all and lands again after settling (verified top = 64px at 375 and 1440).
 - Found on the way: the server must render the real component inside the same boundary (build-time `require`, dropped from the client bundle), else sections stream in late; and Lenis caches its scroll limit, so it needs `resize()` after late pins (the page stalled 1.8k px short of the end without it).
 - Checked: reduced motion screenshots identical to before at 6 stops, both viewports; page height identical; wheel scroll reaches the end; no console errors; no horizontal scroll. Motion-mode screenshots differ only by scrub timing.
+
+- Pass 4: no commits. Phones already paint hero from SSR (observed LCP 0.32 s); desktop sub-line is hidden by the intro by design; big chunks are react-dom and gsap core, below-fold already lazy. See stats.md "Pass 4".
