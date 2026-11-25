@@ -18,11 +18,27 @@
 
 /* 3. one card, two equal halves on one top line */
 .bindu-home .r6-cardwrap { position: relative; border-radius: var(--r-lg); }
-@media (min-width: 1024px) { .bindu-home .r6-cardwrap { border-radius: var(--r-4xl); } }
 .bindu-home .r6-card {
   position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start;
-  border: 0; border-radius: inherit; background: var(--canvas-mid); overflow: hidden;
+  border: 1px solid var(--r6-card-bg); border-radius: inherit; background: var(--r6-card-bg); color: var(--on-dark); overflow: hidden;
 }
+/* r55-8: the pricing card is the file's ONE inverted surface (pricing-card-dark: #171717, white text, on-dark-mute secondary text). Its tokens are re-pointed inside the
+   card, so every rule below keeps using the normal names. In the dark theme the inversion is a white card with black text. */
+.bindu-home .r6-cardwrap {
+  --r6-card-bg: #171717; --on-dark: #fff; --on-dark-body: rgb(255 255 255 / 0.85); --on-dark-mute: rgb(255 255 255 / 0.7);
+  --hairline-dark: rgb(255 255 255 / 0.12); --hairline-strong: rgb(255 255 255 / 0.25); --line-white-12: rgb(255 255 255 / 0.12);
+  --canvas: #171717; --canvas-soft: #1f1f1f; --brand-cobalt: #3D7BFF; --cobalt-signal: #3D7BFF; --link-wipe: #3D7BFF; --focus-ring-dark: 2px solid #fff;
+}
+.bindu-home:not([data-theme="light"]) .r6-cardwrap {
+  --r6-card-bg: #fff; --on-dark: #000; --on-dark-body: #525252; --on-dark-mute: #737373;
+  --hairline-dark: #e5e5e5; --hairline-strong: #d4d4d4; --line-white-12: #e5e5e5;
+  --canvas: #fff; --canvas-soft: #fafafa; --brand-cobalt: #08327A; --cobalt-signal: #1F55C4; --link-wipe: #08327A; --focus-ring-dark: 2px solid #000;
+}
+/* button-pill-on-dark: a white pill with an ink label on the dark card (in the dark theme the card is white, so the pill is the black primary) */
+.bindu-home .r6-cardwrap .r6-cta .btn { background: #fff; color: #000; border-color: #fff; }
+.bindu-home .r6-cardwrap .r6-cta .btn:hover { background: #e5e5e5; border-color: #e5e5e5; }
+.bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn { background: #000; color: #fff; border-color: #000; }
+.bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn:hover { background: #090909; }
 .bindu-home .r6-left, .bindu-home .r6-right { min-width: 0; padding: var(--s-6) var(--s-7); }
 .bindu-home .r6-right { align-self: stretch; display: flex; flex-direction: column; }
 
@@ -31,12 +47,12 @@
 .bindu-home .r6-inc-h { display: flex; align-items: center; min-height: 24px; }
 
 .bindu-home .r6-price {
-  margin: 0; font: 500 var(--display-lg)/1 var(--font-mono); letter-spacing: -0.03em;   /* r17: prices in mono */
+  margin: 0; font: 500 var(--display-lg)/1.2 var(--font-display); letter-spacing: 0;   /* r55: the price is display-lg in the display face */
   color: var(--on-dark); font-variant-numeric: tabular-nums;
 }
 .bindu-home .r6-unit { margin: var(--s-2) 0 0; }
 .bindu-home .r6-line { margin: var(--s-1) 0 0; }
-.bindu-home .r6-request { margin: 0; font: 400 var(--display-sm)/1.2 var(--font-sans); letter-spacing: var(--track-sm); color: var(--on-dark); }
+.bindu-home .r6-request { margin: 0; font: 500 var(--display-sm)/1.4 var(--font-display); letter-spacing: 0; color: var(--on-dark); }
 
 /* the ledger: label left, amount right in one column, hairline between rows */
 .bindu-home .r6-rows { margin: var(--s-5) 0 0; border-top: 1px solid var(--line-white-12); }
@@ -61,7 +77,7 @@
 .bindu-home .r6-inc li:last-child { border-bottom: 0; }
 .bindu-home .r6-inc li::before { content: ""; position: absolute; left: 0; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%; background: var(--cobalt-signal); }
 /* Live is plain mono text here, not the yellow chip: yellow stays on the one Estimate pill in this section */
-.bindu-home .r6-live { font: 500 13px/1 var(--font-sans); color: var(--on-dark); }
+.bindu-home .r6-live { font: 500 14px/1 var(--font-sans); color: var(--on-dark); }
 
 .bindu-home .r6-cta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-3); margin-top: var(--s-5); }
 .bindu-home .r6-trust {
@@ -94,9 +110,10 @@
 
 /* r20-4: odometer columns (one digit tall, the strip slides) and the crossfade for tabs without a price */
 .bindu-home .od { display: inline-flex; }
-.bindu-home .od-col { display: inline-block; height: 1.1em; line-height: 1.1; overflow: hidden; vertical-align: bottom; }
+/* r55-8: the clip box is one full line (1.2em) tall plus a little room, and every digit in the strip is exactly that tall, so no digit is ever cut */
+.bindu-home .od-col { display: inline-block; height: 1.2em; line-height: 1.2; overflow: hidden; vertical-align: top; }
 .bindu-home .od-strip { display: grid; will-change: transform; }
-.bindu-home .od-strip > span { height: 1.1em; line-height: 1.1; }
+.bindu-home .od-strip > span { display: block; height: 1.2em; line-height: 1.2; }
 .bindu-home .r6-fade { animation: r6-fade 400ms var(--ease-out) both; }
 @keyframes r6-fade { from { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .bindu-home .r6-fade { animation: none; } }
