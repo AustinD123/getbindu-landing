@@ -167,7 +167,7 @@
 
 /* r22-12: the journey title steps up one size (display-lg, still limited by the screen height so the section fits one window); the story line is body-lg in full ink */
 .bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6.6svh); }
-.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 56ch; color: var(--on-dark-mute); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.35; letter-spacing: -0.02em; }
+.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 60ch; color: var(--on-dark-mute); font-size: var(--body); line-height: 1.5; letter-spacing: 0; }
 @media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(24px, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: 13px; line-height: 1.35; } }
 
 /* r23-5: the map fills the content container exactly (no bleed) */
@@ -176,13 +176,13 @@
 .bindu-home .ship-cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .bindu-home .ship-txt { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .bindu-home .ship-txt > span { position: absolute; left: 0; top: 0; white-space: nowrap; opacity: 0; }
-.bindu-home .ship-txt .ship-label { font: 500 10px/1 var(--font-mono); letter-spacing: 0.04em; color: var(--on-dark-mute); }   /* map labels are labels inside an illustration: mono stays */
+.bindu-home .ship-txt .ship-label { font: 400 11px/1.2 var(--font-mono); letter-spacing: 0; color: var(--on-dark-mute); padding: 1px 4px; background: var(--canvas); border-radius: var(--r-xs); }   /* map labels are labels inside an illustration: mono stays */
 /* r28-9: each milestone note is a small label card: a soft canvas-colour scrim (a feathered fill, no border or shadow), the title in body-size 600 and full ink, the sentence
    in body-sm in the soft ink token (max 32ch). The current step's title is cobalt with a small yellow dot; past steps are muted but readable (on-dark-body, AA); steps not yet
    reached are not shown (the script keeps them at opacity 0). */
-.bindu-home .ship-txt .ship-note { display: grid; gap: 3px; width: max-content; max-width: min(32ch, 36vw); white-space: normal; text-align: left; color: var(--on-dark-body); }
-.bindu-home .ship-txt .ship-note::before { content: ""; position: absolute; z-index: -1; inset: -4px -8px; border-radius: var(--r-md); background: color-mix(in srgb, var(--canvas) 78%, transparent); filter: blur(4px); }
-.bindu-home .ship-txt .ship-note b { font: 600 var(--body)/1.25 var(--font-sans); color: var(--on-dark); letter-spacing: var(--track-sm); }
+/* r55-5: every note and map label has a solid canvas backing (no route line or other label shows through it); Script.tsx places them so none overlap */
+.bindu-home .ship-txt .ship-note { display: grid; gap: 3px; width: max-content; max-width: min(30ch, 36%); white-space: normal; text-align: left; color: var(--on-dark-body); padding: 6px 10px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-sm); }
+.bindu-home .ship-txt .ship-note b { font: 500 var(--body)/1.35 var(--font-sans); color: var(--on-dark); letter-spacing: 0; }
 .bindu-home .ship-txt .ship-note i { font: 400 var(--body-sm)/1.35 var(--font-sans); font-style: normal; color: var(--on-dark-body); max-width: 32ch; }
 .bindu-home .ship-txt .ship-note[data-state="current"] b { color: var(--cobalt-signal); }
 .bindu-home .ship-txt .ship-note[data-state="current"] b::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); vertical-align: 1px; }
@@ -191,9 +191,18 @@
 .bindu-home .ship-txt .ship-note.is-coming i { color: var(--on-dark-body); }
 @media (max-width: 860px) { .bindu-home .ship-txt .ship-note { display: none; } }   /* phones and small tablets: the compact list under the map carries the steps */
 /* the list (phones, and the static fallback): the same hierarchy: 600 titles, the current one cobalt with the yellow dot, past rows readable, rows not reached yet hidden */
-.bindu-home .ship-ms h3 { font-weight: 600; }
+.bindu-home .ship-ms h3 { font-weight: 500; }
 .bindu-home .ship-ms[data-state="current"] h3 { color: var(--cobalt-signal); }
 .bindu-home .ship-ms[data-state="current"] h3::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); vertical-align: 1px; }
 .bindu-home .ship-ms[data-state="done"] h3 { color: var(--on-dark-body); }
 .bindu-home .ship-ms p, .bindu-home .ship-ms[data-state="done"] p { color: var(--on-dark-body); }
 .bindu-home .ship-pin:not(.is-static) .ship-ms[data-state="next"] { opacity: 0; }
+
+/* r55-5: the question and its answer sit BESIDE the map (a column of their own from 861px), never over the route. Under 861px the pinned window hides them (r44.css);
+   the static page shows them under the map. */
+@media (min-width: 861px) {
+  .bindu-home .ship-map { display: grid; grid-template-columns: minmax(0, 1fr) 272px; column-gap: var(--s-5); align-items: end; }
+  .bindu-home .ship-map .ship-svg { grid-column: 1; }
+  .bindu-home .ship-map .ship-ask { grid-column: 2; align-self: start; }
+  .bindu-home .ship-map .ship-cap { grid-column: 1 / -1; }
+}
