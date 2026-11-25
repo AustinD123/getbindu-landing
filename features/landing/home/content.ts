@@ -18,7 +18,7 @@ export const cta = {
 export const nav = {
   theme: { toDark: "Switch to dark theme", toLight: "Switch to light theme" },
   links: [
-    { t: "How it works", href: "#how" },
+    { t: "How it works", href: "#story" },
     { t: "Pricing", href: "#pricing" },
     { t: "FAQ", href: "#faq" },
   ],
@@ -80,44 +80,6 @@ export const pains = {
     { q: "I don't know which EU rules apply to my goods.", a: "Describe your goods and Bindu tells you which rules apply." },
     { q: "What if my shipment gets held at customs?", a: "Bindu files and returns the reference customs asks for, for EUDR today." },
   ],
-};
-
-/* Round 39 (r39-2): "Full Circle", the section that took over `#how`. Ported from the older story page's theatre (features/landing/story/theatre.tsx) and
-   rewritten in plain buyer words: one short line per scene, no quotes, no in-jokes. The captions are one per scene of the stage, in order, so
-   `beats[i]` is what the stage is doing during scene i (lib/theatre-fx.ts has 5, 4 and 5 scenes). The people, places, documents and reference numbers
-   are made up (Illustration, labelled once under the stage). Act three is the textile passport, which is on getbindu.com (Austin's rule: on the site = live), so it carries a
-   "Live" chip (r40-2; textile passports are live on getbindu.com). Its captions follow the site's passport pages (features/landing/regulation/dpp-textiles-page.tsx and the
-   access-rights section of textiles-story.tsx: one scan, a public view for shoppers, wider views for recyclers and authorities). The EUDR date in act two is the Commission's 31 December 2020 cut-off. */
-export const theatre = {
-  title: "Full Circle.",   // r44-2: only the small label above the heading now; each act carries its own title (a buyer question) and lead (one line from its beats)
-  tabsLabel: "Acts",
-  stepsLabel: "What happens, step by step",
-  dotsLabel: "Scenes",
-  acts: [
-    { id: "fabric", tab: "The Fabric", title: "Where did the cotton come from?", lead: "Three suppliers quote the same shirt. Only one can show where its cotton came from.", beats: [
-      "An importer in Amsterdam gets three quotes for the same shirt.",
-      "Supplier A is cheapest but cannot show where the cotton came from.",
-      "Bindu asks supplier B's mill for what is missing. The documents come back.",
-      "Supplier C never sends the documents, so nothing comes back.",
-      "The importer picks supplier B, the one with proof it can show.",
-    ] },
-    { id: "bean", tab: "The Bean", title: "Can this coffee prove its farm?", lead: "An importer has to show the exact plot behind every bag. Bindu collects it, files it and gets a reference number back.", beats: [
-      "A coffee importer must show the exact plot every bag came from.",
-      "Satellite images show origin A's plot was cleared in 2022, so it is passed over.",
-      "Origin B's co-op sends every plot. Bindu files it and a reference number comes back.",
-      "Origin C never answers, so it is passed over too.",
-    ] },
-    { id: "circle", tab: "The Circle", title: "Who can read this shirt's record?", lead: "A shopper, a recycler and a customs officer scan the same code. Each sees their own view of one record.", beats: [
-      "A shopper scans the code on the shirt's label and sees a public view.",
-      "The record shows what it is made of, where it was cut and how to care for it.",
-      "A recycler scans the same code and sees more, including how to take it apart.",
-      "A customs officer opens the same record and sees the conformity certificates.",
-      "Same record, a different view for each reader. That is the full circle.",
-    ] },
-  ],
-  illus: "Illustration",
-  caption: "People, places, documents and reference numbers are made up.",
-  live: "Live",
 };
 
 /* Round 13, item 6: one shipment, five regulation stories. Every story runs along the same example route (Guayaquil to
@@ -293,7 +255,7 @@ export const faq = {
 export const footer = {
   line: "Describe your shipment once. Bindu finds the rules that apply and files the statement.",
   cols: [
-    { h: "Product", l: [{ t: "How it works", u: "#how" }, { t: "Pricing", u: "#pricing" }] },
+    { h: "Product", l: [{ t: "How it works", u: "#story" }, { t: "Pricing", u: "#pricing" }] },
     { h: "Company", l: [{ t: "GitHub", u: "https://github.com/GetBindu/Bindu" }, { t: "raahul@getbindu.com", u: "mailto:raahul@getbindu.com" }] },
   ],
   legal: "© 2026 GetBindu · The73 B.V. · KvK 92797911 · Amsterdam, NL · Hosted in the EU · Prices exclude VAT", // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)

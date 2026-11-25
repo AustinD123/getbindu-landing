@@ -17,7 +17,6 @@ import "./styles/guide.css";
 import "./styles/story.css";
 import "./styles/r44.css";
 import "./styles/r47.css";
-import "./styles/theatre.css";
 import "./styles/r59.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
@@ -54,7 +53,6 @@ function Ready({ id }: { id: string }) {
   useEffect(() => { markReady(id); }, [id]);
   return null;
 }
-const Theatre = late("how", typeof window === "undefined" ? (require("./components/Theatre") as Record<string, React.ComponentType>).Theatre : null, () => import("./components/Theatre"), "Theatre");
 const Flow = late("story", typeof window === "undefined" ? (require("./components/Flow") as Record<string, React.ComponentType>).Flow : null, () => import("./components/Flow"), "Flow");
 const ShipmentJourney = late("shipment", typeof window === "undefined" ? (require("./components/ShipmentJourney") as Record<string, React.ComponentType>).ShipmentJourney : null, () => import("./components/ShipmentJourney"), "ShipmentJourney");
 const Examples = late("examples", typeof window === "undefined" ? (require("./components/Examples") as Record<string, React.ComponentType>).Examples : null, () => import("./components/Examples"), "Examples");
@@ -95,11 +93,10 @@ export function HomePage() {
       <Guide />
       <Rail />
       <main id="main">
-        {/* round 44: one story. Hero, statement, what Bindu does (four steps), Full Circle, the shipment map (the supply-chain question is folded into it), the departures board, what buyers say, the rules, pricing, FAQ, wordmark finale. */}
+        {/* round 44: one story. Hero, statement, what Bindu does (four steps), the shipment map (r65-4: Full Circle removed) (the supply-chain question is folded into it), the departures board, what buyers say, the rules, pricing, FAQ, wordmark finale. */}
         <Hero />
         <Statement />
         <Flow />
-        <Theatre />
         <ShipmentJourney />
         <Examples />
         <Voices />
