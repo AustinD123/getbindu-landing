@@ -260,3 +260,12 @@
 .bindu-home .nav-book { display: none; }
 @media (min-width: 768px) { .bindu-home .nav .nav-book { display: inline-flex; flex: none; } }
 @media (min-width: 768px) and (max-width: 860px) { .bindu-home .nav .nav-menu { order: 1; } .bindu-home .nav .nav-book { order: 2; } }
+
+/* r65-3: the getbindu.com header actions on the expanded bar (GitHub stars, Docs, Sign in), quiet ghost pills before Book a demo. They sit in
+   .nav-rest, so the collapsed pill hides them with the links. Under 1180px the bar has no room: they move to the drawer only. */
+.bindu-home .nav-act { display: none; }
+@media (min-width: 1180px) { .bindu-home .nav .nav-act { display: inline-flex; flex: none; gap: 6px; padding: 0 12px; } }
+.bindu-home .nav-gh-mark { width: 16px; height: 16px; flex: none; }
+.bindu-home .nav-gh-star { font-size: 12px; }
+.bindu-home .nav-gh span:not(.nav-gh-star) { font-variant-numeric: tabular-nums; }
+.bindu-home .nav-drawer-gh { display: inline-flex; align-items: center; gap: 8px; }

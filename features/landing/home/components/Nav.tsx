@@ -5,6 +5,26 @@ import { DEMO_URL, cta, nav } from "../content";
 import { BtnLabel, Logo } from "./bits";
 import { getTheme, setTheme, useTheme } from "../lib/theme";
 import { NAV_BLOG, NAV_REGULATIONS } from "../links";
+import { useAuthStore } from "@shelley/core/auth";
+import { GitHubMark, githubBadgeLabel, githubRepoLabel, githubUrl, useGithubStars } from "../../shared";
+
+/* r65-3: the getbindu.com header actions (as in features/landing/chrome/island-header.tsx): the GitHub badge with its live star count, Docs
+   and Sign in, before Book a demo. Same hrefs, same signed-in label, same badge wording, so the two headers never disagree. */
+const DOCS_HREF = "https://doc.getbindu.com/guides/overview";
+function useSignIn() {
+  const user = useAuthStore((s) => s.user);
+  return { href: user ? "/" : "/login", label: user ? "Dashboard" : "Sign in" };
+}
+function GitHubBadge({ className }: { className: string }) {
+  const stars = useGithubStars();
+  return (
+    <a className={className} href={githubUrl} target="_blank" rel="noopener noreferrer" aria-label={githubBadgeLabel(stars)} title={githubRepoLabel}>
+      <GitHubMark className="nav-gh-mark" />
+      <span>{stars ?? "GitHub"}</span>
+      <span aria-hidden="true" className="nav-gh-star">&#9733;</span>
+    </a>
+  );
+}
 
 /* round 13: the light or dark switch. The icon shows the theme it switches to (a moon in light, a sun in dark). */
 function ThemeToggle() {
@@ -84,6 +104,7 @@ function pillRect(row: HTMLElement, a: HTMLElement) {
 /* The nav: logo, links, the Regulations menu, the theme toggle and (r52) Book a demo at the right end of the floating bar.
    Phones get a drawer that keeps its own Book a demo. From 861px the bar collapses past the hero to a pill with the logo only. */
 export function Nav() {
+  const signIn = useSignIn();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const btn = useRef<HTMLButtonElement>(null);
@@ -282,6 +303,9 @@ export function Nav() {
           {mounted && <><span ref={pill} className="nav-pill" aria-hidden="true" /><span ref={hov} className="nav-hover" aria-hidden="true" /><span ref={dot} className="nav-dot" aria-hidden="true" /></>}
         </nav>
         <ThemeToggle />
+        <GitHubBadge className="btn btn-ghost nav-act nav-gh" />
+        <a className="btn btn-ghost nav-act" href={DOCS_HREF} target="_blank" rel="noopener noreferrer">Docs</a>
+        <a className="btn btn-ghost nav-act" href={signIn.href}>{signIn.label}</a>
         {/* r52 (Austin, 25 Nov 2026): Book a demo is back on the expanded bar, at its right end. It sits in .nav-rest, so the collapsed pill
             (logo only, r43) fades it out with the links and takes it out of the tab order (visibility hidden). */}
         <a className="btn bh-btn-primary nav-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
@@ -297,6 +321,9 @@ export function Nav() {
           {NAV_REGULATIONS.map((l) => <a key={l.u} href={l.u} onClick={() => setOpen(false)}>{l.t}</a>)}
         </div>
         <a href={NAV_BLOG.u} onClick={() => setOpen(false)}>{NAV_BLOG.t}</a>
+        <GitHubBadge className="nav-drawer-gh" />
+        <a href={DOCS_HREF} target="_blank" rel="noopener noreferrer">Docs</a>
+        <a href={signIn.href}>{signIn.label}</a>
         <a className="btn bh-btn-primary nav-drawer-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
       </div>
     </header>
