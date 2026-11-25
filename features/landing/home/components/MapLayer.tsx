@@ -170,9 +170,9 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       const kids = Array.from(document.querySelectorAll<HTMLElement>(".hero-in > *"));
       const title = rect(kids.filter((n) => n.classList.contains("hero-h"))), rest = rect(kids.filter((n) => !n.classList.contains("hero-h")));
       if (title) shade(title.l, title.t, title.r, title.b, 180, 0.8);
-      if (rest) shade(rest.l, rest.t, rest.r, rest.b, 120, 0.7);
+      if (rest) shade(rest.l, rest.t, rest.r, rest.b, 120, 0.8);
       const lab = document.querySelector<HTMLElement>(".stage-ui .scene-label")?.getBoundingClientRect();
-      if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.6);
+      if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.75);
     };
 
     /* the dust, drawn on the 2D canvas only when WebGL is missing (the GL path draws it otherwise) */
