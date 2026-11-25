@@ -57,7 +57,7 @@
 .bindu-home .hero-in { position: relative; z-index: 2; width: 100%; }
 .bindu-home .hero-in > * { max-width: 640px; }
 .bindu-home .hero-eyebrow { margin-bottom: var(--s-5); }
-.bindu-home .hero-h { max-width: 22ch; margin-bottom: var(--s-5); font-size: var(--hero-h-size); }
+.bindu-home .hero-h { max-width: 22ch; margin-bottom: var(--s-5); font-size: var(--hero-h-size); line-height: 1.05; font-weight: 500; }
 .bindu-home .hero-sub { margin: 0 0 var(--s-5); max-width: 544px; }
 .bindu-home .hero-dates { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 22px; margin: 0 0 var(--s-6); }
 .bindu-home .hero-dates .bh-eyebrow { flex-basis: 100%; }
