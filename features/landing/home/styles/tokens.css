@@ -111,8 +111,8 @@
   --r-xl: 12px;
   --r-2xl: 12px;
   --r-4xl: 12px;
-  --r-control: 9999px;  /* rounded.full: every button, chip, pill input, tab */
-  --r-ui: 9999px;
+  --r-control: 6px;     /* r65-9 (Austin): every button, chip, tab, toggle and nav marker is a crisp rectangle with a small radius, no ovals */
+  --r-ui: 6px;
   --r-hero: 12px;
 
   /* ---------- elevation: hairlines, not shadows ---------- */

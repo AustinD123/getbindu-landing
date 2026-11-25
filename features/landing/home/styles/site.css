@@ -235,7 +235,7 @@
 @media (prefers-reduced-motion: reduce) { .bindu-home .nav-in { transition: none; } }
 
 /* round 43: the island. GSAP owns width, the pills and the section label; CSS only lays them out. */
-.bindu-home .nav { --nav-r: 9999px; }
+.bindu-home .nav { --nav-r: 12px; }   /* r65-9: the floating bar is a rounded rectangle */
 .bindu-home .nav-rest { display: contents; }
 @media (min-width: 861px) {
   .bindu-home .nav-rest { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; flex: none; }

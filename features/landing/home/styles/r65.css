@@ -58,7 +58,7 @@
 .bindu-home .bl-head h2 { margin: 0; }
 .bindu-home .bl-ctl { display: flex; align-items: center; gap: 8px; flex: none; }
 .bindu-home .bl-all { margin-right: 8px; font: 500 15px/1 var(--font-sans); color: var(--link-wipe); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
-.bindu-home .bl-arrow { width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center; border-radius: 50%; }
+.bindu-home .bl-arrow { width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center; border-radius: var(--r-control); }
 .bindu-home .bl-arrow:disabled { opacity: var(--disabled-dim); cursor: default; }
 .bindu-home .bl-row { list-style: none; margin: 0; padding: 0 0 8px; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); gap: 24px;
   overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
@@ -76,3 +76,9 @@
 @media (hover: hover) { .bindu-home .bl-card:hover .bl-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
 .bindu-home .bl-meta { margin: 0; display: flex; gap: 16px; font: 400 14px/1.4 var(--font-sans); color: var(--on-dark); }
 .bindu-home .bl-read { color: var(--link-wipe); font-weight: 500; }
+
+/* r65-9 (Austin): rectangular controls with a proper finish. Every control uses --r-control (6px). The nav's secondary controls (theme toggle,
+   GitHub, Docs, Sign in) are outlined: a 1px hairline on the canvas, no grey fill, so they read as crisp keys next to the cobalt Book a demo. */
+.bindu-home .nav .theme-toggle, .bindu-home .nav .nav-act { width: auto; min-width: 36px; height: 36px; background: transparent; border: 1px solid var(--hairline-dark); }
+.bindu-home .nav .theme-toggle { width: 36px; padding: 0; }
+@media (hover: hover) { .bindu-home .nav .theme-toggle:hover, .bindu-home .nav .nav-act:hover { background: var(--canvas-soft); border-color: var(--hairline-strong); } }

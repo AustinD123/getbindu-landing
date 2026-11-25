@@ -55,7 +55,7 @@
 .bindu-home .btn-ghost { background: var(--canvas-soft); color: var(--on-dark); }
 @media (hover: hover) { .bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas); border-color: var(--hairline-strong); } }
 /* circular icon button, 44px (the one round control besides dots): a ghost button */
-.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: var(--canvas-soft); color: var(--on-dark); border: 1px solid transparent; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
+.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: var(--r-control); background: var(--canvas-soft); color: var(--on-dark); border: 1px solid transparent; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
 @media (hover: hover) { .bindu-home .btn-icon:hover { background: var(--canvas); border-color: var(--hairline-strong); } }
 .bindu-home .btn-l { display: inline-block; }
 /* a plain arrow after the label for links that leave the section; it does not move */

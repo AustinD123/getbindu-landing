@@ -226,7 +226,7 @@ export function Nav() {
     const compactW = () => 56;   // r52 (Austin): the pill is the logo only; Book a demo lives in .nav-rest and leaves with the links
     const build = (collapsed: boolean, instant: boolean) => {
       tl?.kill(); s.collapsed = collapsed;
-      const nv = collapsed ? { width: compactW(), "--nav-r": "28px" } : { width: natural(), "--nav-r": "14px" };
+      const nv = collapsed ? { width: compactW(), "--nav-r": "12px" } : { width: natural(), "--nav-r": "12px" };
       const done = () => { nav.classList.remove("is-moving"); if (!s.collapsed) { gsap.set(nav, { clearProps: "width" }); nav.classList.remove("is-island"); } else rest.style.visibility = "hidden"; };
       if (collapsed) nav.classList.add("is-island");
       if (!collapsed) rest.style.visibility = "";
