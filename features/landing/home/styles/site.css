@@ -93,6 +93,10 @@
 .bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--hairline-dark); background: var(--canvas); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; overscroll-behavior: contain; }
 .bindu-home .dlg.is-in:not(.no-motion) { animation: dlg-in var(--t-base) var(--ease-out) both; }
 @keyframes dlg-in { from { opacity: 0; transform: translate(calc(var(--ox, 50vw) - 50vw), calc(var(--oy, 50vh) - 50vh)) scale(0.4); } }
+/* r61-10: the exit. The window (inner box) and the backdrop fade over 160ms, then bits.tsx closes the dialog. The enter keyframe owns the dialog's own opacity, so the fade is on its children. */
+.bindu-home .dlg-in, .bindu-home .dlg::backdrop { transition: opacity 160ms var(--ease-out); }
+.bindu-home .dlg.is-out .dlg-in, .bindu-home .dlg.is-out::backdrop { opacity: 0; }
+.bindu-home .dlg.no-motion .dlg-in, .bindu-home .dlg.no-motion::backdrop { transition: none; }
 .bindu-home .dlg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-2); }
 .bindu-home .dlg-head h2 { font-size: var(--display-xs); line-height: var(--lh-display-sm); }   /* round 15 item 9: a smaller popup title */
 .bindu-home .dlg-x { font-size: 22px; line-height: 1; cursor: pointer; flex: none; }

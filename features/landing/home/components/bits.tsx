@@ -1,5 +1,5 @@
 import { getRoot } from "../lib/root";
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { sunflowerCircles } from "../lib/phyllotaxis";
 import { lockScroll, reduceMotion } from "../lib/motion";
@@ -100,17 +100,29 @@ export function Dialog({ open, onClose, opener, title, label, children, id }:
   const ref = useRef<HTMLDialogElement>(null);
   const [mounted, setMounted] = useState(false);   // the portal target is in the document, which the server does not have
   useEffect(() => setMounted(true), []);
+  /* r61-10: every way out (the button, Esc, a click on the backdrop, the parent closing it) fades the window and the backdrop out in 160ms
+     (a CSS transition on `.is-out`, a class GSAP does not touch) and then closes the native dialog, which returns focus to the opener. Reduced motion: at once. */
+  const leaving = useRef<number | null>(null);
+  const dismiss = useCallback(() => {
+    const d = ref.current;
+    if (!d || !d.open || leaving.current !== null) return;
+    if (reduceMotion()) { d.close(); return; }
+    d.classList.add("is-out");
+    leaving.current = window.setTimeout(() => { leaving.current = null; d.classList.remove("is-out"); if (d.open) d.close(); }, 160);
+  }, []);
+  useEffect(() => () => { if (leaving.current !== null) window.clearTimeout(leaving.current); }, []);
   useEffect(() => {
     const d = ref.current; if (!d) return;
     if (open && !d.open) {
+      d.classList.remove("is-out");
       if (opener) {
         const r = opener.getBoundingClientRect();
         d.style.setProperty("--ox", `${r.left + r.width / 2}px`); d.style.setProperty("--oy", `${r.top + r.height / 2}px`);
       }
       d.showModal(); lockScroll(true);
       d.classList.remove("is-in"); void d.offsetWidth; d.classList.add("is-in");
-    } else if (!open && d.open) d.close();
-  }, [open, opener, mounted]);
+    } else if (!open && d.open) dismiss();
+  }, [open, opener, mounted, dismiss]);
   useEffect(() => {   // Tab wraps inside the dialog (native modal focus can leave to the browser UI)
     const d = ref.current; if (!d) return;
     const trap = (e: KeyboardEvent) => {
@@ -127,17 +139,18 @@ export function Dialog({ open, onClose, opener, title, label, children, id }:
   useEffect(() => {
     const d = ref.current; if (!d) return;
     const onClosed = () => { lockScroll(false); onClose(); opener?.focus(); };
-    const onClick = (e: MouseEvent) => { if (e.target === d) d.close(); };
-    d.addEventListener("close", onClosed); d.addEventListener("click", onClick);
-    return () => { d.removeEventListener("close", onClosed); d.removeEventListener("click", onClick); };
-  }, [onClose, opener, mounted]);
+    const onClick = (e: MouseEvent) => { if (e.target === d) dismiss(); };
+    const onCancel = (e: Event) => { e.preventDefault(); dismiss(); };   // Esc
+    d.addEventListener("close", onClosed); d.addEventListener("click", onClick); d.addEventListener("cancel", onCancel);
+    return () => { d.removeEventListener("close", onClosed); d.removeEventListener("click", onClick); d.removeEventListener("cancel", onCancel); };
+  }, [onClose, opener, mounted, dismiss]);
   if (!mounted) return null;
   return createPortal(
     <dialog ref={ref} className={`dlg${reduceMotion() ? " no-motion" : ""}`} aria-modal="true" aria-labelledby={`${id}-h`}>
       <div className="dlg-in band-dark">
         <div className="dlg-head">
           <h2 id={`${id}-h`} className="t-display-sm">{title}</h2>
-          <button type="button" className="btn-icon dlg-x" onClick={() => ref.current?.close()} aria-label="Close">×</button>
+          <button type="button" className="btn-icon dlg-x" onClick={dismiss} aria-label="Close">×</button>
         </div>
         {label && <p className="chip chip-illus dlg-label">{label}</p>}
         {children}
