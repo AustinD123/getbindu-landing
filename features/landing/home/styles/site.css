@@ -241,7 +241,7 @@
 .bindu-home .nav-pill { height: 28px; background: rgb(var(--cobalt-rgb) / 0.14); border: 0; }   /* the active pill is cobalt (adaptation 2) */
 .bindu-home .nav-hover { height: 28px; background: var(--canvas-soft); border: 0; }
 .bindu-home .nav-dot { z-index: 1; }
-.bindu-home .nav-links { gap: 36px; }
+.bindu-home .nav-links { gap: 28px; }
 
 /* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
 .bindu-home .nav.is-moving { background: var(--canvas); }

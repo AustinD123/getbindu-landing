@@ -79,19 +79,19 @@
   /* the file's hierarchy table: display-xl 36/500/1.11, display-lg 30/500/1.2, heading-lg 24/600/1.33, heading-md 20, heading-sm 18, body 16/1.5, body-sm 14, caption 12; letter-spacing 0 */
   --hero-h-size: clamp(48px, 7vw, 96px);          /* r56-1 (DESIGN.md adaptation 8): the hero title only; every other title keeps the file sizes */
   --display-xl: var(--hero-h-size);
-  --display-lg: 30px;                            /* section titles */
-  --display-md: 24px;                            /* heading-lg */
-  --display-sm: 20px;                            /* heading-md */
-  --display-xs: 18px;                            /* heading-sm */
+  --display-lg: 36px;                            /* section titles (r56: 30 -> 36, Austin: type should make a statement) */
+  --display-md: 28px;                            /* heading-lg, +4 */
+  --display-sm: 22px;                            /* heading-md, +2 */
+  --display-xs: 20px;                            /* heading-sm, +2 */
   --track-xl: 0; --track-lg: 0; --track-md: 0; --track-sm: 0;
   --display-weight: 500;
   --lh-display: 1.11; --lh-display-lg: 1.2; --lh-display-sm: 1.4;
-  --body-lg: 16px;  /* the lead is body-md: Ollama has no larger body */  --lh-body-lg: 1.5;
-  --body: 16px;     /* body-md */  --lh-body: 1.5;
-  --body-sm: 14px;  /* body-sm */  --lh-body-sm: 1.43;
-  --caption: 12px;  /* caption-sm */
+  --body-lg: 20px;  /* the lead (r56: 16 -> 20) */  --lh-body-lg: 1.5;
+  --body: 18px;     /* body-md (r56: 16 -> 18) */  --lh-body: 1.5;
+  --body-sm: 16px;  /* body-sm (r56: 14 -> 16) */  --lh-body-sm: 1.43;
+  --caption: 14px;  /* caption-sm (r56: 12 -> 14) */
   --mono-eyebrow: 12px;
-  --mono-button: 14px;
+  --mono-button: 16px;
   --mono-chip: 12px;
   --mono-number: 14px;  /* code-sm */
 

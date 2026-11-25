@@ -23,7 +23,7 @@
 .bindu-home .band-light .t-soft,  .bindu-home .band-soft .t-soft  { color: var(--ink-body); }
 
 /* eyebrow (r17): small sentence-case label in the sans */
-.bindu-home .bh-eyebrow { font: 500 14px/1.43 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
+.bindu-home .bh-eyebrow { font: 500 16px/1.43 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
 .bindu-home .band-dark .bh-eyebrow { color: var(--on-dark-mute); }
 .bindu-home .band-light .bh-eyebrow, .bindu-home .band-soft .bh-eyebrow { color: var(--ink-mute); }
 
@@ -40,7 +40,7 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;
   min-height: var(--btn-h); padding: 0 var(--btn-px); margin: 0;
   border-radius: var(--r-control); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
-  font: 500 14px/1 var(--font-sans); letter-spacing: 0;
+  font: 500 16px/1 var(--font-sans); letter-spacing: 0;
   transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
 /* button-primary shape (pill, 36px, 8px 20px, 14px 500) in the one accent Austin kept: yellow fill, black label, only "Book a demo" (adaptation 2). Class keeps the bh- prefix: the app's global styles/bindu-product.css owns an
@@ -66,7 +66,7 @@
    No underline, no growing line, no text wipe, no arrow nudge. The arrow, where there is one, is static. */
 .bindu-home .tlink {
   display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; cursor: pointer;
-  color: var(--on-dark-mute); text-decoration: none; font: 400 14px/1.43 var(--font-sans); letter-spacing: 0;
+  color: var(--on-dark-mute); text-decoration: none; font: 400 16px/1.43 var(--font-sans); letter-spacing: 0;
   transition: color var(--t-ui) var(--ease-ui);
 }
 .bindu-home .tlink:hover { color: var(--on-dark); }
@@ -85,8 +85,8 @@
 
 /* ---------- chips (r54, DESIGN.md v3 section 4): 22px tall, 5px radius, Inter 500 12px, no border ---------- */
 .bindu-home .chip {
-  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 24px; padding: 0 10px; border-radius: var(--r-control);
-  border: 1px solid transparent; font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 28px; padding: 0 12px; border-radius: var(--r-control);
+  border: 1px solid transparent; font: 500 14px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
 }
 .bindu-home .chip-live { background: var(--live-bg); color: #000; border-color: var(--live-bg); }
 .bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #000; }
@@ -149,7 +149,7 @@
 .bindu-home .seg-opt {
   position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h);
   padding: 0 var(--btn-px); border: 1px solid var(--hairline-strong); border-radius: var(--r-control); background: var(--canvas); color: var(--on-dark); cursor: pointer;
-  font: 500 14px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  font: 500 16px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
   transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
 .bindu-home .seg-opt:hover { background: var(--canvas-soft); }
