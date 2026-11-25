@@ -6,15 +6,13 @@ import { isPhone, onPhoneChange } from "../lib/phone";
 import { isPending, onReady } from "../lib/ready";
 import { BtnLabel } from "./bits";
 
-/* Round 56 item 7: "The rules Bindu covers" (id `rules`) as a filing drawer. The five rules are five document folders standing in a row in a drawer, each with a labelled tab
-   (the regulation number, in mono). The section pins; one GSAP ScrollTrigger timeline, scrubbed (so it reverses): each folder in turn lifts up out of the drawer and its card
-   (name, what it asks for, goods, status chip, source, "Read the rule") rises out of it and opens above the drawer; as the next folder lifts the card sinks and the folder slides
-   back. The last folder stays open. One motion idea only. Cobalt for the drawer lines, yellow only on the Live chip. A folder is a button: it scrolls to its own moment.
-   GSAP owns every hidden state (the cards are made visible and hidden by the timeline, never by CSS). Phones, reduced motion, short windows and no JS: no pin, the five folders
-   as a stacked list with every card open. Statuses, regulation numbers and source links are the brief's, unchanged. */
+/* Round 52 item 3: "The rules Bindu covers" (id `rules`). The section pins and the vertical scroll moves the row of five tiles sideways (GSAP ScrollTrigger, scrubbed, so it
+   reverses with the scroll). The tile nearest the reading position is full ink, the others sit at the mute colour (text only, the panels stay). One idea, nothing else moves:
+   no drag, tilt, snap, arrows, hint, flaps or lane. Phones, reduced motion, short windows and no JS: no pin, a native horizontal scroll-snap row of the same tiles.
+   A tile's links stay real links; focusing one scrolls the page so that tile is in view. */
 const linkOf = (name: string) => NAV_REGULATIONS.find((l) => l.t === name)?.u ?? "/";
-const MIN_H = 680;   // a window shorter than this cannot hold the head, a card and the drawer, so it gets the stacked list
-const LIFT = 34;     // px a folder lifts out of the drawer
+const MIN_H = 680;   // a window shorter than this cannot hold a tile and the heading, so it gets the native row
+const DIM = 0.62;
 
 export function Rules() {
   const reduced = useReducedMotion();
@@ -22,10 +20,10 @@ export function Rules() {
   const [short, setShort] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pin = useRef<HTMLDivElement>(null);
-  const win = useRef<HTMLDivElement>(null);
-  const folders = useRef<(HTMLLIElement | null)[]>([]);
+  const view = useRef<HTMLDivElement>(null);
+  const trk = useRef<HTMLUListElement>(null);
+  const tiles = useRef<(HTMLLIElement | null)[]>([]);
   const pinned = mounted && !reduced && !phone && !short;
-  const n = c.items.length;
 
   useEffect(() => {
     setMounted(true);
@@ -37,42 +35,34 @@ export function Rules() {
   }, []);
 
   useEffect(() => {
-    const p = pin.current;
-    if (!pinned || !p) return;
-    const fs = folders.current.slice() as HTMLLIElement[];   // a snapshot: the ref slots go null on unmount, before cleanup
-    const bodies = fs.map((f) => f.querySelector<HTMLElement>(".rl-fbody")!);
-    const cards = fs.map((f) => f.querySelector<HTMLElement>(".rl-card")!);
-    const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
-    fs.forEach((_, i) => {
-      const t0 = i;
-      tl.fromTo(bodies[i]!, { y: 0 }, { y: -LIFT, duration: 0.3 }, t0);
-      tl.fromTo(cards[i]!, { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.3 }, t0 + 0.1);
-      if (i < fs.length - 1) {
-        tl.to(cards[i]!, { autoAlpha: 0, y: -24, duration: 0.2, ease: "power2.in" }, t0 + 0.8);
-        tl.to(bodies[i]!, { y: 0, duration: 0.25, ease: "power2.in" }, t0 + 0.78);
-      }
-    });
-    tl.to({}, { duration: 0.001 }, fs.length - 0.001);   // exactly n units long, so the last folder holds
-    let act = -1;
-    const mark = (t: number) => {
-      const a = Math.min(fs.length - 1, Math.max(0, Math.floor(t + 0.15)));
+    const p = pin.current, v = view.current, t = trk.current;
+    if (!pinned || !p || !v || !t) return;
+    const ts = tiles.current.slice() as HTMLLIElement[];   // a snapshot: the ref slots go null on unmount, before cleanup
+    const bodies = ts.map((el) => el.querySelector<HTMLElement>(".rl-body")!);
+    let travel = 0, act = -1;
+    const measure = () => { travel = Math.max(0, t.scrollWidth - v.clientWidth); return -travel; };
+    const paint = (prog: number) => {
+      const a = Math.round(prog * (ts.length - 1));
       if (a === act) return;
       act = a;
-      fs.forEach((f, i) => { f.classList.toggle("is-open", i === a); bodies[i]!.setAttribute("aria-pressed", i === a ? "true" : "false"); });
+      gsap.to(bodies, { opacity: (i: number) => (i === a ? 1 : DIM), duration: 0.35, ease: "power2.out", overwrite: "auto" });
     };
-    mark(0);
+    gsap.set(bodies, { opacity: (i: number) => (i === 0 ? 1 : DIM) });
+    const tw = gsap.to(t, { x: () => measure(), ease: "none" });
     const st = ScrollTrigger.create({
-      animation: tl, trigger: p, start: "top 64px", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true,
-      onUpdate: () => mark(tl.time()),
+      animation: tw, trigger: p, start: "top 64px", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true,
+      onUpdate: (self) => paint(self.progress),
     });
-    // a folder is a button: it scrolls to the moment its card is open
-    const go = (i: number) => {
-      const y = st.start + ((i + 0.55) / fs.length) * (st.end - st.start);
+    // focusing a tile's link brings that tile to the reading position
+    const onFocus = (e: FocusEvent) => {
+      const i = ts.findIndex((el) => el.contains(e.target as Node));
+      if (i < 0 || !travel) return;
+      const y = st.start + (i / (ts.length - 1)) * (st.end - st.start);
       const l = getLenis();
-      if (l) l.scrollTo(y, { duration: 1.1 }); else window.scrollTo({ top: y, behavior: "smooth" });
+      if (l) l.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y, behavior: "auto" });
     };
-    const clicks = bodies.map((b, i) => { const h = () => go(i); b.addEventListener("click", h); return h; });
-    // a re-measure once the layout is final (the section hydrates late, with sections above it still settling)
+    t.addEventListener("focusin", onFocus);
+    /* r55-7: the trigger is made after the section hydrates, when sections above may still be settling; re-measure once the layout is final (fonts, late sections, the next frame) */
     const refresh = () => { if (!isPending(p)) ScrollTrigger.refresh(); };
     const fonts = document.fonts?.ready.then(refresh);
     void fonts;
@@ -80,50 +70,41 @@ export function Rules() {
     const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
     return () => {
       offReady(); cancelAnimationFrame(raf);
-      bodies.forEach((b, i) => b.removeEventListener("click", clicks[i]!));
-      st.kill(); tl.kill();
-      gsap.set([...bodies, ...cards], { clearProps: "transform,opacity,visibility" });
-      fs.forEach((f) => f.classList.remove("is-open"));
+      t.removeEventListener("focusin", onFocus);
+      st.kill(); tw.kill();
+      gsap.killTweensOf(bodies);
+      gsap.set([t, ...bodies], { clearProps: "transform,opacity" });
     };
   }, [pinned]);
 
   return (
     <section className="band-dark sec rl" id="rules" aria-labelledby="rl-h">
-      <div ref={pin} className={`rl-pin${pinned ? " is-pinned" : " is-native"}`} style={pinned ? { height: `calc(100svh + ${n} * 62svh)` } : undefined}>
-        <div ref={win} className="rl-win">
+      <div ref={pin} className={`rl-pin${pinned ? " is-pinned" : " is-native"}`}>
+        <div className="rl-win">
           <div className="container rl-head">
             <h2 id="rl-h" className="t-display-lg">{c.title}</h2>
           </div>
-          <ul className="rl-drawer" aria-label={c.label}>
-            {c.items.map((r, i) => (
-              <li key={r.id} ref={(el) => { folders.current[i] = el; }} className="rl-folder" style={{ "--i": i } as React.CSSProperties}>
-                <button type="button" className="rl-fbody" tabIndex={pinned ? 0 : -1} aria-label={`${r.t}, ${r.reg}`} aria-pressed="false">
-                  <span className="rl-tab">{r.reg}</span>
-                  <span className="rl-front" aria-hidden="true">
-                    <span className="rl-ft">{r.t}</span>
-                    <span className="rl-ff">{r.full}</span>
-                  </span>
-                </button>
-                <article className="rl-card">
-                  <div className="rl-main">
+          <div ref={view} className="rl-view" role="group" aria-roledescription="carousel" aria-label={c.label}>
+            <ul ref={trk} className="rl-track">
+              {c.items.map((r, i) => (
+                <li key={r.id} ref={(el) => { tiles.current[i] = el; }} className="rl-tile">
+                  <div className="rl-body">
                     <p className="rl-ref">{r.reg}</p>
-                    <h3 className="rl-t t-display-md">{r.t}</h3>
+                    <h3 className="rl-t t-display-sm">{r.t}</h3>
                     <p className="rl-full">{r.full}</p>
                     <p className="rl-d">{r.d}</p>
-                  </div>
-                  <div className="rl-side">
                     <dl className="rl-dl">
                       <div><dt>{c.covers}</dt><dd>{r.covers}</dd></div>
-                      {r.date ? <div><dt>Dates</dt><dd>{r.date}</dd></div> : null}
                     </dl>
                     <ul className="rl-chips">{r.chips.map((k) => <li key={k.t} className={`chip ${k.live ? "chip-live" : "chip-build"}`}>{k.t}</li>)}</ul>
+                    {r.date ? <dl className="rl-dl"><div><dt>Dates</dt><dd>{r.date}</dd></div></dl> : null}
                     <a className="rl-src" href={r.src.u} target="_blank" rel="noopener noreferrer">{c.source}: {r.src.t}</a>
-                    <a className="btn btn-secondary rl-read" href={linkOf(r.link)} aria-label={`${c.read}: ${r.t}`}><BtnLabel>{c.read}</BtnLabel></a>
                   </div>
-                </article>
-              </li>
-            ))}
-          </ul>
+                  <a className="btn btn-secondary rl-read" href={linkOf(r.link)} aria-label={`${c.read}: ${r.t}`}><BtnLabel>{c.read}</BtnLabel></a>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>
