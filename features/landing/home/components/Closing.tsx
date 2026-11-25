@@ -2,6 +2,8 @@ import { getRoot } from "../lib/root";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { gsap, ScrollTrigger, useReducedMotion } from "../lib/motion";
 import { track } from "../lib/pos";
+import { isPaused, subscribePause } from "../lib/pause";
+import { cdnAsset } from "@/lib/cdn";
 import { fin, FIN, FINP, landed, sunSlot, NDOT, SUN_DOT, shipHome } from "../lib/shiphome";
 import { faq, finaleWordmark } from "../content";
 import { Footer } from "./Footer";
@@ -61,11 +63,14 @@ const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
     el.style.setProperty(`${pre}mask-size`, size); el.style.setProperty(`${pre}mask-position`, pos);
   }
 };
-/* r29-6: the image (public/home/images/ship-sketch.webp, 1920 x 1437, Bindu ship sketch) is scaled to the wordmark box at rest: the wordmark is 65% of the photo's width, so whole stacks of doors show
-   inside the letters (the point of the photo under the middle of the wordmark is FX, FY of it). During the first quarter of the zoom it grows to the cover size
-   of the full-bleed view (pinned 40% 82%), so it always covers whatever the growing letters show. */
-const IW = 1920, IH = 1437, SHOW = 0.65, FX = 0.45, FY = 0.62, PX = 0.4, PY = 0.82, PHOTO_Q = 0.25, STEPS = 1500;
-type Row = { ms: string; mp: string; bs: string; bp: string; dot: string; g: string };
+/* r29-6, r52-2: the picture is the getbindu.com hero clip (public/videos/rotterdam-port-hero.av1.webm + .webm, 1280 x 676, 6s, an aerial view of a container yard),
+   with its first frame as the poster (public/home/images/port-poster.webp, 1920 x 1014). It is scaled to the wordmark box at rest: the wordmark is 65% of the picture's
+   width, so whole rows of containers show inside the letters. The point under the middle of the wordmark is FX, FY: the coloured stacks right of centre, by the crane.
+   During the first quarter of the zoom it grows to the cover size of the full-bleed view (pinned PX, PY), so it always covers whatever the growing letters show.
+   The poster is the layer's background (background-size/-position); the clip sits on top as a <video> of its own size moved only by transform (translate + scale). */
+const IW = 1280, IH = 676, SHOW = 0.65, FX = 0.62, FY = 0.5, PX = 0.6, PY = 0.5, PHOTO_Q = 0.25, STEPS = 1500;
+const POSTER = "/home/images/port-poster.webp";
+type Row = { ms: string; mp: string; bs: string; bp: string; v: string; dot: string; g: string };
 /* r29-5: everything the zoom needs, worked out once per measure (no arithmetic or string building while scrolling): the row for each of STEPS + 1 points of q */
 function table(L: Lay): Row[] {
   const rows: Row[] = [], u0 = L.mw0 / MASK.w;
@@ -73,10 +78,12 @@ function table(L: Lay): Row[] {
   const Pw0 = L.mw0 / SHOW, Ph0 = (Pw0 * IH) / IW, ox0 = L.W / 2 - FX * Pw0, oy0 = L.y0 + (L.mw0 * MASK.h) / MASK.w / 2 - FY * Ph0;
   for (let i = 0; i < STEPS; i++) {
     const q = i / STEPS, mw = L.mw0 * Math.pow(L.K, q), u = mw / MASK.w, w = smooth(q / PHOTO_Q);
+    const Pw = Pw0 + (Pwf - Pw0) * w, ox = ox0 + (oxf - ox0) * w, oy = oy0 + (oyf - oy0) * w;
     const cx = L.px + (MASK.dot.cx - MASK.origin.x) * u, cy = L.py + (MASK.dot.cy - MASK.origin.y) * u, s = u / u0;
     rows.push({
       ms: `${mw.toFixed(1)}px auto`, mp: `${(L.px - MASK.origin.x * u).toFixed(1)}px ${(L.py - MASK.origin.y * u).toFixed(1)}px`,
-      bs: `${(Pw0 + (Pwf - Pw0) * w).toFixed(1)}px ${(Ph0 + (Phf - Ph0) * w).toFixed(1)}px`, bp: `${(ox0 + (oxf - ox0) * w).toFixed(1)}px ${(oy0 + (oyf - oy0) * w).toFixed(1)}px`,
+      bs: `${Pw.toFixed(1)}px ${(Ph0 + (Phf - Ph0) * w).toFixed(1)}px`, bp: `${ox.toFixed(1)}px ${oy.toFixed(1)}px`,
+      v: `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px) scale(${(Pw / IW).toFixed(4)})`,
       dot: `translate(${(cx - L.dx).toFixed(1)}px, ${(cy - L.dy).toFixed(1)}px) scale(${s.toFixed(3)})`, g: (1 - smooth((s - 1.2) / 0.8)).toFixed(3),
     });
   }
@@ -87,15 +94,32 @@ export function Finale() {
   const pin = useRef<HTMLElement>(null);
   const stg = useRef<HTMLDivElement>(null);
   const ph = useRef<HTMLDivElement>(null);
+  const vid = useRef<HTMLVideoElement>(null);   // r52-2: the port clip inside the masked layer
   const dotEl = useRef<HTMLElement>(null);
   const grad = useRef<HTMLDivElement>(null);
   const isStatic = useReducedMotion();
 
   useEffect(() => {
-    const sec = pin.current!, stage = stg.current!, photo = ph.current!, dot = dotEl.current!;
-    // r42: the photo is fetched only when the finale is about 2 viewports away
-    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", "url(/home/images/ship-sketch.webp)"); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
+    const sec = pin.current!, stage = stg.current!, photo = ph.current!, dot = dotEl.current!, video = vid.current!;
+    /* r52-2: the clip runs only from 901px, with motion allowed and no Data Saver (the main site's rule); everyone else gets the poster alone and never downloads it.
+       Sources are attached by the same observer that fetches the poster, about 2 viewports ahead. It plays only while the finale is on screen and the hero pause is off. */
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    const useClip = !isStatic && window.matchMedia("(min-width: 901px)").matches && !conn?.saveData;
+    let loaded = false, onScreen = false;
+    const sync = () => { if (!loaded) return; if (onScreen && !isPaused()) void video.play().catch(() => undefined); else video.pause(); };
+    const load = () => {
+      for (const [path, type] of [["/videos/rotterdam-port-hero.av1.webm", 'video/webm; codecs="av01.0.05M.08"'], ["/videos/rotterdam-port-hero.webm", 'video/webm; codecs="vp9"']] as const) {
+        const source = document.createElement("source"); source.src = cdnAsset(path); source.type = type; video.appendChild(source);
+      }
+      video.muted = true; video.hidden = false; video.load(); loaded = true;
+      video.addEventListener("canplay", sync, { once: true });
+    };
+    // r42: the picture is fetched only when the finale is about 2 viewports away
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", `url(${cdnAsset(POSTER)})`); if (useClip) load(); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
     io.observe(sec);
+    const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); });
+    vis.observe(sec);
+    const offPause = subscribePause(sync);
     const tk = track(sec), dotDots = Array.from(dot.querySelectorAll<SVGCircleElement>("circle"));
     let L = layout(stage.clientWidth, stage.clientHeight), rows: Row[] = [], lastP = -1, willChange = false, formed = false, dashed = false, resolved = false;
     const zp = { p: 0 };
@@ -111,11 +135,12 @@ export function Finale() {
       if (q >= 1) {
         setMask(photo, "none", "auto", "0 0");
         photo.style.removeProperty("background-size"); photo.style.removeProperty("background-position");
+        if (rows.length) video.style.transform = rows[STEPS - 1]!.v;
         dot.style.setProperty("--g", "0");
       } else if (rows.length) {
         const r = rows[Math.round(q * STEPS)] ?? rows[STEPS - 1];
         setMask(photo, MASK_URL, r!.ms, r!.mp);
-        photo.style.backgroundSize = r!.bs; photo.style.backgroundPosition = r!.bp;
+        photo.style.backgroundSize = r!.bs; photo.style.backgroundPosition = r!.bp; video.style.transform = r!.v;
         dot.style.transform = r!.dot; dot.style.setProperty("--g", r!.g);   // the dot of the i rides the same mapping (same origin, same scale) and fades out once the mask is about twice its size
       }
       if (grad.current) grad.current.style.opacity = String(ct);
@@ -141,7 +166,8 @@ export function Finale() {
     const onResize = () => measure();
     window.addEventListener("resize", onResize);
     measure();
-    if (isStatic) { stage.classList.add("is-formed"); return () => { io.disconnect(); window.removeEventListener("resize", onResize); }; }
+    const stop = () => { io.disconnect(); vis.disconnect(); offPause(); video.removeEventListener("canplay", sync); video.pause(); };
+    if (isStatic) { stage.classList.add("is-formed"); return () => { stop(); window.removeEventListener("resize", onResize); }; }
 
     // the ship's part: the master time fin.t sets how much of the dot of the i exists (the dots that have flown in) and the sounds
     function paint() {
@@ -167,13 +193,16 @@ export function Finale() {
     let rt = 0, lastTop = tk.top;
     const ro = new ResizeObserver(() => { window.clearTimeout(rt); rt = window.setTimeout(() => { const t = sec.getBoundingClientRect().top + window.scrollY; if (Math.abs(t - lastTop) > 2) { lastTop = t; ScrollTrigger.refresh(); } }, 250); });
     ro.observe(getRoot());
-    return () => { io.disconnect(); ro.disconnect(); window.clearTimeout(rt); window.removeEventListener("resize", onResize); gsap.killTweensOf(fin); fin.t = 0; fin.z = 0; tween.scrollTrigger?.kill(); tween.kill(); handoff.scrollTrigger?.kill(); handoff.kill(); };
+    return () => { stop(); ro.disconnect(); window.clearTimeout(rt); window.removeEventListener("resize", onResize); gsap.killTweensOf(fin); fin.t = 0; fin.z = 0; tween.scrollTrigger?.kill(); tween.kill(); handoff.scrollTrigger?.kill(); handoff.kill(); };
   }, [isStatic]);
 
   const wordmark = (
     <>
       <h2 id="finale-h" className="sr">{finaleWordmark.label}</h2>
-      <div ref={ph} className="fz-photo" aria-hidden="true" />
+      <div ref={ph} className="fz-photo" aria-hidden="true">
+        {/* r52-2: no <source> in the server HTML; the effect attaches them only where the clip runs (see above), so phones, reduced motion and no-JS keep the poster */}
+        <video ref={vid} className="fz-video" muted loop playsInline preload="none" poster={POSTER} hidden tabIndex={-1} />
+      </div>
       <i ref={dotEl} className="fz-dot" aria-hidden="true">
         <svg viewBox="-1 -1 2 2" width="100%" height="100%" focusable="false">
           {Array.from({ length: NDOT }, (_, j) => { const q = sunSlot(j); return <circle key={j} cx={q.x!.toFixed(4)} cy={q.y!.toFixed(4)} r={SUN_DOT} style={{ "--m": q.m.toFixed(3) } as CSSProperties} />; })}

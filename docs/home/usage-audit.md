@@ -93,6 +93,7 @@ Copyright protects code, images, text and specific artwork. It doesn't protect i
 ## 7. Checklist before going live
 - [ ] Swap `port-cargo.webp` for an unbranded photo (Unsplash or Bindu's own), and update LICENSES.md.
 - [ ] Bindu approves the yellow + cobalt mark.
+- [ ] Finale port clip (r52): confirm the footage source and licence of `public/videos/rotterdam-port-hero*.webm` (and the poster `public/home/images/port-poster.webp` cut from it). It is Bindu's own asset from getbindu.com, but where the footage came from is not recorded.
 - [ ] Leave `port-duotone.*` and the `roles/` pages out of the port.
 - [ ] Keep a licences note in getbindu-landing: GSAP Standard, Lenis MIT, three MIT, Kenney CC0, Natural Earth public domain, Inter and Plex OFL, the photo's source.
 - [ ] Re-record the demo videos after the photo swap if they'll be shared outside the team.

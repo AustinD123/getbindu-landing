@@ -21,7 +21,8 @@ what ships here.
 ## Photo
 | Item | Licence | Commercial use |
 |---|---|---|
-| Bindu ship sketch (from getbindu.com): the finale image `public/home/images/ship-sketch.webp` (copy of `public/images/hero-ship-sketch.webp`), shown through the mask of the wordmark and under the closing line | Bindu's own asset | No third-party licence. |
+| Port clip (r52): the finale video `public/videos/rotterdam-port-hero.av1.webm` and `rotterdam-port-hero.webm` (the getbindu.com hero clip, 1280 x 676, 6s) and its first frame `public/home/images/port-poster.webp` (1920 wide, extracted with ffmpeg), shown through the mask of the wordmark | Bindu's own asset from getbindu.com; footage source and licence to confirm | To confirm before go-live (see docs/home/usage-audit.md). |
+| Bindu ship sketch (from getbindu.com): until r52 the finale image `public/home/images/ship-sketch.webp` (copy of `public/images/hero-ship-sketch.webp`), shown through the mask of the wordmark and under the closing line | Bindu's own asset | No third-party licence. No longer used on the page (file kept). |
 | Unsplash photo 1605732562742 (shipping containers) `public/home/images/port-cargo.webp` | Unsplash Licence | No longer used on the page (file kept). Nothing to swap before production. |
 
 ## Own work
