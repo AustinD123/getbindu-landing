@@ -34,7 +34,7 @@ export const intro = {
 };
 
 export const hero = {
-  title: ["Describe a shipment.", "Bindu handles the rules."],
+  title: ["Ship it.", "Trace it.", "Bindu."],   /* r65-5: Austin's words */
   sub: "Bindu works out which EU rules apply to your goods, gathers the proof from your suppliers and files it. Every line traces back to the supplier document behind it.",
   mono: "Six containers a year or six hundred.",
   artLabel: "Illustration: every proof is a dot. Together they make the filing.",
