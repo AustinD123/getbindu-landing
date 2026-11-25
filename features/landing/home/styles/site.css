@@ -185,7 +185,7 @@
 .bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-4) 0; }
 .bindu-home .faq-item summary::-webkit-details-marker { display: none; }
 .bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: var(--r-control); }
-.bindu-home .faq-item .t-display-sm { font-size: var(--faq-q); font-weight: 500; line-height: 1.56; }
+.bindu-home .faq-item .t-display-sm { font-family: var(--font-sans); font-size: var(--faq-q); font-weight: 500; line-height: 1.56; }
 /* the icon: 18px, the nav's stroke (1.6, round caps), centred on the first line box; minus when open (the bar turns) */
 .bindu-home .faq-ico { flex: none; margin-left: auto; width: 18px; height: calc(var(--faq-q) * var(--lh-display-sm)); display: flex; align-items: center; color: var(--ink); }
 .bindu-home .faq-ico svg { display: block; width: 18px; height: 18px; overflow: visible; }
