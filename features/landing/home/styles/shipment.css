@@ -198,11 +198,24 @@
 .bindu-home .ship-ms p, .bindu-home .ship-ms[data-state="done"] p { color: var(--on-dark-body); }
 .bindu-home .ship-pin:not(.is-static) .ship-ms[data-state="next"] { opacity: 0; }
 
-/* r55-5: the question and its answer sit BESIDE the map (a column of their own from 861px), never over the route. Under 861px the pinned window hides them (r44.css);
-   the static page shows them under the map. */
+/* r55-5 / r56-4: the map is centred in the container with equal space on both sides. From 1100px the milestone list is the left column and the question and its answer
+   the right column (232px each), so nothing is pushed to one side; below that the map is full width and the question sits centred under it. The notes on the map
+   never overlap the route or each other (ShipmentJourney.tsx); the question is never over the map. Under 861px the pinned window hides the question (r44.css). */
 @media (min-width: 861px) {
-  .bindu-home .ship-map { display: grid; grid-template-columns: minmax(0, 1fr) 272px; column-gap: var(--s-5); align-items: end; }
-  .bindu-home .ship-map .ship-svg { grid-column: 1; }
-  .bindu-home .ship-map .ship-ask { grid-column: 2; align-self: start; }
-  .bindu-home .ship-map .ship-cap { grid-column: 1 / -1; }
+  .bindu-home .ship-cols { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .bindu-home .ship-map { width: 100%; }
+  .bindu-home .ship-pin .ship-ask { max-width: 520px; margin-inline: auto; }
+  .bindu-home .ship-svg { background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }   /* the map has its own solid ground, so the page map never shows through it */
+}
+@media (min-width: 861px) and (max-width: 1099px) { .bindu-home .ship-pin:not(.is-static) .ship-ask { display: none; } }   /* no room beside the map in one window: the notes on the map carry the steps */
+@media (min-width: 1100px) {
+  .bindu-home .ship-cols { grid-template-columns: 232px minmax(0, 1fr) 232px; gap: var(--s-5); align-items: center; justify-items: stretch; }
+  .bindu-home .ship-cols .ship-map { grid-column: 2; grid-row: 1; }
+  .bindu-home .ship-cols .ship-list { grid-column: 1; grid-row: 1; position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal; padding: 8px 16px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+  .bindu-home .ship-cols .ship-ask { grid-column: 3; grid-row: 1; max-width: none; margin: 0; padding: 14px 16px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+  .bindu-home .ship-cols .ship-ask-q { padding: 0; border: 0; background: none; }
+  .bindu-home .ship-cols .ship-ms p { display: none; }
+  .bindu-home .ship-cols .ship-ms[data-state="current"] p { display: block; }
+  .bindu-home .ship-cols .ship-ms h3 { font-size: 14px; }
+  .bindu-home .ship-pin:not(.is-static) .ship-ms[data-state="next"] { opacity: 0.45; }
 }

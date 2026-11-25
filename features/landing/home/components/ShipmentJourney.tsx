@@ -468,10 +468,6 @@ export function ShipmentJourney() {
                   {geo!.labels.map((l, i) => <span key={`${story!.id}-${l.text}`} ref={(el) => { labels.current[i] = el; }} className="ship-label">{l.text}</span>)}
                 </div>
               </div>
-              <div ref={askEl} className="ship-ask">
-                <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
-                <p className="ship-ask-a">{ask.a}</p>
-              </div>
               <figcaption className="ship-cap">
                 <span className="chip chip-illus">{journey.illus}</span> {journey.caption}
               </figcaption>
@@ -486,6 +482,10 @@ export function ShipmentJourney() {
                 </li>
               ))}
             </ol>
+              <div ref={askEl} className="ship-ask">
+                <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
+                <p className="ship-ask-a">{ask.a}</p>
+              </div>
             {/* phones only (CSS): the current milestone's sentence, once, under the compact index */}
             <p className={`ship-now${!story!.live && current === story!.milestones.length - 1 ? " is-coming" : ""}`} aria-hidden="true">{(story!.milestones[Math.min(current, story!.milestones.length - 1)])!.detail}</p>
           </div>
