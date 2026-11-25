@@ -50,3 +50,16 @@ Checked: every GSAP timeline and tween, every CSS transition and keyframe in fea
 | 7 | ok | Linear easing only on typing ticks, belt and day counter (time representation); exits and presence handled by React state, not AnimatePresence; hover/press 160 to 250ms; dialog 320ms | various | no change |
 
 Not verified: the heading reveal by eye after removing the mask (checked by code and computed style only).
+
+## Pass 4: apple-design
+
+Checked: gestures (testimonials drag, rules loop drag, tabs), interruptibility, springs, typography optics, materials, reduced motion / transparency / contrast.
+
+| # | Sev | Finding | Where | Status |
+|---|---|---|---|---|
+| 1 | P2 | Only `prefers-reduced-motion` was honoured; `prefers-reduced-transparency` (the 10px backdrop blur behind each section window) and `prefers-contrast: more` (hairlines and mute greys) were not | styles/story.css:199-206 | fixed: both media queries added (styles/r59.css): blur becomes the plain canvas fill; hairlines go to hairline-strong and mute greys to the body grey |
+| 2 | P3 | Testimonials drag: 1:1 tracking, release velocity projects the landing card (good), but the settle is a Lenis scroll of 0.9s cubic, so release velocity is not handed to it | components/Voices.tsx:128-145 | not fixed: needs a spring-based rebuild of a keep; frame loop already approaches the target exponentially and can be grabbed again |
+| 3 | P3 | Large display type has tracking 0 (36px titles, 40px statement); Apple tightens large text | tokens.css:93 `--track-*` | conflict, not fixed: DESIGN.md v4 (Ollama letter-spacing 0 everywhere; hero is the one tightened title, adaptation 8) |
+| 4 | P3 | No press-down scale or instant pointer-down feedback on pills | components/ | conflict, not fixed: DESIGN.md v4 static buttons (colour change on :active exists) |
+| 5 | P3 | Rules loop drag and the departures board were not re-tested by hand for interrupt and reverse | components/Rules.tsx | unverified |
+| ok | | Fast hover/press colour transitions 200ms; dialog scales from its trigger (--ox/--oy origin, spatial consistency); no hard dividers under the nav | | |

@@ -15,3 +15,12 @@
 .bindu-home .th-kicker { color: var(--on-dark-body); }
 /* the rules row dims the tiles away from the focus, but never below the body grey */
 .bindu-home .rl-view[data-hot] .rl-tile:not(.is-hot) .rl-t { color: var(--on-dark-body); }
+
+/* r60-4 (apple-design): the two other accessibility media signals next to reduced motion. Reduced transparency: the blur layers behind the section
+   windows become the plain canvas fill they already feather into (no backdrop filter). More contrast: hairlines and the muted greys step up one level. */
+@media (prefers-reduced-transparency: reduce) {
+  .bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--canvas); }
+}
+@media (prefers-contrast: more) {
+  .bindu-home, .bindu-home[data-theme="light"] { --hairline-dark: var(--hairline-strong); --hairline-light: var(--hairline-strong); --on-dark-mute: var(--on-dark-body); --ink-mute: var(--ink-body); }
+}
