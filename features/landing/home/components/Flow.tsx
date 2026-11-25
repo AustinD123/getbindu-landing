@@ -3,14 +3,14 @@ import { CustomEase } from "gsap/CustomEase";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { FileText, Mail, MessageSquare } from "lucide-react";
 import { story } from "../content";
-import { gsap, ScrollTrigger, SplitText, useReducedMotion } from "../lib/motion";
+import { gsap, ScrollTrigger, SplitText, useReducedMotion, SCRUB_TIGHT } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
 import { isPending, onReady } from "../lib/ready";
 
 gsap.registerPlugin(CustomEase, MotionPathPlugin);
 
 /* Round 50 (r50-1): "What Bindu does", id `story`. Same structure as r49 (a pinned window in a 500svh track: the step line held on the left, ONE object on the stage on the right),
-   new motion. One GSAP timeline, four units long (one per step), scrubbed by the scroll with smoothing (scrub 1). Each step plays in its first ~60% and then holds still to be read.
+   new motion. One GSAP timeline, four units long (one per step), scrubbed by the scroll with smoothing (SCRUB_TIGHT, 0.4). Each step plays in its first ~60% and then holds still to be read.
    Choreography, one lead per step and supporting parts on overlapping offsets:
      1 an ink caret blinks on the empty stage; the sentence types at a human cadence (irregular gaps, longer between words); the caret settles into the yellow dot
      2 the sentence docks into the record (lead); the record surface unfolds from the sentence's row; labels and rules lines follow; the key words are underlined and
@@ -258,7 +258,7 @@ export function Flow() {
           for (let i = 1; i < 4; i++) if (t >= i + 0.1) b = i;
           if (b !== last) { last = b; setStep(b); }
         });
-        ScrollTrigger.create({ animation: tl, trigger: el, start: "top 64px", end: "bottom bottom", scrub: 0.4 });
+        ScrollTrigger.create({ animation: tl, trigger: el, start: "top 64px", end: "bottom bottom", scrub: SCRUB_TIGHT });
         setStep(0);   // the timeline starts at step 1; the marker follows from here (its onUpdate takes over once the scroll moves)
         ScrollTrigger.refresh();
       }, root);

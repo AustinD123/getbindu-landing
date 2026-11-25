@@ -1,6 +1,6 @@
 import { getRoot } from "../lib/root";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { gsap, ScrollTrigger, useReducedMotion } from "../lib/motion";
+import { gsap, ScrollTrigger, useReducedMotion, SCRUB_SOFT } from "../lib/motion";
 import { track } from "../lib/pos";
 import { isPaused, subscribePause } from "../lib/pause";
 import { cdnAsset } from "@/lib/cdn";
@@ -38,7 +38,7 @@ export function Faq() {
 /* Round 28, items 2c and 3R: the ending, built the way Rothfinder's is (our own SVG and code). The final section's stage is a sticky full-viewport layer whose background is
    the cargo photo (cover, never moving) and whose CSS mask-image is an SVG of the letters "bindu" only, no frame (lib/maskdata.ts, r29-1: about 55vw wide, max 900px, 80vw on phones). The yellow dot of the i is
    not in the mask: it is a separate circle that the guide ship's dots build, and that rides the same transform. Before the zoom the masked wordmark sits on the page canvas.
-   Scrolling animates only mask-size and mask-position (scrubbed, 0.6) around a point inside the stroke of the bowl of the d until the photo fills the screen; then the
+   Scrolling animates only mask-size and mask-position (scrubbed, SCRUB_SOFT) around a point inside the stroke of the bowl of the d until the photo fills the screen; then the
    mask is removed. The footer sits on the photo (a dark gradient under it); the final view is the photo and the footer only. The ship's part is unchanged from 2c: the course
    line curves from the gutter into the page and ends above the i; the ship sails there at its normal size, splits into dots and they form the dot (fin.t, time-based,
    queued, reversible; drawn by the Guide canvas). Reduced motion: the masked wordmark with its dot, then the photo section with the content; no zoom. */
@@ -176,18 +176,18 @@ export function Finale() {
       if (T >= FIN.formed && !formed) { formed = true; stage.classList.add("is-formed"); } else if (T < FIN.formed - 0.05 && formed) { formed = false; stage.classList.remove("is-formed"); }
       if (T > 0.1 && !dashed) { dashed = true; } else if (T < 0.05) dashed = false;
     }
-    /* r32-1: the master time is a pure function of the scroll position, scrubbed (0.8): fin.t runs 0 to its resting time over 120vh of the pin (after a 20vh hold with the ship docked
+    /* r32-1: the master time is a pure function of the scroll position, scrubbed (SCRUB_SOFT, 0.6): fin.t runs 0 to its resting time over 120vh of the pin (after a 20vh hold with the ship docked
        in its gutter), so the ship comes apart (about the first 30%), the dots travel in curves (about the next 50%) and the sunflower settles and holds (the last 20%); the zoom starts
        after that. It plays at any scroll speed and runs backwards when scrolling up. */
     const tp = { v: 0 };
     const handoff = gsap.fromTo(tp, { v: 0 }, {
       v: 1, ease: "none",
       onUpdate: () => { const T = FIN.formed * c01(tp.v / 0.9); if (T !== fin.t) { fin.t = T; paint(); shipHome.now(); } },
-      scrollTrigger: { trigger: sec, start: () => `top+=${FINP.hold * window.innerHeight} top`, end: () => `top+=${(FINP.hold + FINP.span) * window.innerHeight} top`, scrub: 0.8, invalidateOnRefresh: true },
+      scrollTrigger: { trigger: sec, start: () => `top+=${FINP.hold * window.innerHeight} top`, end: () => `top+=${(FINP.hold + FINP.span) * window.innerHeight} top`, scrub: SCRUB_SOFT, invalidateOnRefresh: true },
     });
     const tween = gsap.fromTo(zp, { p: 0 }, {
       p: 1, ease: "none", onUpdate: () => apply(zp.p),
-      scrollTrigger: { trigger: sec, start: () => `top+=${FINP.zoom * window.innerHeight} top`, end: () => `top+=${(FINP.zoom + FINP.zoomLen) * window.innerHeight} top`, scrub: 0.6, invalidateOnRefresh: true },
+      scrollTrigger: { trigger: sec, start: () => `top+=${FINP.zoom * window.innerHeight} top`, end: () => `top+=${(FINP.zoom + FINP.zoomLen) * window.innerHeight} top`, scrub: SCRUB_SOFT, invalidateOnRefresh: true },
     });
     // the page above can change height after load (sections that skip rendering, fonts): re-measure the zoom's start and end when the finale has moved
     let rt = 0, lastTop = tk.top;

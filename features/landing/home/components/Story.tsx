@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from "react";
 import { statement } from "../content";
-import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
+import { gsap, ScrollTrigger, reduceMotion, SCRUB_SOFT } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { Mark } from "./bits";
 
@@ -36,7 +36,7 @@ export function Statement() {
       return tl;
     };
     let tl = build();
-    const st = ScrollTrigger.create({ trigger: el, start: "center 90%", end: "center 45%", animation: tl, scrub: 0.6 });
+    const st = ScrollTrigger.create({ trigger: el, start: "center 90%", end: "center 45%", animation: tl, scrub: SCRUB_SOFT });
     const on = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top",
       onToggle: (s) => ws.forEach((w) => { w.style.willChange = s.isActive ? "opacity" : ""; }) });
     const unTheme = subscribeTheme(() => tl.invalidate());

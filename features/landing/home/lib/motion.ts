@@ -14,6 +14,11 @@ export const reduceMotion = (): boolean =>
 const noop = () => () => {};
 export const useReducedMotion = (): boolean => useSyncExternalStore(noop, reduceMotion, () => false);
 
+/* r61-6: the two scrub smoothings every scrubbed scene uses (seconds the playhead takes to catch up with the scroll). TIGHT for scenes that
+   must track the finger (Flow); SOFT for the slower, cinematic ones (Story light, finale fill and zoom). Theatre keeps its own damped time (TAU). */
+export const SCRUB_TIGHT = 0.4;
+export const SCRUB_SOFT = 0.6;
+
 export const finePointer = (): boolean =>
   typeof window !== "undefined" && window.matchMedia("(pointer: fine)").matches;
 

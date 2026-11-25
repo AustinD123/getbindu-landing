@@ -10,7 +10,7 @@ export const shipHome = { x: 70, y: 500, ship: true, k: 1, dock: 0, pres: 1, brk
    stagger of 0 to 0.25s), the dots fly in curves into the dot of the i. The zoom through the wordmark that follows is scroll-driven. */
 export const FIN = { fly: 1.2, stag: 0.25, formed: 1.45, rests: [0, 1.45] };
 /* r32-1: the ship to dot hand-off plays inside the finale's pin, in viewport heights from the pin start: a short hold (ship docked on the right), then fin.t runs 0 to FIN.formed
-   over FINP.span (scrubbed, 0.8), then the zoom begins at FINP.zoom. The Guide holds the ship at its dock until the zoom starts. */
+   over FINP.span (scrubbed, SCRUB_SOFT 0.6), then the zoom begins at FINP.zoom. The Guide holds the ship at its dock until the zoom starts. */
 export const FINP = { hold: 0.2, span: 1.2, zoom: 1.4, zoomLen: 1.55 };
 /* r42: the zoom ends where the footer starts to rise (spacer minus one viewport: 295vh, 185vh on phones), so zoom + zoomLen = that point. */
 /* r35: on phones the finale pins for about 285svh instead of 395 (a 10vh hold, 80vh of hand-off, the zoom from 90vh for 90vh; the CSS spacer matches). Updated when the window crosses 767px. */
