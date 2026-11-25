@@ -6,7 +6,7 @@ import { gsap, useReducedMotion } from "../lib/motion";
 /* Round 21, item 4 (r31-1 reworked): "What the rules let through, and what they stop." as a split-flap departures board. Eight rows adapted
    from getbindu.com's worked examples (the wording is theirs). The section pins and each scroll step reveals ONE row: it flaps in, settles
    (clack) and becomes the current row (full ink, a yellow dot at the left; earlier rows muted). A pure function of scroll, so scrolling up
-   un-reveals in reverse. Under the board a panel (aria-live) shows the current row's verdict, rule, route, headline (flap transition) and
+   un-reveals in reverse. Under the board a panel (not a live region since r61-4: it is scroll-fed) shows the current row's verdict, rule, route, headline (flap transition) and
    story. The board is a real table; the flap characters are aria-hidden. Reduced motion: no pin, every row settled, every story listed.
    Illustrations, not customer filings. Battery passports are In build, so those stories say so. */
 
@@ -261,7 +261,7 @@ export function Examples() {
                 ))}
               </div>
             ) : (
-              <div className={`bd-story${story ? " is-open" : ""}`} aria-live="polite">
+              <div className={`bd-story${story ? " is-open" : ""}`}>
                 {story && (
                   <>
                     <span className="sr">{story.head}. {verdictText(story)}, {story.rule} {story.goods}, {story.route}.</span>

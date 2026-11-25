@@ -207,7 +207,7 @@ export function Theatre() {
             </ol>
           ) : (
             <div className="th-capbar">
-              <p key={`${act}-${step}`} className="th-now" aria-live="polite">{a.beats[step]}</p>
+              <p key={`${act}-${step}`} className="th-now">{a.beats[step]}</p>
               <ol className="th-dots" aria-label={c.dotsLabel}>
                 {a.beats.map((b, i) => <li key={b} aria-hidden="true" className={`th-dot${i === step ? " is-on" : i < step ? " is-past" : ""}`} />)}
               </ol>
