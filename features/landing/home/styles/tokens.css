@@ -246,3 +246,8 @@
 /* the file's section rhythm: 48px phones, 64px tablet (from 640px), 88px desktop (from 1024px) */
 @media (min-width: 640px) { .bindu-home { --section-y: 64px; } }
 @media (min-width: 1024px) { .bindu-home { --section-y: 88px; } }
+
+/* r61-2: native controls (scrollbars, radios, the range slider) follow the theme. The `*` selector is needed because app/custom.css forces
+   `.landing-light *` to light, which would otherwise win on every descendant. */
+.bindu-home:not([data-theme="light"]), .bindu-home:not([data-theme="light"]) * { color-scheme: dark; }
+.bindu-home[data-theme="light"], .bindu-home[data-theme="light"] * { color-scheme: light; }
