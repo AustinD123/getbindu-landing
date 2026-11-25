@@ -22,7 +22,6 @@ import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
 import { startHeadings } from "./lib/headings";
-import { startBands } from "./lib/bands";
 import { useRouteWipe } from "./lib/route";
 import { addPending, markReady, gate, guardAnchors, afterSettle } from "./lib/ready";
 import { Nav } from "./components/Nav";
@@ -76,7 +75,6 @@ export function HomePage() {
     const stopScroll = startSmoothScroll();
     const stop = startScenes();
     const stopHeads = startHeadings();
-    const stopBands = startBands();
     const stopAnchors = guardAnchors();
     // an anchor in the address (/#pricing) scrolls to its section once the page has mounted; otherwise start at the top
     const id = location.hash.slice(1);
@@ -85,7 +83,7 @@ export function HomePage() {
     if (target) { toTarget(); afterSettle(toTarget); }   // sections above hydrate after this and add their pin spacers: land again once they have
     else window.scrollTo(0, 0);
     return () => {
-      stop(); stopHeads(); stopBands(); stopAnchors(); stopScroll(); html.style.scrollPaddingTop = "";
+      stop(); stopHeads(); stopAnchors(); stopScroll(); html.style.scrollPaddingTop = "";
     };
   }, []);
   return (

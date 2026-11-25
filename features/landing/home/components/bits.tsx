@@ -37,8 +37,8 @@ export function Logo({ size = 24 }: { size?: number }) {
 }
 
 /* r52 (DESIGN.md v2 section 5): a button's label, with an optional plain arrow after it (for links that leave the section).
-   Nothing moves: the magnetic pull, the click dot burst and the arrow nudge are retired with v1. The label is set in caps by CSS,
-   so the link keeps its sentence-case accessible name (aria-label). */
+   Nothing moves: the magnetic pull, the click dot burst and the arrow nudge are retired with v1. The label is Inter 500 sentence case (r52
+   revision; the caps were rejected), and the link gets its accessible name (aria-label) from the label unless it has one. */
 export function BtnLabel({ children, arrow = true }: { children: string; arrow?: boolean }) {
   const host = useRef<HTMLSpanElement>(null);
   useEffect(() => {

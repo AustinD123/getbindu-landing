@@ -122,7 +122,7 @@
 @media (max-width: 600px) {
   .bindu-home .ex-stage { gap: var(--s-2); }
   .bindu-home .ex-head { gap: var(--s-1); }
-  .bindu-home .ex-head h2.t-display-md { font-size: 24px; }
+  .bindu-home .ex-head h2.t-display-lg { font-size: 24px; }
   .bindu-home .ex-head p { font-size: 11px; line-height: 1.35; }
   .bindu-home .bd { border-spacing: 0 3px; }
   .bindu-home .bd .bd-word { gap: 2px; }

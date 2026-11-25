@@ -42,7 +42,7 @@ export function Pricing() {
     <section ref={sec} className="band-dark sec r6-pricing" id="pricing" aria-labelledby="pricing-h" data-guide-anchor="pricing" data-guide-side="r">
       <div className="container">
         <div className="r6-head">
-          <h2 id="pricing-h" className="t-display-md">{pricing.title}</h2>
+          <h2 id="pricing-h" className="t-display-lg">{pricing.title}</h2>
           <p className="t-body-lg t-soft">{pricing.lead}</p>
         </div>
 

@@ -13,8 +13,12 @@
 .bindu-home :focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 .bindu-home .band-light :focus-visible, .bindu-home .band-soft :focus-visible { outline: var(--focus-ring-light); }
 .bindu-home section { position: relative; }
-.bindu-home .sec { padding: var(--section-y) 0; }
-.bindu-home .sec-head { display: grid; gap: var(--s-4); max-width: 736px; margin-bottom: var(--s-8); }
+/* r54 (DESIGN.md v3 section 3): every section is a centred column, at least 80svh tall, its content centred under the head; space is the only divider */
+.bindu-home .sec { min-height: 80vh; min-height: 80svh; padding: var(--section-y) 0; display: grid; align-content: center; }
+.bindu-home .sec > .container { width: 100%; }
+.bindu-home .sec-head { display: grid; justify-items: center; gap: 24px; max-width: 768px; margin: 0 auto var(--lead-gap); text-align: center; }
+.bindu-home .sec-head h2 { margin: 0; text-wrap: balance; }
+.bindu-home .sec-head p { margin: 0; max-width: 32ch; text-wrap: balance; }
 
 /* ---------- nav ---------- */
 .bindu-home .nav { position: fixed; inset: 0 0 auto 0; z-index: 100; transition: background-color var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out); border-bottom: 1px solid transparent; }

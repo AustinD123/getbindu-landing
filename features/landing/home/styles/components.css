@@ -1,6 +1,6 @@
 /* Bindu v3 components, built only from the three source systems (see v3/DESIGN.md "Components"). */
 
-/* ---------- bands (Together: dark hero bands alternate with bright reading bands) ---------- */
+/* ---------- band classes: kept as scope hooks only. r54: one --canvas everywhere, no colour bands (the crossfade is retired). ---------- */
 .bindu-home .band-dark  { background: var(--canvas); color: var(--on-dark); }
 .bindu-home .band-light { background: var(--paper);  color: var(--ink); }
 .bindu-home .band-soft  { background: var(--paper-soft); color: var(--ink); }
@@ -9,12 +9,13 @@
 /* ---------- type ---------- */
 .bindu-home .t-display-xl, .bindu-home .t-display-lg, .bindu-home .t-display-md, .bindu-home .t-display-sm { font-family: var(--font-sans); font-weight: var(--display-weight); margin: 0; text-wrap: balance; }
 .bindu-home .t-display-xl { font-size: var(--display-xl); letter-spacing: var(--track-xl); line-height: var(--lh-display); }
-.bindu-home .t-display-lg { font-size: var(--display-lg); letter-spacing: var(--track-lg); line-height: var(--lh-display); }
+.bindu-home .t-display-lg { font-size: var(--display-lg); letter-spacing: var(--track-lg); line-height: var(--lh-display-lg); }
 .bindu-home .t-display-md { font-size: var(--display-md); letter-spacing: var(--track-md); line-height: 1.05; }
 .bindu-home .t-display-sm { font-size: var(--display-sm); letter-spacing: var(--track-sm); line-height: var(--lh-display-sm); }
-.bindu-home .t-body-lg { font-size: var(--body-lg); line-height: var(--lh-body-lg); }
-.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); }
-.bindu-home .t-caption { font-size: var(--caption); line-height: 1.4; }
+/* r54 v3: the copy lead is quiet (mute) at 22 to 28px; t-soft on a lead does not make it brighter */
+.bindu-home .t-body-lg, .bindu-home .band-dark .t-body-lg.t-soft { font-size: var(--body-lg); line-height: var(--lh-body-lg); letter-spacing: -0.02em; color: var(--on-dark-mute); }
+.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); letter-spacing: -0.015em; }
+.bindu-home .t-caption { font-size: var(--caption); line-height: 1.2; letter-spacing: -0.01em; }
 .bindu-home .band-dark  .t-muted { color: var(--on-dark-mute); }  .bindu-home .band-dark  .t-soft { color: var(--on-dark-body); }
 .bindu-home .band-light .t-muted, .bindu-home .band-soft .t-muted { color: var(--ink-mute); }
 .bindu-home .band-light .t-soft,  .bindu-home .band-soft .t-soft  { color: var(--ink-body); }

@@ -375,7 +375,7 @@ export function ShipmentJourney() {
       <div ref={pin} className={`ship-pin${isStatic ? " is-static" : ""}`}>
         <div className="ship-stage" data-guide-gutter>
           <div className="sec-head">
-            <h2 id="ship-h" className="t-display-md" suppressHydrationWarning>{journey.title}</h2>
+            <h2 id="ship-h" className="t-display-lg" suppressHydrationWarning>{journey.title}</h2>
             <p className="t-body-lg ship-sub">{story!.sub}</p>
             <div className="seg-track ship-seg">
               <div

@@ -180,7 +180,7 @@ export function Voices() {
       <div ref={pin} className={`vc-pin is-${mode}`} style={{ "--vc-n": N - 1, "--vc-per": PER } as CSSProperties}>
         <div className="vc-win container">
           <div className="vc-head">
-            <h2 id="vc-h" className="t-display-md">{c.title}</h2>
+            <h2 id="vc-h" className="t-display-lg">{c.title}</h2>
             <span className="chip chip-neutral vc-chip" title={c.note}>{c.placeholder}</span>
           </div>
           <div

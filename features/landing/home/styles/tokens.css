@@ -76,19 +76,20 @@
   --font-mono: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
 
   /* scale: display weight 400 with negative tracking (x.ai); body 17px / 1.47 (Apple); mono caps labels (Together) */
-  --hero-h-size: clamp(36px, 5.4vw, 76px);       /* the hero headline, set here only (phones: mobile.css) */
-  --display-xl: clamp(48px, 6.6vw, 96px);        /* 48 -> 96 */
-  --display-lg: clamp(40px, 5vw, 72px);      /* 40 -> 72 */
-  --display-md: clamp(32px, 3.4vw, 48px);        /* 32 -> 48 */
+  /* r54 (DESIGN.md v3 section 3, measured from sublime.app, set in Inter): hero 46 -> 120, section display 40 -> 88, weight 500 */
+  --hero-h-size: clamp(46px, 8.4vw, 120px);      /* the hero headline, set here only */
+  --display-xl: var(--hero-h-size);              /* display hero: lh .88, -0.045em */
+  --display-lg: clamp(40px, 6vw, 88px);          /* display section: lh .9, -0.04em */
+  --display-md: clamp(28px, 3.4vw, 48px);        /* sub-heads inside a section */
   --display-sm: clamp(24px, 2.2vw, 32px);      /* 24 -> 32 */
   --display-xs: 20px;                         /* 20 */
-  --track-xl: -0.03em; --track-lg: -0.03em; --track-md: -0.025em; --track-sm: -0.015em;   /* r17: Notion-style tight display tracking */
-  --display-weight: 600;
-  --lh-display: 1.0; --lh-display-sm: 1.12;
-  --body-lg: 19px;  /* 19 */  --lh-body-lg: 1.5;
-  --body: 17px;     /* 17 */  --lh-body: 1.5;
-  --body-sm: 15px;  /* 15 */  --lh-body-sm: 1.45;
-  --caption: 13px;  /* 13 */
+  --track-xl: -0.045em; --track-lg: -0.04em; --track-md: -0.03em; --track-sm: -0.02em;
+  --display-weight: 500;
+  --lh-display: 0.88; --lh-display-lg: 0.9; --lh-display-sm: 1.12;
+  --body-lg: clamp(22px, 2vw, 28px);  /* copy lead: lh 1.07, -0.02em, mute */  --lh-body-lg: 1.07;
+  --body: 18px;     /* body: lh 1.4, -0.015em (17px on phones, mobile.css) */  --lh-body: 1.4;
+  --body-sm: 15px;  /* small: lh 1.45, -0.02em */  --lh-body-sm: 1.45;
+  --caption: 12.5px;  /* caption: lh 1.2, -0.01em */
   --mono-eyebrow: 12px;  /* 12, uppercase, +0.12em */
   --mono-button: 13px; /* 13, uppercase, +0.06em, weight 500 */
   --mono-chip: 11px;   /* 11, uppercase, +0.08em */
@@ -96,20 +97,28 @@
 
   /* ---------- space (4px base) ---------- */
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px; --s-9: 80px; --s-10: 120px;
-  --section-y: clamp(80px, 11vw, 160px);   /* Apple-generous band padding */
+  --section-y: 56px;                       /* r54: 56px on phones, 128px from 1024px (below) */
+  --lead-gap: 56px;                        /* lead to content: 80px from 1024px */
   --container: 1200px;
   --gutter: clamp(16px, 4vw, 32px);
 
   /* ---------- shape ---------- */
-  /* r52 (DESIGN.md v2 section 4): five radii. Pills are retired; only dots, the collapsed nav and the 44px icon button are round. */
-  --r-control: 4px;     /* buttons, inputs, tab boxes, chips */
-  --r-ui: 6px;          /* small cards, popovers (the Regulations dropdown) */
-  --r-md: 8px;          /* cards, nested panels (was --r-sm 12px) */
-  --r-lg: 16px;         /* large panels: pricing card, dialogs, the story stage, the departures board */
-  --r-hero: 24px;       /* one full-bleed framed media per page at most */
+  /* r54 (DESIGN.md v3 section 3, Sublime's scale). Round shapes only for dots and icon buttons. The old names are kept and remapped. */
+  --r-xs: 5px;          /* buttons, chips, inputs */
+  --r-sm: 10px;         /* small cards, menus, the nav bar */
+  --r-md: 15px;         /* cards */
+  --r-lg: 20px;         /* panels */
+  --r-xl: 25px;
+  --r-2xl: 30px;
+  --r-4xl: 40px;        /* large media and the footer card from 1024px */
+  --r-control: var(--r-xs);
+  --r-ui: var(--r-sm);
+  --r-hero: var(--r-2xl);
 
   /* ---------- elevation: hairlines, not shadows ---------- */
   --frame-shadow: none;   /* r17: cards are level 0, no shadow */
+  /* r54 (v3 Depth): the one soft shadow, only for things that float over the page (nav bar, dropdown, dialogs, the question bubble) */
+  --shadow-float: 0 16px 32px rgb(0 0 0 / 0.30), 0 6px 16px rgb(0 0 0 / 0.15), 0 1px 4px rgb(0 0 0 / 0.10);
   --glow-cobalt: none;   /* r17: glows removed */
   --glow-yellow: none;
 
@@ -138,8 +147,8 @@
 
 /* ---------- round 7: buttons and interaction (used by components.css and states.css) ---------- */
 .bindu-home {
-  --btn-h: 36px;                        /* r52 v2: every button 36px from 768px; 44px on phones (below) */
-  --btn-px: 16px;                       /* r52 v2: 16px sides (padding 9 / 16 / 7 / 16) */
+  --btn-h: 36px;                        /* r54 v3: every button 36px from 768px; 44px on phones (mobile.css) */
+  --btn-px: 14px;                       /* r54 v3: padding 0 14px */
   --hover-fill-dark: rgb(var(--fg-rgb) / 0.06);
   --hover-fill-light: rgb(var(--ink-rgb) / 0.04);
   --hover-line-dark: rgb(var(--fg-rgb) / 0.6);
@@ -194,6 +203,7 @@
   --yellow-press: #E6BF00;
   --cobalt-signal: #1F55C4;
   --cobalt-deep: #E4E8F2;
+  --shadow-float: 0 16px 32px rgb(20 26 30 / 0.07), 0 6px 16px rgb(20 26 30 / 0.02), 0 1px 4px rgb(20 26 30 / 0.02);   /* r54: Sublime shadow-cloud */
 }
 
 /* ---------- round 15: the deep navy surface (same in both themes) ----------
@@ -216,10 +226,6 @@
    --night-band is the one full-bleed navy band per page (the shipment journey); a little raised in dark so it still reads
    against #0A0A0A. Text on it uses the --navy-* tokens (both themes). */
 .bindu-home {
-  /* r29-7: the page's background bands (the sections sit on these; the page background crossfades between them as you scroll, lib/bands.ts) */
-  --band-canvas: var(--canvas);
-  --band-tint: #0A1222;             /* r40-4: a cobalt-tinted step of the page colour, OKLCH L .184 vs canvas .145 (a step of .039); text 5.7:1 or better */
-  --band-panel: var(--canvas-soft);
   --line-ink: #EDE8DA;
   --night-band: #101D3C;
   --proof-dot: var(--brand-yellow);
@@ -229,8 +235,10 @@
   --font-guide: var(--font-sans);
 }
 .bindu-home[data-theme="light"] {
-  --band-tint: #E3DCCC;             /* r40: a warm step of the ivory (the pale cobalt #D5E0F4 read as the rejected cool light theme), about .035 below the canvas in OKLCH L */
   --line-ink: #0E1A30;   /* r22-13: deeper navy ink lines */
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
   --night-band: #0B1630;
 }
+
+/* r54 (v3 section 3): section rhythm. Phones 56px, from 1024px 128px; lead to content 56px, 80px from 1024px. */
+@media (min-width: 1024px) { .bindu-home { --section-y: 128px; --lead-gap: 80px; } }

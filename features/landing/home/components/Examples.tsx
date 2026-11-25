@@ -134,7 +134,7 @@ export function Examples() {
       <div ref={pin} className={`ex-pin${isStatic ? " is-static" : ""}`} style={isStatic ? undefined : ({ height: `${100 + N * STEP}svh`, "--ex-n": N } as CSSProperties)}>
         <div className="ex-stage">
           <div className="container ex-head">
-            <h2 id="ex-h" className="t-display-md">What the rules let through, and what they stop.</h2>
+            <h2 id="ex-h" className="t-display-lg">What the rules let through, and what they stop.</h2>
             <p className="t-body t-soft">Illustrations, not customer filings: the verdict on a real shipment belongs to the rules and to the authority that reads them.</p>
           </div>
           <div className="container">

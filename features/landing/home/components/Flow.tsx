@@ -265,7 +265,7 @@ export function Flow() {
       <div ref={pin} className={`fl-pin${isStatic ? " is-static" : ""}`}>
         <div className="fl-win container">
           <div className="flow-head fl-top">
-            <h2 id="flow-h" className="t-display-md">{story.title}</h2>
+            <h2 id="flow-h" className="t-display-lg">{story.title}</h2>
             <p className="t-body-lg t-soft fl-lead">{story.lead}</p>
           </div>
           <div className="fl-left">

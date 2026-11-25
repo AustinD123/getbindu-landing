@@ -156,7 +156,7 @@ export function Theatre() {
           <div className="th-head">
             <div className="th-title">
               <p className="th-kicker">{c.title}</p>
-              <h2 id="how-h" className="t-display-md" data-own=""><span key={shown} ref={titleEl} className="th-h">{c.acts[shown]!.title}</span></h2>
+              <h2 id="how-h" className="t-display-lg" data-own=""><span key={shown} ref={titleEl} className="th-h">{c.acts[shown]!.title}</span></h2>
               <p key={`lead-${shown}`} ref={leadEl} className="t-body-lg t-soft th-lead">{c.acts[shown]!.lead}</p>
             </div>
             <div className="seg-track th-seg">

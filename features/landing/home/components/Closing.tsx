@@ -15,7 +15,7 @@ export function Faq() {
     <section className="band-dark sec" id="faq" aria-labelledby="faq-h" data-guide-anchor="faq" data-guide-side="l">
       <div className="container faq">
         <div className="sec-head">
-          <h2 id="faq-h" className="t-display-md" suppressHydrationWarning>{faq.title}</h2>
+          <h2 id="faq-h" className="t-display-lg" suppressHydrationWarning>{faq.title}</h2>
         </div>
         <div className="faq-list">
           {faq.items.map((f) => (
