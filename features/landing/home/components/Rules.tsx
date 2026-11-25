@@ -1,111 +1,199 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { rules as c } from "../content";
 import { NAV_REGULATIONS } from "../links";
-import { gsap, ScrollTrigger, getLenis, useReducedMotion } from "../lib/motion";
+import { gsap, useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
-import { isPending, onReady } from "../lib/ready";
-import { BtnLabel } from "./bits";
 
-/* Round 52 item 3: "The rules Bindu covers" (id `rules`). The section pins and the vertical scroll moves the row of five tiles sideways (GSAP ScrollTrigger, scrubbed, so it
-   reverses with the scroll). The tile nearest the reading position is full ink, the others sit at the mute colour (text only, the panels stay). One idea, nothing else moves:
-   no drag, tilt, snap, arrows, hint, flaps or lane. Phones, reduced motion, short windows and no JS: no pin, a native horizontal scroll-snap row of the same tiles.
-   A tile's links stay real links; focusing one scrolls the page so that tile is in view. */
+/* Round 57: "The rules Bindu covers" (id `rules`), an infinite, minimal gallery (reference: Daydream's infinite scrolling gallery on Awwwards, made quieter). Not pinned. A centred
+   title and one line, then ONE endless row of the five type-only rule tiles, shown three times so it never ends (the copies are rendered once when the section hydrates; the loop
+   wraps one transform, nothing is cloned while scrolling). The row drifts by itself (DRIFT px/s). The page's scroll velocity is added to the drift (faster scroll, faster row, then it
+   eases back) and while the row runs fast every tile bends: skewX up to MAX_BEND degrees (the shape of a page being flicked), a little rotation, and the ghost number slides inside the
+   tile. At rest everything is flat. Drag and a sideways wheel move it with momentum. Hovering a tile pauses the drift and lifts its name to ink (the others go mute); focus does the
+   same and scrolls the focused tile to the middle; arrow keys step one tile. GSAP ticker, one quickSetter per tile and per ghost, transforms only; the ticker stops off screen. The
+   duplicate tiles are aria-hidden with unfocusable links, so a screen reader reads the five rules once. Phones, reduced motion and the first paint: a native horizontal scroll-snap
+   row of the five tiles (no loop, no drift, no bend). Content, statuses, regulation numbers, dates and source links are the brief's, unchanged. */
 const linkOf = (name: string) => NAV_REGULATIONS.find((l) => l.t === name)?.u ?? "/";
-const MIN_H = 680;   // a window shorter than this cannot hold a tile and the heading, so it gets the native row
-const DIM = 0.62;
+const DRIFT = 20;        // px per second, on its own
+const MAX_BEND = 8;      // degrees of skew at full speed
+const FULL = 1400;       // px/s of total speed that counts as "full speed" for the bend
+const COPIES = 3;        // the row is the five tiles three times
+
+type Item = (typeof c.items)[number];
+const ghostLines = (reg: string) => reg.split(/[\s/]+/).filter(Boolean);
+
+function Tile({ r, copy }: { r: Item; copy: boolean }) {
+  const lines = ghostLines(r.reg);
+  return (
+    <li className="rl-tile" aria-hidden={copy ? true : undefined}>
+      <span className="rl-ghost" aria-hidden="true">{lines.map((l, i) => <span key={i}>{l}</span>)}</span>
+      <div className="rl-over">
+        <div className="rl-top">
+          <span className="sr">{r.reg}. </span>
+          <h3 className="rl-t">{r.t}</h3>
+          <p className="rl-full">{r.full}</p>
+        </div>
+        <div className="rl-bot">
+          <p className="rl-d">{r.d}</p>
+          <p className="rl-cov"><span>{c.covers}: </span>{r.covers}</p>
+          {r.date ? <p className="rl-date">{r.date}</p> : null}
+          <ul className="rl-chips">{r.chips.map((k) => <li key={k.t} className={`chip ${k.live ? "chip-live" : "chip-build"}`}>{k.t}</li>)}</ul>
+          <p className="rl-links">
+            <a className="rl-read" href={linkOf(r.link)} tabIndex={copy ? -1 : undefined} aria-label={`${c.read}: ${r.t}`}>{c.read}</a>
+            <a className="rl-src" href={r.src.u} target="_blank" rel="noopener noreferrer" tabIndex={copy ? -1 : undefined}>{c.source}: {r.src.t}</a>
+          </p>
+        </div>
+      </div>
+    </li>
+  );
+}
 
 export function Rules() {
   const reduced = useReducedMotion();
   const [phone, setPhone] = useState(false);
-  const [short, setShort] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const pin = useRef<HTMLDivElement>(null);
   const view = useRef<HTMLDivElement>(null);
-  const trk = useRef<HTMLUListElement>(null);
-  const tiles = useRef<(HTMLLIElement | null)[]>([]);
-  const pinned = mounted && !reduced && !phone && !short;
+  const track = useRef<HTMLUListElement>(null);
+  const loop = mounted && !reduced && !phone;
 
   useEffect(() => {
     setMounted(true);
-    const sync = () => { setPhone(isPhone()); setShort(window.innerHeight < MIN_H); };
+    const sync = () => setPhone(isPhone());
     sync();
-    window.addEventListener("resize", sync);
     const off = onPhoneChange(sync);
-    return () => { window.removeEventListener("resize", sync); off(); };
+    return () => off();
   }, []);
 
   useEffect(() => {
-    const p = pin.current, v = view.current, t = trk.current;
-    if (!pinned || !p || !v || !t) return;
-    const ts = tiles.current.slice() as HTMLLIElement[];   // a snapshot: the ref slots go null on unmount, before cleanup
-    const bodies = ts.map((el) => el.querySelector<HTMLElement>(".rl-body")!);
-    let travel = 0, act = -1;
-    const measure = () => { travel = Math.max(0, t.scrollWidth - v.clientWidth); return -travel; };
-    const paint = (prog: number) => {
-      const a = Math.round(prog * (ts.length - 1));
-      if (a === act) return;
-      act = a;
-      gsap.to(bodies, { opacity: (i: number) => (i === a ? 1 : DIM), duration: 0.35, ease: "power2.out", overwrite: "auto" });
+    const v = view.current, t = track.current;
+    if (!loop || !v || !t) return;
+    const n = c.items.length;
+    const tiles = Array.from(t.querySelectorAll<HTMLElement>(".rl-tile"));
+    const ghosts = tiles.map((el) => el.querySelector<HTMLElement>(".rl-ghost")!);
+    const setX = gsap.quickSetter(t, "x", "px");
+    const skew = tiles.map((el) => gsap.quickSetter(el, "skewX", "deg"));
+    const rot = tiles.map((el) => gsap.quickSetter(el, "rotation", "deg"));
+    const gx = ghosts.map((g) => gsap.quickSetter(g, "x", "px"));
+    let step = 0, W = 0, tw = 0;
+    const measure = () => { step = tiles[1]!.offsetLeft - tiles[0]!.offsetLeft; tw = tiles[0]!.offsetWidth; W = step * n; };
+    measure();
+    const st = { pos: 0, freeV: 0, bend: 0, hover: false, focus: false, lock: false, drag: false, vis: true };
+    let lastY = window.scrollY, sVel = 0, flat = false;
+    const wrap = (p: number) => ((p % W) + W) % W;
+    const tick = (_t: number, dtMs: number) => {
+      if (!W) return;
+      const dt = Math.min(dtMs, 64) / 1000;
+      const sy = window.scrollY;
+      sVel += ((sy - lastY) / Math.max(dt, 0.001) - sVel) * Math.min(1, dt * 10);   // the page's scroll speed, smoothed
+      lastY = sy;
+      st.freeV *= Math.pow(0.04, dt);                                                  // drag and wheel momentum eases back
+      const drift = st.hover || st.focus ? 0 : DRIFT;
+      const speed = drift + sVel * 0.45 + st.freeV;
+      if (!st.lock && !st.drag) st.pos += speed * dt;
+      st.pos = wrap(st.pos);
+      setX(-st.pos);
+      const b = Math.max(-1, Math.min(1, (st.lock || st.drag ? st.freeV : speed - drift) / FULL));
+      st.bend += (b - st.bend) * Math.min(1, dt * 8);
+      if (Math.abs(st.bend) < 0.002 && st.bend !== 0) st.bend = 0;
+      if (st.bend === 0 && flat) return;
+      flat = st.bend === 0;
+      const k = -st.bend;
+      for (let i = 0; i < tiles.length; i++) { skew[i]!(k * MAX_BEND); rot[i]!(k * 1.5); gx[i]!(k * 56); }
     };
-    gsap.set(bodies, { opacity: (i: number) => (i === 0 ? 1 : DIM) });
-    const tw = gsap.to(t, { x: () => measure(), ease: "none" });
-    const st = ScrollTrigger.create({
-      animation: tw, trigger: p, start: "top 64px", end: "bottom bottom", scrub: 0.8, invalidateOnRefresh: true,
-      onUpdate: (self) => paint(self.progress),
+    gsap.ticker.add(tick);
+    const io = new IntersectionObserver(([e]) => {
+      if (e!.isIntersecting && !st.vis) { st.vis = true; lastY = window.scrollY; gsap.ticker.add(tick); }
+      else if (!e!.isIntersecting && st.vis) { st.vis = false; gsap.ticker.remove(tick); }
     });
-    // focusing a tile's link brings that tile to the reading position
-    const onFocus = (e: FocusEvent) => {
-      const i = ts.findIndex((el) => el.contains(e.target as Node));
-      if (i < 0 || !travel) return;
-      const y = st.start + (i / (ts.length - 1)) * (st.end - st.start);
-      const l = getLenis();
-      if (l) l.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y, behavior: "auto" });
-    };
-    t.addEventListener("focusin", onFocus);
-    /* r55-7: the trigger is made after the section hydrates, when sections above may still be settling; re-measure once the layout is final (fonts, late sections, the next frame) */
-    const refresh = () => { if (!isPending(p)) ScrollTrigger.refresh(); };
-    const fonts = document.fonts?.ready.then(refresh);
-    void fonts;
-    const offReady = onReady(refresh);
-    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => {
-      offReady(); cancelAnimationFrame(raf);
-      t.removeEventListener("focusin", onFocus);
-      st.kill(); tw.kill();
-      gsap.killTweensOf(bodies);
-      gsap.set([t, ...bodies], { clearProps: "transform,opacity" });
-    };
-  }, [pinned]);
+    io.observe(v);
 
+    // hover: pause the drift, lift this rule's name (every copy of it), mute the others
+    const hot = (idx: number) => { v.toggleAttribute("data-hot", idx >= 0); tiles.forEach((el, j) => el.classList.toggle("is-hot", idx >= 0 && j % n === idx)); };
+    const enters = tiles.map((el, j) => { const h = () => { st.hover = true; hot(j % n); }; el.addEventListener("pointerenter", h); return h; });
+    const leaves = tiles.map((el) => { const h = () => { st.hover = false; if (!st.focus) hot(-1); }; el.addEventListener("pointerleave", h); return h; });
+
+    // bring tile i (a real one) to the middle, along the shortest way round the loop
+    const toTile = (i: number, rel = false) => {
+      const centre = i * step + tw / 2 - v.clientWidth / 2;
+      let tgt = rel ? i : centre;
+      if (!rel) { const d = wrap(tgt - st.pos); tgt = st.pos + (d > W / 2 ? d - W : d); }
+      st.lock = true; st.freeV = 0;
+      gsap.killTweensOf(st);
+      gsap.to(st, { pos: tgt, duration: 0.7, ease: "power3.out", onComplete: () => { st.lock = false; } });
+    };
+    const onFocusIn = (e: FocusEvent) => {
+      const i = tiles.findIndex((el, j) => j < n && el.contains(e.target as Node));
+      if (i < 0) return;
+      st.focus = true; hot(i);
+      toTile(i);
+    };
+    const onFocusOut = () => { st.focus = false; if (!st.hover) hot(-1); };
+    t.addEventListener("focusin", onFocusIn);
+    t.addEventListener("focusout", onFocusOut);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+      e.preventDefault();
+      const next = (Math.round(st.pos / step) + (e.key === "ArrowRight" ? 1 : -1)) * step;
+      toTile(next, true);
+    };
+    v.addEventListener("keydown", onKey);
+
+    // drag with momentum, and a sideways wheel
+    let x0 = 0, tPrev = 0, moved = 0;
+    const down = (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      st.drag = true; moved = 0; x0 = e.clientX; tPrev = performance.now(); st.freeV = 0;
+      gsap.killTweensOf(st); st.lock = false;
+      v.setPointerCapture(e.pointerId); v.classList.add("is-drag");
+    };
+    const move = (e: PointerEvent) => {
+      if (!st.drag) return;
+      const dx = e.clientX - x0, now = performance.now(), dtm = Math.max(1, now - tPrev);
+      x0 = e.clientX; tPrev = now; moved += Math.abs(dx);
+      st.pos = wrap(st.pos - dx);
+      st.freeV += (-(dx / dtm) * 1000 - st.freeV) * 0.4;
+    };
+    const up = (e: PointerEvent) => { if (!st.drag) return; st.drag = false; v.classList.remove("is-drag"); try { v.releasePointerCapture(e.pointerId); } catch { /* already released */ } };
+    const click = (e: MouseEvent) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); moved = 0; } };
+    const wheel = (e: WheelEvent) => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); st.pos = wrap(st.pos + e.deltaX); st.freeV += e.deltaX * 5; } };
+    v.addEventListener("pointerdown", down); v.addEventListener("pointermove", move);
+    v.addEventListener("pointerup", up); v.addEventListener("pointercancel", up);
+    v.addEventListener("click", click, true); v.addEventListener("wheel", wheel, { passive: false });
+    const ro = new ResizeObserver(measure);
+    ro.observe(v);
+    const fonts = document.fonts?.ready.then(measure);
+    void fonts;
+    return () => {
+      gsap.ticker.remove(tick); io.disconnect(); ro.disconnect(); gsap.killTweensOf(st);
+      tiles.forEach((el, j) => { el.removeEventListener("pointerenter", enters[j]!); el.removeEventListener("pointerleave", leaves[j]!); });
+      t.removeEventListener("focusin", onFocusIn); t.removeEventListener("focusout", onFocusOut);
+      v.removeEventListener("keydown", onKey);
+      v.removeEventListener("pointerdown", down); v.removeEventListener("pointermove", move);
+      v.removeEventListener("pointerup", up); v.removeEventListener("pointercancel", up);
+      v.removeEventListener("click", click, true); v.removeEventListener("wheel", wheel);
+      v.removeAttribute("data-hot");
+      gsap.set([t, ...tiles, ...ghosts], { clearProps: "transform" });
+    };
+  }, [loop]);
+
+  const sets = loop ? COPIES : 1;
   return (
     <section className="band-dark sec rl" id="rules" aria-labelledby="rl-h">
-      <div ref={pin} className={`rl-pin${pinned ? " is-pinned" : " is-native"}`}>
-        <div className="rl-win">
-          <div className="container rl-head">
-            <h2 id="rl-h" className="t-display-lg">{c.title}</h2>
-          </div>
-          <div ref={view} className="rl-view" role="group" aria-roledescription="carousel" aria-label={c.label}>
-            <ul ref={trk} className="rl-track">
-              {c.items.map((r, i) => (
-                <li key={r.id} ref={(el) => { tiles.current[i] = el; }} className="rl-tile">
-                  <div className="rl-body">
-                    <p className="rl-ref">{r.reg}</p>
-                    <h3 className="rl-t t-display-sm">{r.t}</h3>
-                    <p className="rl-full">{r.full}</p>
-                    <p className="rl-d">{r.d}</p>
-                    <dl className="rl-dl">
-                      <div><dt>{c.covers}</dt><dd>{r.covers}</dd></div>
-                    </dl>
-                    <ul className="rl-chips">{r.chips.map((k) => <li key={k.t} className={`chip ${k.live ? "chip-live" : "chip-build"}`}>{k.t}</li>)}</ul>
-                    {r.date ? <dl className="rl-dl"><div><dt>Dates</dt><dd>{r.date}</dd></div></dl> : null}
-                    <a className="rl-src" href={r.src.u} target="_blank" rel="noopener noreferrer">{c.source}: {r.src.t}</a>
-                  </div>
-                  <a className="btn btn-secondary rl-read" href={linkOf(r.link)} aria-label={`${c.read}: ${r.t}`}><BtnLabel>{c.read}</BtnLabel></a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+      <div className="container rl-head">
+        <h2 id="rl-h" className="t-display-lg">{c.title}</h2>
+        <p className="t-body-lg rl-lead">{c.lead}</p>
+      </div>
+      <div
+        ref={view}
+        className={`rl-view${loop ? " is-loop" : " is-native"}`}
+        role="group"
+        aria-roledescription="carousel"
+        aria-label={c.label}
+        tabIndex={loop ? 0 : undefined}
+        style={{ "--rl-n": c.items.length } as CSSProperties}
+      >
+        <ul ref={track} className="rl-track">
+          {Array.from({ length: sets }).flatMap((_, s) => c.items.map((r) => <Tile key={`${s}-${r.id}`} r={r} copy={s > 0} />))}
+        </ul>
       </div>
     </section>
   );

@@ -376,6 +376,7 @@ export const voices = {
    cites the regulation on EUR-Lex. No prices (pricing is the next section). The page links come from NAV_REGULATIONS (links.ts) by name. */
 export const rules = {
   title: "The rules Bindu covers.",
+  lead: "Five EU rules, and where each one stands.",
   label: "Regulations",
   prev: "Previous rule",
   next: "Next rule",
