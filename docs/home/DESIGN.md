@@ -1,186 +1,108 @@
 ---
-version: 1
+version: 3
 name: Bindu-home
-description: Bindu's futuristic marketing system. x.ai's near-black canvas, regular-weight display type, mono labels and outline pills; Together AI's dark/light band rhythm, mono-caps labels and blueprint diagrams; Apple's whitespace, strict scale and product framing. Brand colours yellow (act / live / key number) and cobalt (the system) on black.
+description: Bindu's homepage system from r54. One reference, sublime.app, measured from its live CSS on 25 Nov 2026, built step by step with Austin. Colours and fonts are Bindu's (frozen); everything else follows Sublime.
 sources:
-  - awesome-design-md (github.com/VoltAgent/awesome-design-md) @ fcc7028, MIT: design-md/x.ai, design-md/together.ai, design-md/apple
-
-colors:
-  brand-yellow: "#FFD400"     # PLACEHOLDER until Raahul sends the app's exact value
-  brand-cobalt: "#0047AB"     # PLACEHOLDER until Raahul sends the app's exact value
-  yellow-press: "#E6BF00"
-  cobalt-signal: "#3D7BFF"    # lines / glows / progress on black (5.2:1)
-  cobalt-deep: "#0A1A3D"
-  canvas: "#0A0A0A"           # x.ai canvas
-  canvas-soft: "#141416"
-  canvas-mid: "#1C1D21"
-  hairline-dark: "#26282D"
-  on-dark: "#FFFFFF"
-  on-dark-body: "#DADBDF"     # x.ai body
-  on-dark-mute: "#8A8E95"     # 6.0:1 (x.ai #7d8187 nudged up for AA headroom)
-  paper: "#FFFFFF"            # dark: Together reading band. Light (round 14): #F8FAFC, a lighter panel
-  paper-soft: "#F5F5F7"       # dark: Apple parchment. Light (round 14): #E4EAF2, the alternate band
-  hairline-light: "#E6E6E9"   # light (round 14): #CAD2DE
-  ink: "#0A0A0A"              # light (round 14): navy #0B1B3A
-  ink-body: "#5C5F66"         # 6.4:1 (Together's #959494 fails AA on white, replaced). Light: #3E4A63
-  ink-mute: "#6B6E75"         # 5.1:1. Light: #56627A
-
-typography:
-  family-sans: Inter, system-ui, sans-serif          # stands in for Universal Sans / The Future / SF Pro
-  family-mono: IBM Plex Mono, ui-monospace       # stands in for GeistMono / PP Neue Montreal Mono
-  display-xl: { size: 96px, min: 48px, weight: 400, lineHeight: 1.0, tracking: -0.025em }
-  display-lg: { size: 72px, min: 40px, weight: 400, lineHeight: 1.0, tracking: -0.025em }
-  display-md: { size: 48px, min: 32px, weight: 400, lineHeight: 1.05, tracking: -0.022em }
-  display-sm: { size: 32px, min: 24px, weight: 400, lineHeight: 1.12, tracking: -0.018em }
-  display-xs: { size: 20px, weight: 400, lineHeight: 1.4 }
-  body-lg:    { size: 19px, weight: 400, lineHeight: 1.5 }
-  body:       { size: 17px, weight: 400, lineHeight: 1.47 }   # Apple's 17px reading pace
-  body-sm:    { size: 15px, weight: 400, lineHeight: 1.45 }
-  caption:    { size: 13px, weight: 400, lineHeight: 1.4 }
-  mono-eyebrow: { size: 12px, weight: 500, tracking: 0.12em, case: upper }
-  mono-button:  { size: 13px, weight: 500, tracking: 0.06em, case: upper }
-  mono-chip:    { size: 11px, weight: 500, tracking: 0.08em, case: upper }
-
-rounded: { card: 8px, frame: 18px, pill: 9999px }
-spacing: { base: 4px, scale: [4, 8, 12, 16, 24, 32, 48, 64, 80, 120], section: "80px → 160px", container: 1200px, gutter: "16px → 32px" }
-motion:
-  ease-out: cubic-bezier(0.16, 1, 0.3, 1)
-  ease-in-out: cubic-bezier(0.65, 0, 0.35, 1)
-  durations: [160ms, 320ms, 700ms, 1200ms]
-  press-down: 1px          # round 7: pressed = 1px down, not a scale (tokens.css --press-down)
-  focus-ring: 2px solid cobalt  # cobalt-signal #3D7BFF on dark (5.2:1), brand cobalt on light (8.4:1)
+  - sublime.app (live CSS and markup, 25 Nov 2026): type scale, tracking, section rhythm, radii, buttons, panels, nav, footer, reveal motion. getdesign.md has no Sublime DESIGN.md (screenshots only), so this file is our own measurement.
+  - previous systems: v1 (x.ai / Together / Apple) at e51c51c; v2 (parallel.ai shapes, kami background) kept at docs/home/rounds/DESIGN-v2-r52.md, superseded before r53 was built.
+status:
+  step-1-foundation: approved (Austin, 25 Nov 2026)
+  step-2-components: approved (Austin, 25 Nov 2026)
+  step-3-motion: approved (Austin, 25 Nov 2026)
+  step-4-sections: approved (Austin, 25 Nov 2026); spec rounds/round-54.md
+frozen:
+  colours: features/landing/home/styles/tokens.css, both themes
+  fonts: Inter (sans), IBM Plex Mono (mono); Sublime's Control Upright is a paid face and is not used
 ---
 
-# Bindu homepage design system
+# Bindu homepage design system (v3, Sublime)
 
 Applies to the homepage (`/`). Other pages follow `docs/DESIGN.md`.
+Rule: every section uses only what is in this file. A section may have its own motion idea, never its own type sizes, buttons, panels or radii.
 
-Code: `features/landing/home/styles/tokens.css` (tokens) and `features/landing/home/styles/components.css` (components).
-Preview: `preview/tokens.html`.
-
-## What comes from where
-| Layer | Source | What we take | What we leave |
-|---|---|---|---|
-| Base | x.ai | Near-black canvas `#0A0A0A`; display at weight 400 with tight negative tracking; uppercase tracked mono eyebrows; **every button a pill**; 1px translucent-white outline (`rgb(255 255 255 / .25)`); a single filled pill as the rare exception; hairline cards (8px, `#191919`-family), no shadows. | x.ai's dark-only rule (we need light reading bands), its sunset/dusk accents, white as the filled pill colour. |
-| Structure | Together AI | Dark hero bands alternating with bright white reading bands (no in-between greys); mono-caps button labels and eyebrows; one primary CTA per viewport; code-editor-style dark mock inside light bands; data-table headers in mono caps. The blueprint style for diagrams is ours, built in that spirit: cobalt lines on a faint cobalt grid, dashed for "in build". | Its orange-magenta-periwinkle gradient, 4px rectangle buttons (x.ai pills win), the footer wordmark banner, #959494 body grey (fails AA). |
-| Polish | Apple | Generous whitespace (every band ~one viewport of air); strict, short type ladder; 17px body at 1.47; press = 1px down, no scale; frosted blur only on sticky chrome; one shadow, reserved for the framed product (here: the app frame); "the colour change is the divider". | Weight 600 headlines (x.ai's 400 wins), Action Blue (cobalt replaces it), photography-first (we frame product mocks instead). |
-
-## Colour roles (strict)
-- **Black and greys: ~90%.**
-- **Yellow** = "act / live / the number that matters": the one filled pill (Book a 30-minute demo), Live chips, key numbers (€249, 30 Dec 2026, 30 Jun 2027). Ink text on yellow (13.8:1). Never yellow text on white (1.4:1).
-- **Cobalt** = "the system working": app frames, active steps, progress, links, data lines, light trails, glows, the agent-layer blueprint. Brand cobalt for fills (white text 8.4:1) and for links/frames on white (8.4:1). On black use cobalt-signal `#3D7BFF` (5.2:1, graphics only). No cobalt text on black; links on dark are white with a cobalt underline.
-- **Never the same job for both.** In-build status is a neutral dashed outline, not yellow and not cobalt.
-- Placeholders: `--brand-yellow #FFD400`, `--brand-cobalt #0047AB`. Every derived step (press, signal, deep, glows) is listed in `tokens.css`; recompute and re-check contrast when the real values arrive.
-
-## Measured contrast (WCAG 2.x)
-| Pair | Ratio | Use |
+## 1. Frozen: colours
+Unchanged values from tokens.css. Mapping of Sublime's roles onto ours:
+| Sublime role | Sublime (light) | Bindu token |
 |---|---|---|
-| Yellow on canvas | 13.8 | key numbers, Live chip on dark |
-| Ink on yellow | 13.8 | primary pill label, Live chip |
-| Cobalt on canvas | 2.35 | **not for text or thin lines** |
-| Cobalt-signal on canvas | 5.16 | lines, trails, progress (needs 3:1) |
-| White on cobalt | 8.44 | cobalt fills |
-| Cobalt on white | 8.44 | links, frames on light bands |
-| Mute #8A8E95 on canvas | 6.02 | captions on dark |
-| Body #5C5F66 on white | 6.40 | body on light (dark theme) |
-| Mute #6B6E75 on white | 5.11 | captions on light (dark theme) |
-| Navy #0B1B3A on canvas #EEF1F5 | 15.04 | text on light (round 14) |
-| Navy on paper-soft #E4EAF2 | 14.08 | text on the light alternate band |
-| Mute #4F5C75 on canvas | 5.94 | captions on light |
-| Brand cobalt #0047AB on canvas | 7.45 | links on light |
-| Cobalt-signal #2A63D8 on canvas | 4.78 | lines, trails on light (needs 3:1) |
-| Yellow #FFC400 on canvas | 1.41 | fills only; never text. Navy on yellow 10.67 |
+| Page | `#fafbfc` | `--canvas` (`#F1ECE1` light, `#0A0A0A` dark) |
+| Headline ink | stone-1 `#181816` | `--on-dark` / `--ink` |
+| Quiet copy | stone-4 `#908f8e` | `--on-dark-mute` |
+| Filled panel, secondary button | stone-6 `#efefef` | `--canvas-mid` (`#E7E1D3` light, `#1C1D21` dark) |
+| Signup accent fill / label | green-2 `#cbffa6` / green-1 `#38744d` | `--brand-yellow` fill / ink label |
+| System, links | blue | cobalt, as today |
+One canvas everywhere; no colour bands. Yellow and cobalt keep their jobs (yellow = act, Live, proof dots; cobalt = the system).
 
-### Light theme (round 14)
-Colour values only (`[data-theme="light"]` in `tokens.css`). Sizes, spacing and positions are the same as dark, so every box is identical in both themes.
-- **Base:** a cool blue-grey, not white: `--canvas #EEF1F5`. Panels are a step lighter (`--canvas-soft #F8FAFC`, `--paper #F8FAFC`); the alternate band is `--paper-soft #E4EAF2`; nested surfaces `--canvas-mid #E2E8F0`.
-- **Lines:** light navy-grey hairlines (`--hairline-dark #C5CEDB`, `--hairline-light #CAD2DE`).
-- **Text:** navy `#0B1B3A`, body `#2C3852` / `#3E4A63`, mute `#4F5C75` / `#56627A`. Navy on canvas is 15.0:1.
-- **Cobalt for the system and links:** brand cobalt `#0047AB` for links and text (7.45:1 on canvas); `--cobalt-signal #2A63D8` for lines and trails (4.78:1).
-- **Yellow for the highlights and shipments:** `--brand-yellow #FFC400` (a touch deeper than the dark yellow, so it reads on light). Navy text on yellow is 10.7:1. Yellow is still never text on light (1.41:1 on canvas).
-- **Inspiration:** ClickHouse's sparing yellow accent and Miro's yellow and blue pairing on light surfaces (VoltAgent's `awesome-design-md`). Yellow stays scarce; cobalt marks the links and the system.
-- **Map:** the hero's routes and dots use the same tokens, and the veil under the copy is the light base, so the copy keeps AA over the map (pixel-sampled in round 14).
+## 2. Frozen: fonts
+Inter for every word a person reads or clicks; IBM Plex Mono only for data (prices, reference numbers, regulation numbers, flaps, map labels). Sentence case everywhere (Sublime's lowercase copy is not taken).
 
-## Type
-Inter + IBM Plex Mono (both SIL OFL 1.1), self-hosted (r16) in the build. Display 96/72/48/32/20 at weight 400, sentence case, negative tracking; body 19/17/15/13; mono uppercase for eyebrows (12), button labels (13), chips (11) and readouts. Two-face contrast is the voice: sans for narrative, mono for anything technical. Never mono paragraphs; never caps headlines.
+## 3. Foundation (step 1, approved)
 
-## Components
-- **Buttons:** `btn-primary` (yellow pill, ink mono-caps label, one per view) · `btn-outline` (transparent, 1px white 25% on dark / black 12% on light) · `btn-icon` (44px circle) · `link`. All ≥44px tall; pressed 1px down (no scale); visible focus is a 2px cobalt ring on dark and light (cobalt-signal on black, brand cobalt on white).
-- **Chips:** `chip-live` (yellow, dot) · `chip-build` (dashed outline) · `chip-neutral` · `chip-illus` ("Illustration" on every mock).
-- **Cards:** 8px radius, hairline. **App frame:** 18px, cobalt hairline + glow, mono title bar with an Illustration chip; the only element with a shadow.
-- **Steps / progress:** cobalt-signal for the active state.
-- **Blueprint:** dark `#070B16` panel, 24px cobalt grid at 10%, cobalt-signal solid lines for Live, dashed for In build, mono labels.
-- **Bands:** `band-dark` / `band-light` / `band-soft`, full-bleed, no rounded corners, no decorative dividers.
+### Type scale (Sublime's ladder, set in Inter)
+| Role | Size | Line height | Tracking | Weight | Sublime source |
+|---|---|---|---|---|---|
+| Display hero | clamp(46px, 8.4vw, 120px) | 0.88 | -0.045em | 500 | landing-heading-1: 46 / 97 / 120px, lh .85 to .9 |
+| Display section | clamp(40px, 6vw, 88px) | 0.9 | -0.04em | 500 | same ladder, one step down |
+| Copy lead | clamp(22px, 2vw, 28px) | 1.07 | -0.02em | 400, mute | landing-copy-1: 28px, lh 1.07 |
+| Body | 18px (17 on phones) | 1.4 | -0.015em | 400 | landing-copy-2: 18px |
+| Small | 15px | 1.45 | -0.02em | 400 | text-sm: 15px, -.02em |
+| Caption | 12.5px | 1.2 | -0.01em | 400 | landing-copy-3: 12 to 12.5px |
+| Button | 14px | 1 | 0 | 500 | landing-button-2: 14px, lh 1 |
+| Data (mono) | 13 to 15px | 1.3 | 0 | 400, tabular | ours |
+Display weight 500 (Sublime's variable face sits at 450 to 480; Inter 600 is too heavy at 120px). One display size per section; the yellow full stop stays on every h2.
 
-## Sunflower and dot system (Bindu means dot)
-The sunflower stays Bindu's brand mark, made futuristic: precise geometric dots and points of light, never illustrated petals or clip-art.
-- **Idea:** one dot = one piece of proof. Many dots on the golden-angle (phyllotaxis) spiral = the sunflower = the filing. Dot *n* sits at angle *n* × 137.508° and radius *c*·√*n*.
-- **Colour:** dots being gathered are cobalt-signal (the system at work); the completed sunflower is yellow (filed, live). A lone divider dot is neutral white. Never any other colour.
-- **The mark** (`src/assets/bindu-mark.svg`, `public/favicon.svg`): a geometric redraw of the sunflower logo, 21 lens petals around an 89-dot golden-angle seed disc, one colour via `currentColor`. Yellow (or white) on black. Nav 28px, footer 40px, favicon. *Proposal: needs Raahul's OK; the photographic logo on getbindu.com is unchanged.*
-- **Hero:** the particle globe whose dots flow into the yellow sunflower as filings land (see MOTION.md).
-- **Small uses:** spiral progress (dots fill in cobalt, all turn yellow at 100%); loading state (the spiral grows); section divider = one dot; the finale shows the completed sunflower.
-- **May not appear:** as petal bullets or decorative flowers; on white reading bands as decoration; more than one sunflower per view; recoloured beyond yellow/white; next to "In build" items as if they were done; as photographic or illustrated petals.
-- Tokens: `--golden-angle`, `--sun`, `--seed-pending`, `--dot-neutral`, `--mark-size-nav`, `--mark-size-foot`. Components: `.mark`, `.dot-divider`, `.spiral` (+ `.on`, `.is-complete`).
+### Section rhythm
+- Every section is a centred column: head centred, content centred under it, `min-height: 80svh`, content vertically centred.
+- Padding: 56px top and bottom on phones, 128px from 1024px (Sublime `py-14 lg:py-32`). Sections are separated by space only: no rules, no bands, no dividers.
+- Widths: copy column max 768px (lead max 32ch); content (stages, boards, tables) max 1200px; full-bleed only for the hero map and the finale.
+- Gap headline to lead 24px; lead to content 56px (80px from 1024px).
+- Pinned sections keep their pins; the head inside the pin is centred and keeps the same sizes.
 
-## Layout
-Container 1200px; gutters 16 → 32px; section padding 80 → 160px; 4px spacing base. Hero and finale full-screen (100svh). Six sections only (see brief).
+### Radii (Sublime's scale)
+`--r-xs` 5px (buttons, chips, inputs) · `--r-sm` 10px (small cards, menus) · `--r-md` 15px (cards) · `--r-lg` 20px (panels) · `--r-xl` 25px · `--r-2xl` 30px · `--r-4xl` 40px (large media and the footer card from 1024px). Round shapes only for dots and icon buttons.
 
-## Motion
-See `MOTION.md`. Expo-out reveals, in-out scrubs; transforms and opacity only; scroll scenes are pure functions of scroll progress; WebGL lazy-loaded, paused off-screen; reduced motion = static end states.
+### Depth
+Flat by default: a panel is a fill, not a border or a shadow (Sublime's landing page uses no shadows on its sections). One soft shadow, only for things that float over the page (dropdown, dialogs, the calculator popup, the nav when it sits over content):
+- light: `0 16px 32px rgb(20 26 30 / .07), 0 6px 16px rgb(20 26 30 / .02), 0 1px 4px rgb(20 26 30 / .02)` (Sublime shadow-cloud)
+- dark: `0 16px 32px rgb(0 0 0 / .30), 0 6px 16px rgb(0 0 0 / .15), 0 1px 4px rgb(0 0 0 / .10)`
+No glows, no gradients except the footer gradient over the finale, no textures.
 
-## Consistency rules (r36-1)
-Measured from the current CSS (`tokens.css`, `components.css`, `story.css`, `site.css`, `r6-pricing.css`, `shipment.css`, `mobile.css`), not invented. Where the prose or front matter above says otherwise (display weight 400, mono-caps eyebrows, buttons and tabs, "Book a 30-minute demo", the cool light theme, `band-light` reading bands), this section and the code win: since r17 the display weight is 600, and eyebrows, buttons, chips and tabs are sentence-case sans. Every new section follows these rules; `docs/home/consistency-audit.md` lists where existing sections still break them.
-
-### Type scale in use
-| Role | Token and value | Used for |
-|---|---|---|
-| Display xl | `--display-xl` clamp 48 to 96, 600, -0.03em, line 1.0 | hero headline only (the hero overrides it to 36 to 76) |
-| Display lg | `--display-lg` clamp 40 to 72 (32 on phones) | statement, journey title |
-| Display md | `--display-md` clamp 32 to 48 (28 on phones), -0.025em, line 1.05 | the section title (`h2.t-display-md`): the one size for a section head |
-| Display sm | `--display-sm` clamp 24 to 32, -0.015em, line 1.12 | step titles, FAQ questions (18.4 to 24) |
-| Lead | `--body-lg` 19, line 1.5 | the line under a section title |
-| Body | `--body` 17, line 1.5 | paragraphs |
-| Body small | `--body-sm` 15 (16 on phones), line 1.45 | captions inside panels, notes |
-| Caption | `--caption` 13 | figure captions, small labels |
-| Label | 12 to 15, sans 500, sentence case, no tracking | eyebrows (14), chips (12), buttons and tabs (15) |
-| Mono | `--font-mono`, 11 to 15, tabular | prices, reference numbers, event log, flaps, map labels; mono-caps only in the board's meta line |
-Never mono paragraphs, never caps headlines. Display tracking comes from the `--track-*` tokens, never per rule.
-
-### Section head: one pattern
-Title, then an optional lead. No eyebrow (r17-2 removed them from section heads).
-- Title: `h2.t-display-md` (32 to 48px, 28px on phones), `text-wrap: balance`, margin 0. It gets the line-mask reveal and the yellow full stop automatically; never style the dot by hand.
-- Lead: `t-body-lg t-soft` (19px, `--on-dark-body`), max 44ch when centred (pricing) or 736px when left-aligned (`.sec-head`, `.ex-head p`); 38ch on phones.
-- Gap title to lead: `--s-3` (12) when centred, `--s-4` (16) for `.sec-head`. Head to content: `--s-8` (64) for a free-flowing head; `--s-6` (32) for a head inside a one-window pin.
-- Alignment: left on the container's edge, except pricing (centred). A pinned head keeps the same sizes; only the `svh` clamps may reduce them to fit one window, and never below the phone sizes above.
-- Container: `.container`, max 1200px, gutter `--gutter` (16 to 32px, 20px on phones). Pinned stages may use 1320px (`.ship-stage`).
-
-### Spacing rhythm
-- Section padding: `--section-y` = `clamp(80px, 11vw, 160px)` top and bottom (96px on phones). Pinned sections take it from the pin (top 0, with `top: 64px` sticky under the nav) and give `--section-y` back after the pin. Exceptions are the pricing window (88px top, `--s-6` bottom, `min-height: 100svh` from 861px) and the FAQ's `--s-5` bottom before the finale.
-- Gaps come from `--s-1..--s-10` (4, 8, 12, 16, 24, 32, 48, 64, 80, 120). Inside a panel use `--s-6` / `--s-7`; between a title and its content `--s-8`; between rows `--s-5` to `--s-8`. No arbitrary pixel gaps outside these.
-- Pin heights: how it works 330svh (200 on phones), journey 420svh (220), departures board 100svh + 40svh per row (18), finale spacer 395svh (285).
-
-### One panel style
-A panel is a surface one step off the page canvas with one 1px hairline.
-- Surface: `--canvas-soft` (cards, the pricing card, the IT drawer) or `--canvas-mid` (nested: the departures board, calculator total).
-- Border: 1px `--line-white-12` (token name is historic; it resolves to a translucent foreground in both themes) or `--hairline-dark`; no shadow, no glow, no blur.
-- Radius: `--r-lg` 16px for a large panel (pricing card, FAQ-style drawer, dialogs, app frame); `--r-sm` 12px for a card or nested panel; 6px for chips; pills only for buttons.
-- Padding: `--s-5` (24) for a card; `--s-6` by `--s-7` for a large two-column panel.
-- Prefer whitespace and hairlines to boxes: How it works, the journey, Sound familiar and the FAQ list sit on the canvas with rules, not panels.
+## 4. Components (step 2, approved)
 
 ### Buttons
-One `.btn` set: 44px tall (`--btn-h`), 24px side padding (`--btn-px`), pill, sans 500 15px, no tracking. Primary: yellow fill, ink label, `--yellow-outline` edge, one per view, plain arrow after the label that nudges 4px; the label stays still. Outline: transparent, 1px `--line-white-25`. Icon: 44px circle. The nav demo button is the same pill at `min-height: 38px` (44px on phones). Press scales .98; focus is a 2px cobalt ring with 3px offset; disabled is a muted fill with no motion.
+Sublime's small buttons, sized for touch: 36px tall from 768px, 44px on phones, `--r-xs` 5px, padding 0 14px, Inter 500 14px, no border. Hover = fill and label colour change, 200ms. No movement of any kind (Sublime presses to scale .95; we skip it: Austin, no jiggling).
+- `btn-primary`: yellow fill, ink label. Book a demo (hero and nav; a normal-size button, Sublime's giant signup block is not taken).
+- `btn-secondary`: `--canvas-mid` fill, mute label; hover one step darker fill, ink label. Estimate your cost, Read the rule.
+- `btn-ghost`: ink at 4% fill, mute label; hover `--canvas-mid`. Small controls (carousel, pause).
 
-### Text links
-`.tlink`: sans 400 15px, 3px bottom padding, a 1px cobalt underline at 40% opacity at rest that grows from the left on hover and focus, text wipes to `--link-wipe`, arrow nudges 4px, 2px ring at 4px offset on focus. Inline links in a paragraph: `.link` (cobalt, 1px underline, 4px offset). Footer and FAQ links are plain `--on-dark-body` with a hairline underline and a cobalt underline on hover.
+### Nav
+Keep Bindu's floating bar and its collapse (r42/r43): logo, links, theme toggle, Book a demo at the right end of the expanded bar; the collapsed pill past the hero is logo only. Restyled to v3: the bar is a `--canvas-mid` fill at 88% with the backdrop blur it has now, `--r-sm` 10px corners, no border, the soft floating shadow (section 3, Depth); links are Inter 15px mute, hover ink; the active section pill is a `btn-secondary` fill (no cobalt outline), the yellow dot stays; Book a demo is `btn-primary`. Sublime's split header is not taken.
+
+### Panels
+`--canvas-mid` fill, no border, no shadow, `--r-lg` 20px (`--r-4xl` 40px for full-width panels from 1024px), padding 24 (40 on large panels). Nested surfaces inside a panel use `--canvas-soft`. The pricing card, departures board, story stage, Full Circle stage, FAQ list and rules tiles all use this one panel.
+
+### Chips
+22px tall, `--r-xs` 5px, Inter 500 12px, no border. Live: yellow fill, ink. In build: transparent with a 1px dashed mute outline (the one bordered chip). Illustration / Placeholder: `--canvas-mid` fill, mute label.
 
 ### Tabs
-One component: `.seg-track` > `.seg-in` > `.seg-opt` + one `.seg-ind`. Max 720px wide, equal columns, 44px tall options, sans 500 15px (11px under 600px), muted `--on-dark-mute`, hover and active `--on-dark`; active gets the 2px `--cobalt-signal` indicator sliding over 250ms; one 1px `--hairline-dark` under the row. ARIA tabs with roving tabindex and arrow keys. The journey and the pricing toggle use it unchanged; a new tab row must too.
+A row of `btn-secondary` buttons; the active one is ink fill with canvas label. No underline, no indicator line.
 
-### "Illustration" labels
-Every mock, map, chat, log, QR code, board, reference number and certificate number carries one. Use the chip: `<span className="chip chip-illus">Illustration</span>`: 24px tall, 6px radius, sans 500 12px, transparent with a 1px `--line-white-25` (`--line-black-12` on light bands) outline, `--on-dark-mute` text, placed in the figure's caption row (`.cargo-cap`: flex, gap 10px, 12px above the figure) or in the app-frame title bar's right end. A caption sentence may follow it in `t-caption t-muted`. A bare sentence that contains the word "illustration" is not a label.
+### Links
+Inline: cobalt, 1px underline, 4px offset. Nav, footer, "see more": mute Inter 15px, hover ink.
 
-### Other fixed values
-- Easing: `--ease-ui` and 200ms for colour, arrow, underline; `--ease-out` for reveals; 250ms for the tab indicator and the rail; reduced motion = instant swaps.
-- Heading reveal is automatic for every `main h2`; do not add a second entrance to the title.
-- Tap targets 44px on phones; safe-area padding on the nav and drawer.
-- Colours only from tokens; no hex in a component rule.
+### Footer
+Sublime's footer card: one centred panel, max 780px from 1024px (400px on phones), `--r-4xl` 40px from 1024px (`--r-lg` on phones), link columns in a row with 48px gaps, legal line inside the card. It still rides up over the finale.
+
+## 5. Motion (step 3, approved)
+Sublime's motion is calm: things fade up once and settle. Every animation on the page follows that.
+- **Reveal (all headings and leads):** each line fades up from 30px below (opacity 0 to 1, y 30 to 0), `--ease-out`, about 0.7s, lines staggered 0.08s, once on entry. Replaces the SplitText line masks, the hero's word-by-word entrance and Full Circle's masked title swap (it now fades out up 0.2s, then the new title fades up).
+- **Kept, restyled only to v3 panels, radii and type:** the intro dot bloom, the statement words lighting up from the scroll, the story stage, Full Circle's acts, the shipment journey and map, the departures board flaps, the pricing odometer, the FAQ accordion, the rules sideways tile scroll (r52-3), the finale zoom with the 34-dot ı, the ink ship guide, the map blur behind content.
+- **Testimonials:** the curved 3D card track is flattened (Austin: go with Sublime): a straight row of v3 panel cards that the scroll moves sideways, no 3D, no rotation, no perspective; cards fade up on entry; the words of the front quote still light up and the yellow dot still travels its dashed route. Phones and reduced motion: a list.
+- **Text links:** colour change only on hover (mute to ink, or cobalt deepening for inline links), 200ms. No growing underline, no wipe, no arrow nudge.
+- **Buttons:** colour change only (section 4).
+- GSAP owns all of it; reduced motion = composed end state, no fade, no pin.
+
+## 6. Motif (unchanged)
+Bindu = dot. The 34-dot sunflower in the finale ı, the dot guide ship, the official sunflower logo, yellow proof dots. One sunflower per view.
+
+## 7. Illustration labels (unchanged rule)
+Every mock, map, chat, log, board, reference and certificate number carries one Illustration chip (section 4) in its caption row.
