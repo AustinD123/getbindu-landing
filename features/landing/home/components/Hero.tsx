@@ -1,7 +1,8 @@
 import { getRoot } from "../lib/root";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { DEMO_URL, cta, hero } from "../content";
-import { gsap, reduceMotion } from "../lib/motion";
+import { gsap, reduceMotion, finePointer } from "../lib/motion";
+import { isPhone } from "../lib/phone";
 import { subscribeTheme } from "../lib/theme";
 import { BtnLabel, SunflowerArt } from "./bits";
 import type { SceneApi } from "../hero/scene";
@@ -66,28 +67,42 @@ export function SceneLayer({ final = false, label, pauseText, playText }: { fina
   );
 }
 
-/* r54 (DESIGN.md v3 section 5): the headline, sub-line and the one CTA fade up 30px, once, 0.7s, lines staggered 0.08s (GSAP; the starting
-   state is set here, not in CSS). With the intro playing (data-intro="on") they wait for it to finish; phones and returns skip the intro and
-   play at once. Reduced motion: nothing runs, everything shows. */
+/* r59-1 (Austin: no particles): the title simply fades up like the other headings (lines, 30px, expo.out, as r54), then the sub-line word by
+   word (0.04s stagger), then Book a demo. On desktop (fine pointer, 768px and up) the title also moves at 0.85 of the scroll speed (it lags by
+   0.15 of the distance scrolled), transform only. The starting state is set here, not in CSS; with the intro playing everything waits for it to
+   finish. Phones and touch screens: the same fade without the parallax. Reduced motion: nothing runs, everything shows. */
 export function Hero() {
   const sec = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     const el = sec.current;
     if (!el || reduceMotion()) return;
     const root = getRoot();
+    const h1 = el.querySelector<HTMLElement>(".hero-h");
     const lines = Array.from(el.querySelectorAll<HTMLElement>(".hero-line"));
-    const rest = Array.from(el.querySelectorAll<HTMLElement>(".hero-sub, .hero-in .cta"));
-    const all = [...lines, ...rest];
-    gsap.set(all, { opacity: 0, y: 30 });
+    const words = Array.from(el.querySelectorAll<HTMLElement>(".hero-w"));
+    const cta = Array.from(el.querySelectorAll<HTMLElement>(".hero-in .cta"));
+    gsap.set(lines, { opacity: 0, y: 30 });
+    gsap.set(words, { opacity: 0, y: 12 });
+    gsap.set(cta, { opacity: 0, y: 16 });
+    let par: gsap.core.Tween | null = null;
+    if (h1 && !isPhone() && finePointer() && window.innerWidth >= 768) {
+      par = gsap.to(h1, { y: () => 0.15 * el.offsetHeight, ease: "none", scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true, invalidateOnRefresh: true } });
+    }
     let tl: gsap.core.Timeline | null = null;
-    const go = () => { tl = gsap.timeline({ delay: 0.15 }).to(all, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }); };
+    const go = () => {
+      tl = gsap.timeline({ delay: 0.15 })
+        .to(lines, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 })
+        .to(words, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out", stagger: 0.04 }, "-=0.3")
+        .to(cta, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, ">-0.25");
+    };
     let mo: MutationObserver | null = null;
     if (root.dataset.intro === "on") {
       mo = new MutationObserver(() => { if (root.dataset.intro !== "on") { mo?.disconnect(); mo = null; go(); } });
       mo.observe(root, { attributes: true, attributeFilter: ["data-intro"] });
     } else go();
-    return () => { mo?.disconnect(); tl?.kill(); gsap.set(all, { clearProps: "opacity,transform" }); };
+    return () => { mo?.disconnect(); tl?.kill(); par?.scrollTrigger?.kill(); par?.kill(); gsap.set([...lines, ...words, ...cta, ...(h1 ? [h1] : [])], { clearProps: "opacity,transform" }); };
   }, []);
+  const subWords = hero.sub.split(" ");
   return (
     <section ref={sec} className="hero band-dark" id="top" aria-labelledby="hero-h" data-guide-anchor="hero" data-guide-side="l">
       <div className="container hero-in">
@@ -97,7 +112,9 @@ export function Hero() {
             <span key={i} className="hero-line">{line}</span>
           ))}
         </h1>
-        <p className="t-body-lg t-soft hero-sub">{hero.sub}</p>
+        <p className="t-body-lg t-soft hero-sub">
+          {subWords.map((w, i) => (<span key={i}>{i > 0 ? " " : ""}<span className="hero-w">{w}</span></span>))}
+        </p>
         <div className="cta">
           <a className="btn bh-btn-primary" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demo}</BtnLabel></a>
         </div>

@@ -77,7 +77,7 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* the file's hierarchy table: display-xl 36/500/1.11, display-lg 30/500/1.2, heading-lg 24/600/1.33, heading-md 20, heading-sm 18, body 16/1.5, body-sm 14, caption 12; letter-spacing 0 */
-  --hero-h-size: clamp(48px, 7vw, 96px);          /* r56-1 (DESIGN.md adaptation 8): the hero title only; every other title keeps the file sizes */
+  --hero-h-size: clamp(48px, 8vw, 120px);          /* r56-1 (DESIGN.md adaptation 8): the hero title only; every other title keeps the file sizes */
   --display-xl: var(--hero-h-size);
   --display-lg: 36px;                            /* section titles (r56: 30 -> 36, Austin: type should make a statement) */
   --display-md: 28px;                            /* heading-lg, +4 */

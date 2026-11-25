@@ -1,0 +1,10 @@
+/* Round 59 (component review with Austin). Item 1: the hero. Title size, weight, tracking and line height are in site.css and tokens.css. */
+@media (min-width: 768px) {
+  /* the title may be wider than the 1200px container (it is up to 120px type), never wider than the window */
+  .bindu-home .hero .hero-in > .hero-h { width: min(calc(100vw - 2 * var(--gutter)), 1400px); margin-inline: calc((100% - min(calc(100vw - 2 * var(--gutter)), 1400px)) / 2); max-width: none; }
+  .bindu-home .hero .hero-in > .hero-sub { max-width: 62rem; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.45; text-wrap: balance; }
+}
+/* charcoal on light, on-dark-mute on dark (adaptation 2 colours) */
+.bindu-home .hero .hero-sub.t-body-lg.t-soft { color: var(--on-dark-mute); }
+.bindu-home[data-theme="light"] .hero .hero-sub.t-body-lg.t-soft { color: var(--on-dark-body); }
+.bindu-home .hero-w { display: inline-block; }

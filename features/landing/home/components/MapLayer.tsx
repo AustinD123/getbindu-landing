@@ -157,13 +157,20 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       veil.width = el.width; veil.height = el.height;
       vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       vctx.clearRect(0, 0, VW, VH);
-      let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
-      for (const n of Array.from(document.querySelectorAll<HTMLElement>(".hero-in > *"))) {
-        const q = n.getBoundingClientRect();
-        if (q.width <= 0 || q.height <= 0) continue;
-        l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom);
-      }
-      if (l < r && t < b) shade(l, t, r, b, 200, 0.74);
+      /* r59-1: a halo round the title's own box (strong, so the title sits on the map), and a lighter one round the sub-line and button */
+      const rect = (nodes: HTMLElement[]) => {
+        let l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+        for (const n of nodes) {
+          const q = n.getBoundingClientRect();
+          if (q.width <= 0 || q.height <= 0) continue;
+          l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); b = Math.max(b, q.bottom);
+        }
+        return l < r && t < b ? { l, t, r, b } : null;
+      };
+      const kids = Array.from(document.querySelectorAll<HTMLElement>(".hero-in > *"));
+      const title = rect(kids.filter((n) => n.classList.contains("hero-h"))), rest = rect(kids.filter((n) => !n.classList.contains("hero-h")));
+      if (title) shade(title.l, title.t, title.r, title.b, 180, 0.8);
+      if (rest) shade(rest.l, rest.t, rest.r, rest.b, 120, 0.7);
       const lab = document.querySelector<HTMLElement>(".stage-ui .scene-label")?.getBoundingClientRect();
       if (lab && lab.width > 0 && lab.height > 0) shade(lab.left, lab.top, lab.right, lab.bottom, 90, 0.6);
     };

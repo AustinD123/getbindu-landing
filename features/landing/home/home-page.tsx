@@ -18,6 +18,7 @@ import "./styles/story.css";
 import "./styles/r44.css";
 import "./styles/r47.css";
 import "./styles/theatre.css";
+import "./styles/r59.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
