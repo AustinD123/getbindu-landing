@@ -9,7 +9,7 @@ Third-party code and assets used by the homepage (`features/landing/home/`), wit
 | Lenis | MIT | Yes |
 | OGL | Unlicense | Yes |
 | React, React DOM | MIT | Yes |
-| Inter, IBM Plex Mono (self-hosted via @fontsource; replace Geist in r16) | SIL OFL 1.1 | Yes |
+| Rubik (next/font, r64; headings and body). Nunito, Inter and IBM Plex Mono are no longer used on the homepage | SIL OFL 1.1 | Yes |
 | Map coastlines (`src/lib/worldmap.ts`, `src/lib/shipmap.ts`) | Own work, hand-typed, simplified | Yes |
 
 ## Ideas from MIT libraries, rebuilt in our own code (no code copied)

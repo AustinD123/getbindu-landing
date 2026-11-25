@@ -1037,3 +1037,7 @@ Commits: r56-1 hero, r56-2 map behind the page, r56-3 Full Circle, r56-4 shipmen
 
 - r63-1. Font lab: `features/landing/home/dev/FontLab.tsx`, mounted by `FontLabGate` in home-page.tsx only when `NODE_ENV !== "production"` or the URL has `?fontlab` (lazy chunk, so visitors never request it). A "Fonts" pill bottom-left opens Headings and Body selects (25 Google Fonts, loaded on demand, one `<link>` each), sets `--font-display` and `--font-sans` inline on the `.bindu-home` wrapper, remembers the pair in localStorage (try/catch), Reset clears it. The panel shows the pair as "Headings: X / Body: Y". Trial only, not part of merge-back. Checked in Chrome: Fraunces and Sora applied, Reset cleared. Dark theme, phones not checked.
 
+## Round 64
+
+- r64-1. Removed the r63 font trial switcher completely (FontLab, FontLabGate, the README merge-back note); no dev-only code left in the homepage.
+- r64-2. Rubik (SIL OFL, next/font, 400 to 700, swap) for headings and body, chosen by Austin from the 25-font trial; `--font-display` and `--font-sans` both point at `--font-rubik`, mono stays ui-monospace. Nunito and Inter are no longer loaded by the homepage layout; the shared `app/document-shell.tsx` still loads Inter for other pages. Checked at 1440 and 390 in Chrome: no overflow or wrap breaks. Rubik runs wider and heavier than Inter (hero 600 fills about 87% of 1440); left as is.
