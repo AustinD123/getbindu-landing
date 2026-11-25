@@ -76,8 +76,10 @@
 .bindu-home .bd-rule { width: 15%; font-family: var(--font-mono); white-space: nowrap; }
 .bindu-home .bd-build { font-family: var(--font-sans); }
 .bindu-home .bd-verdict { width: 17%; white-space: nowrap; }
-.bindu-home .bd-pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--r-control); border: 1px solid var(--hairline-strong); font: 500 12px/1 var(--font-sans); color: inherit; }
-.bindu-home .bd-row.is-cur .bd-pill { border-color: var(--on-dark); }
+/* r56-5: the outcome carries its colour (--board-pass cobalt, --board-stop red, both AA in both themes) in every row, current or not */
+.bindu-home .bd-pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--r-control); border: 1px solid currentColor; font: 500 12px/1 var(--font-sans); }
+.bindu-home .bd-pill.is-pass { color: var(--board-pass); }
+.bindu-home .bd-pill.is-stop { color: var(--board-stop); }
 .bindu-home .bd-why { font-size: var(--body-sm); }
 @media (max-width: 767px) {
   .bindu-home .bd, .bindu-home .bd tbody { display: block; }

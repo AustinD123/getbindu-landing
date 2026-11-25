@@ -231,13 +231,15 @@
   --night-band: #171717;
   --proof-dot: var(--brand-yellow);
   --stop: #FF6B5E;                  /* r23-1: the Stopped verdict, a clear red (dark theme) */
-  --board-pass: #FFFFFF;            /* r55: Let-through tile, no colour (the verdict is the word) */
-  --board-stop: #FFFFFF;
+  --board-pass: #3D7BFF;            /* r56-5: the Let through outcome, cobalt (AA on #171717) */
+  --board-stop: #FF6B5E;            /* r56-5: the Stopped outcome (AA on #171717) */
   --font-guide: var(--font-display);
 }
 .bindu-home[data-theme="light"] {
   --line-ink: #000000;
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
+  --board-pass: #08327A;            /* r56-5: Let through on light (11:1 on white) */
+  --board-stop: #B42318;            /* r56-5: Stopped on light (6.5:1 on white) */
   --night-band: #171717;
 }
 
