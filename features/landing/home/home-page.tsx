@@ -18,6 +18,7 @@ import "./styles/story.css";
 import "./styles/r44.css";
 import "./styles/r47.css";
 import "./styles/r59.css";
+import "./styles/r65.css";
 import { startSmoothScroll } from "./lib/motion";
 import { getRoot } from "./lib/root";
 import { startScenes } from "./lib/scenes";
@@ -31,6 +32,7 @@ import { Intro } from "./components/Intro";
 import { Guide } from "./components/Guide";
 import { Rail } from "./components/Rail";
 import { EstimateProvider } from "./components/Estimate";
+import type { BlogRowPost } from "./content";
 import "./styles/subpages.css";
 // last, so the shared states win over the section sheets (equal specificity)
 import "./styles/states.css";
@@ -41,11 +43,13 @@ import "./styles/mobile.css";
    crawlable; only their JS and hydration wait, until the section is within 1.5 viewports or the page is idle (lib/ready.ts). */
 /* On the server the section renders for real, inside the same Suspense boundary, so its HTML is inline (not streamed in later); the client side
    swaps in a lazy import that waits for the gate. `sync` is a build-time constant: the require is dropped from the client bundle. */
-const late = (id: string, sync: React.ComponentType | null | undefined, load: () => Promise<Record<string, unknown>>, name: string) => {
-  const C = sync ?? lazy(() => gate(id).then(load).then((m) => ({ default: m[name] as React.ComponentType })));
-  const Late = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyC = React.ComponentType<any>;
+const late = (id: string, sync: AnyC | null | undefined, load: () => Promise<Record<string, unknown>>, name: string) => {
+  const C: AnyC = sync ?? lazy(() => gate(id).then(load).then((m) => ({ default: m[name] as AnyC })));
+  const Late = (props: Record<string, unknown>) => {
     addPending(id);
-    return <Suspense fallback={null}><C /><Ready id={id} /></Suspense>;
+    return <Suspense fallback={null}><C {...props} /><Ready id={id} /></Suspense>;
   };
   return Late;
 };
@@ -59,10 +63,11 @@ const Examples = late("examples", typeof window === "undefined" ? (require("./co
 const Voices = late("voices", typeof window === "undefined" ? (require("./components/Voices") as Record<string, React.ComponentType>).Voices : null, () => import("./components/Voices"), "Voices");
 const Rules = late("rules", typeof window === "undefined" ? (require("./components/Rules") as Record<string, React.ComponentType>).Rules : null, () => import("./components/Rules"), "Rules");
 const Pricing = late("pricing", typeof window === "undefined" ? (require("./components/Pricing") as Record<string, React.ComponentType>).Pricing : null, () => import("./components/Pricing"), "Pricing");
+const Blog = late("blog", typeof window === "undefined" ? (require("./components/Blog") as Record<string, React.ComponentType>).Blog : null, () => import("./components/Blog"), "Blog");
 const Faq = late("faq", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Faq : null, () => import("./components/Closing"), "Faq");
 const Finale = late("demo", typeof window === "undefined" ? (require("./components/Closing") as Record<string, React.ComponentType>).Finale : null, () => import("./components/Closing"), "Finale");
 
-export function HomePage() {
+export function HomePage({ posts = [] }: { posts?: BlogRowPost[] }) {
   useRouteWipe();
   // a client-side return to / skips the head script: restore the saved theme before paint
   useLayoutEffect(() => {
@@ -102,6 +107,7 @@ export function HomePage() {
         <Voices />
         <Rules />
         <Pricing />
+        {posts.length > 0 && <Blog posts={posts} />}
         <Faq />
         <Finale />
       </main>
