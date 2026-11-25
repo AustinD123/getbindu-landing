@@ -137,22 +137,11 @@
 @media (max-width: 860px) { .bindu-home .ship-pin:not(.is-static) .ship-ask { display: none; } }   /* the pinned phone window has no room beside the map: the milestone list carries the steps */
 .bindu-home .ship-pin.is-static .ship-ask { position: static; width: auto; max-width: 340px; margin-top: var(--s-3); }
 
-/* ---------- r44-4: the departures board fits one window (1440 x 900 and 1920 x 1080), 768px and up ---------- */
+/* ---------- r44-4 / r55: the departures board fits one window (1440 x 900 and 1920 x 1080), 768px and up ---------- */
 @media (min-width: 768px) {
   .bindu-home .ex-stage { gap: var(--s-3); }
   .bindu-home .ex-head h2 { max-width: none; font-size: min(var(--display-lg), 6svh); }
-  .bindu-home .ex-head p { max-width: 56ch; font-size: min(var(--body), 2.2svh); }
-  /* r45-1: left-aligned to the container's left edge and bigger again. The board runs from that edge to the right gutter (not centred, no 960px cap),
-     the flap type scales with the width and the height of the window, and the story reads at body size on a 64ch line. */
-  .bindu-home .bd { border-spacing: 0 clamp(3px, 0.55svh, 6px); padding: var(--s-4) var(--s-5); margin-inline: auto; width: min(100%, 1200px); }
-  .bindu-home .bd-flaps { font-size: clamp(10px, min(1.15vw, 2.1svh), 20px); }
-  .bindu-home .bd .fl { width: 1.05em; height: 2em; line-height: 2em; }
-  .bindu-home .bd-c { padding-right: var(--s-5); }
-  .bindu-home .bd-story { margin-top: var(--s-3); min-height: 0; max-width: 64ch; margin-inline: auto; text-align: center; height: clamp(176px, 24svh, 260px); }
-  .bindu-home .bd-fade { gap: var(--s-2); }
-  .bindu-home .bd-story p.t-body { font-size: var(--body); line-height: 1.55; }
-  .bindu-home .bd-h { font-size: clamp(20px, 3svh, 28px); min-height: 0; }
-  .bindu-home .ex-pin.is-static .bd-story { height: auto; }
+  .bindu-home .bd-c { padding-block: clamp(6px, 1.3svh, 12px); }
 }
 
 /* ---------- r44-5 / r54: What buyers say, v3 panel cards on a straight sideways row ---------- */

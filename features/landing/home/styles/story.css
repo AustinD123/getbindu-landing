@@ -57,83 +57,43 @@
   .bindu-home .hero-sub { font-size: 16px; line-height: 1.45; margin-bottom: var(--s-4); }
 }
 
-/* ---------- round 21, item 4: the departures board ---------- */
+/* ---------- the departures board (r21, rebuilt r55): a plain list in the page's body and mono stacks, one current row ---------- */
 .bindu-home .sec.ex { padding: 0; }
 .bindu-home .ex-pin { position: relative; height: 420vh; }
 .bindu-home .ex-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: grid; align-content: center; gap: var(--s-4); grid-template-columns: minmax(0, 1fr); }
 .bindu-home .ex-head { display: grid; justify-items: center; text-align: center; gap: var(--s-2); width: 100%; box-sizing: border-box; }
-.bindu-home .ex-head h2 { margin: 0; max-width: 20ch; text-wrap: balance; }
-.bindu-home .ex-head p { margin: 0; max-width: 56ch; color: var(--on-dark-mute); }
-/* r33-2: the board is one panel (canvas-mid, a step off the page canvas in both themes) with solid tiles. A tile is --line-ink with
-   --canvas characters (light theme: navy tile, ivory characters; dark theme: ivory tile, ink characters). The verdict tiles keep their
-   r33-1 colours (--board-pass, --board-stop) with navy characters, so the red and blue read as before. */
-.bindu-home .bd { width: 100%; box-sizing: border-box; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; background: var(--canvas-mid); border-radius: var(--r-lg); padding: var(--s-4) var(--s-5); }
-@media (min-width: 1024px) { .bindu-home .bd { border-radius: var(--r-4xl); padding-inline: 40px; } }
-.bindu-home .bd-c { padding: 0 var(--s-5) 0 0; vertical-align: middle; white-space: nowrap; }
-.bindu-home .bd-c:last-child { padding-right: 0; }
-.bindu-home .bd .bd-route { position: relative; }
-.bindu-home .bd-flaps { display: inline-flex; gap: 0.6em; font: 500 clamp(11px, 1.15vw, 15px)/1 var(--font-mono); }
-.bindu-home .bd-word { display: inline-flex; gap: 3px; }
-/* a flap: dark on the light theme (the ink colour), light on the dark theme, split by a hairline across the middle */
-.bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); display: inline-block; width: 1.25em; height: 1.85em; line-height: 1.85em; text-align: center; border-radius: 2px; color: var(--tile-ink); background: var(--tile); }
-.bindu-home .fl.is-blank { opacity: 0.35; }
-.bindu-home .fl.is-pass { --tile: var(--board-pass); --tile-ink: var(--navy-surface); }
-.bindu-home .fl.is-stop { --tile: var(--board-stop); --tile-ink: var(--navy-surface); }
-/* r31-1: the current row is full ink with a yellow dot at the left; earlier rows are muted */
-.bindu-home .bd-row .bd-flaps { transition: opacity 300ms var(--ease-ui); }
-/* r33-2: earlier rows are no longer dimmed (was 0.5): any opacity below 1 takes the blue and red tiles under AA; the yellow dot marks the current row */
-.bindu-home .bd .bd-route::before { content: ""; position: absolute; left: -16px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); opacity: 0; transition: opacity 300ms var(--ease-ui); }
-.bindu-home .bd-row.is-cur .bd-route::before { opacity: 1; }
-.bindu-home .bd-story { margin-top: var(--s-3); margin-inline: auto; text-align: center; min-height: 176px; display: block; max-width: 736px; opacity: 0; transition: opacity 300ms var(--ease-ui); }
-.bindu-home .bd-story.is-open { opacity: 1; }
-.bindu-home .bd-fade { display: grid; gap: var(--s-2); animation: bd-in 420ms var(--ease-ui) both; }
-@keyframes bd-in { from { opacity: 0; } to { opacity: 1; } }
-.bindu-home .bd-h { margin: 0; min-height: 1.2em; font: var(--display-weight) 22px/1.2 var(--font-sans); letter-spacing: var(--track-sm); }
-.bindu-home .bd-story p { margin: 0; }
-.bindu-home .bd-story .bd-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px var(--s-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--on-dark-mute); }
-.bindu-home .bd-verdict.is-pass { color: var(--cobalt-signal); }
-.bindu-home .bd-verdict.is-stop { color: var(--stop); }
-.bindu-home .bd-meta .bd-route { display: inline-flex; align-items: center; gap: 8px; }
-.bindu-home .bd-meta .bd-route::before { content: none; }
-.bindu-home .bd-glyph { color: var(--on-dark-mute); }
-.bindu-home .bd-glyph circle { fill: currentColor; }
-.bindu-home .bd-glyph line { stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 1 4; stroke-linecap: round; }
-@media (max-width: 1000px) { .bindu-home .bd-c { padding-right: var(--s-3); } .bindu-home .bd-flaps { gap: 0.4em; } }
-/* reduced motion: no pin, settled rows, every story listed */
+.bindu-home .ex-head h2 { margin: 0; max-width: 24ch; text-wrap: balance; }
+.bindu-home .ex-head p { margin: 0; max-width: 60ch; color: var(--on-dark-mute); }
+.bindu-home .ex-head .bd-how { color: var(--on-dark); font: 500 var(--body)/1.5 var(--font-sans); }
+.bindu-home .bd { width: min(100%, 880px); margin-inline: auto; box-sizing: border-box; border-collapse: collapse; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); overflow: hidden; }
+.bindu-home .bd-row { color: var(--on-dark-mute); border-bottom: 1px solid var(--hairline-dark); transition: color 300ms var(--ease-ui), background-color 300ms var(--ease-ui); }
+.bindu-home .bd-row:last-child { border-bottom: 0; }
+.bindu-home .bd-row.is-cur { color: var(--on-dark); background: var(--canvas-soft); }
+.bindu-home .bd-c { padding: 12px 16px; vertical-align: middle; text-align: left; font: 400 var(--body-sm)/1.43 var(--font-sans); }
+.bindu-home .bd-goods { width: 22%; font: 500 var(--body)/1.5 var(--font-sans); position: relative; padding-left: 28px; white-space: nowrap; }
+.bindu-home .bd-goods::before { content: ""; position: absolute; left: 12px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: var(--cobalt-signal); opacity: 0; transition: opacity 300ms var(--ease-ui); }
+.bindu-home .bd-row.is-cur .bd-goods::before { opacity: 1; }
+.bindu-home .bd-rule { width: 15%; font-family: var(--font-mono); white-space: nowrap; }
+.bindu-home .bd-build { font-family: var(--font-sans); }
+.bindu-home .bd-verdict { width: 17%; white-space: nowrap; }
+.bindu-home .bd-pill { display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: var(--r-control); border: 1px solid var(--hairline-strong); font: 500 12px/1 var(--font-sans); color: inherit; }
+.bindu-home .bd-row.is-cur .bd-pill { border-color: var(--on-dark); }
+.bindu-home .bd-why { font-size: var(--body-sm); }
+@media (max-width: 767px) {
+  .bindu-home .bd, .bindu-home .bd tbody { display: block; }
+  .bindu-home .bd-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; padding: 10px 14px; }
+  .bindu-home .bd-c { padding: 0; }
+  .bindu-home .bd-goods { width: auto; padding-left: 14px; grid-column: 1; }
+  .bindu-home .bd-goods::before { left: 0; }
+  .bindu-home .bd-rule { width: auto; grid-column: 1; font-size: 14px; }
+  .bindu-home .bd-verdict { width: auto; grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  .bindu-home .bd-why { grid-column: 1 / -1; font-size: 14px; }
+}
+/* reduced motion: no pin, every row shown */
 .bindu-home .ex-pin.is-static { height: auto; }
 .bindu-home .ex-pin.is-static .ex-stage { position: static; height: auto; padding: var(--section-y) 0; }
-.bindu-home .ex-pin.is-static .bd .bd-route::before { opacity: 0; }
-.bindu-home .ex-pin.is-static .bd-row .bd-flaps { opacity: 1; }
-.bindu-home .bd-list { display: grid; gap: var(--s-5); margin-top: var(--s-5); }
-.bindu-home .bd-list .bd-story { min-height: 0; margin: 0; }
-.bindu-home .bd-list .bd-fade { animation: none; }
-@media (max-width: 900px) {
-  .bindu-home .bd { table-layout: fixed; padding: var(--s-3); }
-  .bindu-home .bd-goods, .bindu-home .bd-rule { display: none; }
-  .bindu-home .bd-flaps { font-size: 9px; flex-wrap: wrap; max-width: 100%; row-gap: 3px; }
-  .bindu-home .bd-c { padding-right: var(--s-2); white-space: normal; }
-  .bindu-home .bd-row .bd-route { width: 72%; padding-left: 14px; }
-  .bindu-home .bd .bd-route::before { left: 0; }
-  .bindu-home .bd-story { min-height: 152px; }
-  .bindu-home .bd-h { font-size: 18px; min-height: 2.4em; }
-}
-/* phones: the pin must fit a 375 x 667 screen: smaller head, lead and tiles */
-@media (max-width: 600px) {
-  .bindu-home .ex-stage { gap: var(--s-2); }
-  .bindu-home .ex-head { gap: var(--s-1); }
-  .bindu-home .ex-head h2.t-display-lg { font-size: 24px; }
-  .bindu-home .ex-head p { font-size: 11px; line-height: 1.35; }
-  .bindu-home .bd { border-spacing: 0 3px; }
-  .bindu-home .bd .bd-word { gap: 2px; }
-  .bindu-home .bd-flaps { font-size: 8px; row-gap: 2px; }
-  .bindu-home .bd .fl { width: 1.2em; height: 1.5em; line-height: 1.5em; }
-  .bindu-home .bd-story { margin-top: var(--s-2); min-height: 0; }
-  .bindu-home .bd-story .bd-fade { gap: 6px; }
-  .bindu-home .bd-story p.t-body { font-size: 13px; line-height: 1.4; }
-  .bindu-home .bd-h { font-size: 16px; min-height: 1.2em; }
-  .bindu-home .ex-pin.is-static .bd-story { margin-top: 0; }
-}
-@media (prefers-reduced-motion: reduce) { .bindu-home .bd-story, .bindu-home .bd-row .bd-flaps, .bindu-home .bd .bd-route::before { transition: none; } .bindu-home .bd-fade { animation: none; } }
+.bindu-home .ex-pin.is-static .bd-row { color: var(--on-dark); }
+@media (prefers-reduced-motion: reduce) { .bindu-home .bd-row, .bindu-home .bd-goods::before { transition: none; } }
 
 
 /* r22-15: the hero headline on exactly two lines at 768 and up (one sentence per line); at 375 up to three lines */
