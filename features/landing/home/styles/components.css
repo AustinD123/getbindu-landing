@@ -7,26 +7,26 @@
 .bindu-home .container  { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
 
 /* ---------- type ---------- */
-.bindu-home .t-display-xl, .bindu-home .t-display-lg, .bindu-home .t-display-md, .bindu-home .t-display-sm { font-family: var(--font-sans); font-weight: var(--display-weight); margin: 0; text-wrap: balance; }
+.bindu-home .t-display-xl, .bindu-home .t-display-lg, .bindu-home .t-display-md, .bindu-home .t-display-sm { font-family: var(--font-display); font-weight: var(--display-weight); margin: 0; text-wrap: balance; }
 .bindu-home .t-display-xl { font-size: var(--display-xl); letter-spacing: var(--track-xl); line-height: var(--lh-display); }
 .bindu-home .t-display-lg { font-size: var(--display-lg); letter-spacing: var(--track-lg); line-height: var(--lh-display-lg); }
-.bindu-home .t-display-md { font-size: var(--display-md); letter-spacing: var(--track-md); line-height: 1.05; }
-.bindu-home .t-display-sm { font-size: var(--display-sm); letter-spacing: var(--track-sm); line-height: var(--lh-display-sm); }
-/* r54 v3: the copy lead is quiet (mute) at 22 to 28px; t-soft on a lead does not make it brighter */
-.bindu-home .t-body-lg, .bindu-home .band-dark .t-body-lg.t-soft { font-size: var(--body-lg); line-height: var(--lh-body-lg); letter-spacing: -0.02em; color: var(--on-dark-mute); }
-.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); letter-spacing: -0.015em; }
-.bindu-home .t-caption { font-size: var(--caption); line-height: 1.2; letter-spacing: -0.01em; }
+.bindu-home .t-display-md { font-size: var(--display-md); font-weight: 600; letter-spacing: var(--track-md); line-height: 1.33; }
+.bindu-home .t-display-sm { font-size: var(--display-sm); letter-spacing: var(--track-sm); line-height: var(--lh-display-sm); font-family: var(--font-sans); }
+/* r55: the lead is body-md in the body grey; t-soft on a lead does not make it brighter */
+.bindu-home .t-body-lg, .bindu-home .band-dark .t-body-lg.t-soft { font-size: var(--body-lg); line-height: var(--lh-body-lg); letter-spacing: 0; color: var(--on-dark-mute); }
+.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); letter-spacing: 0; }
+.bindu-home .t-caption { font-size: var(--caption); line-height: 1.33; letter-spacing: 0; }
 .bindu-home .band-dark  .t-muted { color: var(--on-dark-mute); }  .bindu-home .band-dark  .t-soft { color: var(--on-dark-body); }
 .bindu-home .band-light .t-muted, .bindu-home .band-soft .t-muted { color: var(--ink-mute); }
 .bindu-home .band-light .t-soft,  .bindu-home .band-soft .t-soft  { color: var(--ink-body); }
 
 /* eyebrow (r17): small sentence-case label in the sans */
-.bindu-home .bh-eyebrow { font: 500 14px/1.35 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
+.bindu-home .bh-eyebrow { font: 500 14px/1.43 var(--font-sans); letter-spacing: 0; margin: 0; }   /* r17: sentence-case sans, no mono caps */
 .bindu-home .band-dark .bh-eyebrow { color: var(--on-dark-mute); }
 .bindu-home .band-light .bh-eyebrow, .bindu-home .band-soft .bh-eyebrow { color: var(--ink-mute); }
 
 /* key number: yellow on dark only (on light it is ink, never yellow text) */
-.bindu-home .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.bindu-home .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0; }
 .bindu-home .band-dark .num-key { color: var(--key-num); }
 .bindu-home .band-light .num-key, .bindu-home .band-soft .num-key { color: var(--ink); }
 
@@ -37,38 +37,38 @@
 .bindu-home .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;
   min-height: var(--btn-h); padding: 0 var(--btn-px); margin: 0;
-  border-radius: var(--r-xs); border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
+  border-radius: var(--r-control); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
   font: 500 14px/1 var(--font-sans); letter-spacing: 0;
   transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
-/* btn-primary: yellow fill, ink label ("Book a demo"). Class keeps the bh- prefix: the app's global styles/bindu-product.css owns an
+/* button-primary shape (pill, 36px, 8px 20px, 14px 500) in the one accent Austin kept: yellow fill, black label, only "Book a demo" (adaptation 2). Class keeps the bh- prefix: the app's global styles/bindu-product.css owns an
    unscoped .btn-primary that would leak in. */
-.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: var(--ink); }
-.bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--yellow-press); }
+.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: #000; border-color: var(--brand-yellow); }
+.bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover, .bindu-home .bh-btn-primary:active { background: var(--yellow-press); border-color: var(--yellow-press); }
 /* btn-secondary: --canvas-mid fill, mute label; hover one step darker fill, ink label ("Estimate your cost", "Read the rule", the tabs) */
-.bindu-home .btn-secondary { background: var(--canvas-mid); color: var(--on-dark-mute); }
-.bindu-home .btn-secondary:not(:is(:disabled, [aria-disabled="true"])):hover { background: color-mix(in srgb, var(--canvas-mid), var(--on-dark) 9%); color: var(--on-dark); }
+.bindu-home .btn-secondary { background: var(--canvas); color: var(--on-dark); border-color: var(--hairline-strong); }
+.bindu-home .btn-secondary:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-soft); }
 /* btn-ghost: ink at 4% fill, mute label; hover --canvas-mid. Small controls (pause, menu). */
-.bindu-home .btn-ghost { background: rgb(var(--fg-rgb) / 0.04); color: var(--on-dark-mute); }
-.bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-mid); color: var(--on-dark); }
+.bindu-home .btn-ghost { background: var(--canvas-soft); color: var(--on-dark); }
+.bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas); border-color: var(--hairline-strong); }
 /* circular icon button, 44px (the one round control besides dots): a ghost button */
-.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: rgb(var(--fg-rgb) / 0.04); color: var(--on-dark-mute); border: 0; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
-.bindu-home .btn-icon:hover { background: var(--canvas-mid); color: var(--on-dark); }
+.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: var(--canvas-soft); color: var(--on-dark); border: 1px solid transparent; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
+.bindu-home .btn-icon:hover { background: var(--canvas); border-color: var(--hairline-strong); }
 .bindu-home .btn-l { display: inline-block; }
 /* a plain arrow after the label for links that leave the section; it does not move */
 .bindu-home .btn-arrow { flex: none; display: inline-grid; place-items: center; width: 14px; height: 14px; }
 /* disabled: mute label, nested fill, no motion */
-.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); color: var(--on-dark-mute); opacity: 0.6; }
+.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-soft); color: var(--on-dark-mute); opacity: 0.6; }
 
 /* links (r54, v3 section 4): nav, footer and "see more" links are mute Inter 15px and go to ink on hover, a colour change only (200ms).
    No underline, no growing line, no text wipe, no arrow nudge. The arrow, where there is one, is static. */
 .bindu-home .tlink {
   display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; cursor: pointer;
-  color: var(--on-dark-mute); text-decoration: none; font: 400 15px/1.4 var(--font-sans); letter-spacing: -0.02em;
+  color: var(--on-dark-mute); text-decoration: none; font: 400 14px/1.43 var(--font-sans); letter-spacing: 0;
   transition: color var(--t-ui) var(--ease-ui);
 }
 .bindu-home .tlink:hover { color: var(--on-dark); }
-.bindu-home .tlink-l { display: inline-block; }
+.bindu-home .tlink-l { display: inline-block; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .bindu-home .tlink-a {
   flex: none; width: 11px; height: 11px; background: currentColor;
   -webkit-mask: var(--arrow-mask) center / 11px 11px no-repeat; mask: var(--arrow-mask) center / 11px 11px no-repeat;
@@ -83,28 +83,28 @@
 
 /* ---------- chips (r54, DESIGN.md v3 section 4): 22px tall, 5px radius, Inter 500 12px, no border ---------- */
 .bindu-home .chip {
-  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 22px; padding: 0 8px; border-radius: var(--r-xs);
-  border: 0; font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 24px; padding: 0 10px; border-radius: var(--r-control);
+  border: 1px solid transparent; font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
 }
-.bindu-home .chip-live { background: var(--live-bg); color: var(--live-fg); }
-.bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
+.bindu-home .chip-live { background: var(--live-bg); color: #000; border-color: var(--live-bg); }
+.bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #000; }
 /* In build: the one bordered chip, a 1px dashed mute outline on a transparent fill */
-.bindu-home .chip-build { background: transparent; border: 1px dashed var(--on-dark-mute); color: var(--on-dark-mute); }
+.bindu-home .chip-build { background: transparent; border: 1px solid var(--hairline-strong); color: var(--on-dark-mute); }
 /* Illustration and Placeholder: --canvas-mid fill, mute label (every mock, map and chat carries one) */
-.bindu-home .chip-illus, .bindu-home .chip-neutral { background: var(--canvas-mid); border: 0; color: var(--on-dark-mute); }
+.bindu-home .chip-illus, .bindu-home .chip-neutral { background: var(--canvas-soft); border: 1px solid var(--hairline-dark); color: var(--on-dark-mute); }
 
 /* ---------- panel (r54, v3 section 4, class .v3-panel): the one surface. --canvas-mid fill, no border, no shadow, 20px (40px for full-width panels from 1024px). Nested surfaces inside use --canvas-soft. ---------- */
-.bindu-home .v3-panel { background: var(--canvas-mid); border: 0; border-radius: var(--r-lg); padding: 24px; }
-@media (min-width: 1024px) { .bindu-home .v3-panel-wide { border-radius: var(--r-4xl); padding: 40px; } }
+.bindu-home .v3-panel { background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); padding: 24px; }
+@media (min-width: 1024px) { .bindu-home .v3-panel-wide { padding: 32px; } }
 
 /* ---------- cards (x.ai card on dark; hairline card on light) ---------- */
 .bindu-home .card { border-radius: var(--r-md); padding: var(--s-5); }
-.bindu-home .band-dark .card { background: var(--canvas-mid); border: 0; }
+.bindu-home .band-dark .card { background: var(--canvas); border: 1px solid var(--hairline-dark); }
 .bindu-home .band-light .card { background: var(--paper); border: 1px solid var(--hairline-light); }
 .bindu-home .band-soft .card { background: var(--paper); border: 1px solid var(--hairline-light); }
 
 /* app frame: the product mock window. Cobalt = the system */
-.bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas-soft); border: 0; overflow: hidden; color: var(--on-dark); }
+.bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas); border: 1px solid var(--hairline-dark); overflow: hidden; color: var(--on-dark); }
 .bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; font: 500 13px/1 var(--font-sans); color: var(--on-dark-mute); }
 .bindu-home .app-frame-bar .chip-illus { margin-left: auto; }
 
@@ -146,12 +146,13 @@
 .bindu-home .seg-ind { display: none; }
 .bindu-home .seg-opt {
   position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h);
-  padding: 0 var(--btn-px); border: 0; border-radius: var(--r-xs); background: var(--canvas-mid); color: var(--on-dark-mute); cursor: pointer;
+  padding: 0 var(--btn-px); border: 1px solid var(--hairline-strong); border-radius: var(--r-control); background: var(--canvas); color: var(--on-dark); cursor: pointer;
   font: 500 14px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
   transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
-.bindu-home .seg-opt:hover { background: color-mix(in srgb, var(--canvas-mid), var(--on-dark) 9%); color: var(--on-dark); }
-.bindu-home .seg-opt.is-on, .bindu-home .seg-opt.is-on:hover { background: var(--on-dark); color: var(--canvas); }
+.bindu-home .seg-opt:hover { background: var(--canvas-soft); }
+/* the active tab is cobalt (adaptation 2) */
+.bindu-home .seg-opt.is-on, .bindu-home .seg-opt.is-on:hover { background: var(--brand-cobalt); border-color: var(--brand-cobalt); color: #fff; }
 .bindu-home .seg-opt:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 2px; }
 /* the pricing toggle has six options: below 600px the row scrolls sideways inside itself (the page never does) */
 @media (max-width: 600px) { .bindu-home .r6-tabs { overflow-x: auto; scrollbar-width: none; } .bindu-home .r6-tabs .seg-in { flex-wrap: nowrap; justify-content: flex-start; min-width: max-content; } }
