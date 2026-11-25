@@ -201,9 +201,6 @@
 /* 2 header: the wordmark collapses to the mark once the page scrolls */
 .bindu-home .nav-brand > span:last-child { display: inline-block; max-width: 90px; overflow: hidden; white-space: nowrap; transition: max-width var(--t-slow) var(--ease-out), opacity var(--t-base); }
 .bindu-home .nav.is-scrolled .nav-brand > span:last-child { max-width: 0; opacity: 0; }
-/* 3 masked headline reveal */
-.bindu-home .fx .rv { clip-path: inset(0 0 100% 0); transform: translateY(0.35em); transition: clip-path var(--t-scene) var(--ease-out), transform var(--t-scene) var(--ease-out); }
-.bindu-home .fx .rv.is-in { clip-path: inset(-0.2em -0.2em -0.3em -0.2em); transform: none; }
 /* 4 sheet lift: the band after the hero slides over it with a rounded top edge */
 .bindu-home .hero .scene-label { bottom: 46px; }
 .bindu-home .hero .scene-btn { bottom: 40px; }

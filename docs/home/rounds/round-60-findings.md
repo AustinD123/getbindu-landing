@@ -34,3 +34,19 @@ Reading: the hero, statement and finale carry the conviction (120px title, 40px 
 | 6 | P3 | Story and Full Circle frames start sparse (one field, one line) before the motion fills them | Flow.tsx, theatre-stages.ts | left (not an effect problem; composed end states are full) |
 
 No new colour, font, radius, effect or element added.
+
+## Pass 3: 12-principles-of-animation
+
+Checked: every GSAP timeline and tween, every CSS transition and keyframe in features/landing/home (durations, easing, stagger, exits, press states, reduced motion). Reduced motion: lib/motion.ts `reduceMotion()` gates scenes, headings, hero, flow, theatre, rules, voices and the board; CSS transitions are zeroed by components.css:125.
+
+| # | Sev | Finding | Where | Status |
+|---|---|---|---|---|
+| 1 | P1 | Two reveals ran on every `.sec-head h2`: the old r20 masked reveal (class `rv`, a CSS `clip-path: inset(0 0 100% 0)` hidden state with a 1200ms transition) and the r54 GSAP SplitText fade. A CSS hidden state on a GSAP target (hard rule) and a double reveal | lib/scenes.ts:14-27, styles/site.css:204-206 | fixed: the `rv` path and its CSS are deleted; lib/headings.ts is the one heading reveal |
+| 2 | P3 | Heading reveals are 0.7s expo.out, over the 300ms ceiling (timing-under-300ms) and stagger 0.08s over 50ms | lib/headings.ts:31, Hero.tsx:94, Theatre.tsx:61 | not fixed: scroll-triggered reveals, not user-initiated feedback; Austin's r54 reveal |
+| 3 | P3 | No `:active` press scale on buttons (physics-active-state) | styles/components.css, tokens.css:129 `--press-scale: 1` | conflict, not fixed: DESIGN.md v4 (Ollama is static, "no movement of any kind" on buttons) |
+| 4 | P3 | Nav wordmark collapse animates `max-width` (a layout property) over 700ms | styles/site.css:202 | not fixed: nav is a keep; it is one 90px span, scroll-triggered |
+| 5 | P3 | Theatre timelines stagger 0.15 to 0.4s between nodes (physics-no-excessive-stagger) | lib/theatre-fx.ts:85-171 | not fixed: narrative drawing timeline in the Full Circle acts (structure keep), not a UI list |
+| 6 | P3 | Hero: the sheet-lift tween on `.hero-in` (-18%, opacity 0.25) and the title parallax both run over the same scroll | lib/scenes.ts:35, Hero.tsx:89 | not fixed: composed by hand in r59-1; both are transform/opacity scrubs |
+| 7 | ok | Linear easing only on typing ticks, belt and day counter (time representation); exits and presence handled by React state, not AnimatePresence; hover/press 160 to 250ms; dialog 320ms | various | no change |
+
+Not verified: the heading reveal by eye after removing the mask (checked by code and computed style only).
