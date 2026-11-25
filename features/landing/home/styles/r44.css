@@ -244,3 +244,6 @@
 .bindu-home .rl-read, .bindu-home .rl-src { min-height: 24px; }
 @media (max-width: 767px) { .bindu-home .rl-read, .bindu-home .rl-src { display: inline-flex; align-items: center; min-height: 44px; } }
 @media (prefers-reduced-motion: reduce) { .bindu-home .rl-t { transition: none; } }
+/* r61-3: the Rules row's pause control, the hero pause button's style (btn btn-ghost), 44px target */
+.bindu-home .rl-ctl { display: flex; justify-content: center; margin-top: var(--s-5); }
+.bindu-home .rl-pause { min-height: 44px; min-width: 44px; }

@@ -384,6 +384,8 @@ export const rules = {
   covers: "Covers",
   source: "Source",
   hint: "Drag, scroll sideways or use the arrow keys",
+  pause: "Pause the rules row",
+  play: "Play the rules row",
   items: [
     { id: "eudr", reg: "EU 2023/1115", t: "EUDR", full: "Deforestation rule", link: "EUDR", d: "Proof that goods did not come from land deforested after 31 December 2020, and were produced legally.", covers: "Coffee, cocoa, rubber", chips: [{ t: "Live", live: true }],
       date: "Applies from 30 Dec 2026 for medium and large companies, and from 30 Jun 2027 for most micro and small ones.", src: { t: "European Commission", u: EUDR_SOURCE } },

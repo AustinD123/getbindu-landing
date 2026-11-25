@@ -53,6 +53,9 @@ export function Rules() {
   const [mounted, setMounted] = useState(false);
   const view = useRef<HTMLDivElement>(null);
   const track = useRef<HTMLUListElement>(null);
+  const [stopped, setStopped] = useState(false);   // r61-3: the user's pause for the drift (WCAG 2.2.2)
+  const stoppedRef = useRef(false);
+  stoppedRef.current = stopped;
   const loop = mounted && !reduced && !phone;
 
   useEffect(() => {
@@ -86,7 +89,7 @@ export function Rules() {
       sVel += ((sy - lastY) / Math.max(dt, 0.001) - sVel) * Math.min(1, dt * 10);   // the page's scroll speed, smoothed
       lastY = sy;
       st.freeV *= Math.pow(0.04, dt);                                                  // drag and wheel momentum eases back
-      const drift = st.hover || st.focus ? 0 : DRIFT;
+      const drift = st.hover || st.focus || stoppedRef.current ? 0 : DRIFT;
       const speed = drift + sVel * 0.45 + st.freeV;
       if (!st.lock && !st.drag) st.pos += speed * dt;
       st.pos = wrap(st.pos);
@@ -202,6 +205,13 @@ export function Rules() {
           {Array.from({ length: sets }).flatMap((_, s) => c.items.map((r) => <Tile key={`${s}-${r.id}`} r={r} copy={s > 0} />))}
         </ul>
       </div>
+      {loop && (
+        <div className="rl-ctl">
+          <button type="button" className="btn btn-ghost rl-pause" aria-pressed={stopped} onClick={() => setStopped((v) => !v)}>
+            {stopped ? c.play : c.pause}
+          </button>
+        </div>
+      )}
     </section>
   );
 }
