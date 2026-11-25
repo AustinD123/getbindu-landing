@@ -73,8 +73,8 @@ export function Rules() {
     const skew = tiles.map((el) => gsap.quickSetter(el, "skewX", "deg"));
     const rot = tiles.map((el) => gsap.quickSetter(el, "rotation", "deg"));
     const gx = ghosts.map((g) => gsap.quickSetter(g, "x", "px"));
-    let step = 0, W = 0, tw = 0;
-    const measure = () => { step = tiles[1]!.offsetLeft - tiles[0]!.offsetLeft; tw = tiles[0]!.offsetWidth; W = step * n; };
+    let step = 0, W = 0, tw = 0, vw = 0;
+    const measure = () => { step = tiles[1]!.offsetLeft - tiles[0]!.offsetLeft; tw = tiles[0]!.offsetWidth; W = step * n; vw = v.clientWidth; };
     measure();
     const st = { pos: 0, freeV: 0, bend: 0, hover: false, focus: false, lock: false, drag: false, vis: true };
     let lastY = window.scrollY, sVel = 0, flat = false;
@@ -95,9 +95,16 @@ export function Rules() {
       st.bend += (b - st.bend) * Math.min(1, dt * 8);
       if (Math.abs(st.bend) < 0.002 && st.bend !== 0) st.bend = 0;
       if (st.bend === 0 && flat) return;
+      const wasFlat = flat;
       flat = st.bend === 0;
+      if (wasFlat && !flat) v.classList.add("is-bend");   // tiles become their own layers only while they bend, so a bend does not re-rasterise their text every frame
       const k = -st.bend;
-      for (let i = 0; i < tiles.length; i++) { skew[i]!(k * MAX_BEND); rot[i]!(k * 1.5); gx[i]!(k * 56); }
+      /* only the tiles in (or just next to) the window are written: the other copies of the loop are off screen, and when the bend ends every tile is put back flat */
+      for (let i = 0; i < tiles.length; i++) {
+        const x = i * step - st.pos;
+        if (flat || (x > -tw - 80 && x < vw + 80)) { skew[i]!(k * MAX_BEND); rot[i]!(k * 1.5); gx[i]!(k * 56); }
+      }
+      if (flat) v.classList.remove("is-bend");
     };
     gsap.ticker.add(tick);
     const io = new IntersectionObserver(([e]) => {

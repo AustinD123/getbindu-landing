@@ -223,6 +223,7 @@
 .bindu-home .rl-view.is-loop.is-drag { cursor: grabbing; }
 .bindu-home .rl-view.is-loop:focus-visible { outline: var(--focus-ring-dark); outline-offset: -3px; }
 .bindu-home .rl-tile { position: relative; flex: none; box-sizing: border-box; width: min(360px, 82vw); min-height: 450px; overflow: hidden; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+.bindu-home .rl-view.is-bend .rl-tile { will-change: transform; }   /* r59-7: layers only while the row bends */
 .bindu-home .rl-ghost { position: absolute; inset: 20px 0 auto 16px; display: grid; justify-items: start; font: 400 clamp(88px, 8.6vw, 112px)/0.92 var(--font-mono); letter-spacing: -0.04em; color: color-mix(in srgb, var(--on-dark-mute) 12%, transparent); pointer-events: none; user-select: none; -webkit-user-select: none; white-space: nowrap; }
 .bindu-home .rl-over { position: relative; box-sizing: border-box; min-height: inherit; display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6); padding: 24px; }
 .bindu-home .rl-top { display: grid; gap: 4px; }

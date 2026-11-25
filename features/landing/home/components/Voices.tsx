@@ -71,9 +71,13 @@ export function Voices() {
       const key = shown.toFixed(3) + "|" + w;
       if (key === lastKey) return;
       lastKey = key;
+      /* r59-7: one style write per card (the transform string, opacity, z-index and pointer events written only when they change); this was gsap.set on eight properties of five cards in every frame */
       els.forEach((c, i) => {
-        const d = i - shown, p = place(d);
-        gsap.set(c, { xPercent: -50, x: p.x, z: p.z, rotationY: p.ry, scale: p.s, opacity: p.o, zIndex: 10 - Math.round(Math.abs(d) * 2), pointerEvents: p.o > 0.3 ? "auto" : "none" });
+        const d = i - shown, p = place(d), st = c.style;
+        st.transform = `translate3d(calc(-50% + ${p.x.toFixed(2)}px), 0, ${p.z.toFixed(2)}px) rotateY(${p.ry.toFixed(3)}deg) scale(${p.s.toFixed(4)})`;
+        st.opacity = p.o.toFixed(3);
+        const zi = String(10 - Math.round(Math.abs(d) * 2)); if (st.zIndex !== zi) st.zIndex = zi;
+        const pe = p.o > 0.3 ? "auto" : "none"; if (st.pointerEvents !== pe) st.pointerEvents = pe;
       });
       const a = Math.round(shown);
       setActive((v) => (v === a ? v : a));
@@ -147,7 +151,7 @@ export function Voices() {
       host.removeEventListener("pointerdown", onDown); host.removeEventListener("pointermove", onMove);
       host.removeEventListener("pointerup", onUp); host.removeEventListener("pointercancel", onUp); host.removeEventListener("click", onClickCap, true);
       goRef.current = () => {};
-      gsap.set(els.filter(Boolean), { clearProps: "transform,opacity,zIndex,pointerEvents" });
+      els.forEach((c) => { if (c) { c.style.transform = ""; c.style.opacity = ""; c.style.zIndex = ""; c.style.pointerEvents = ""; } });
     };
   }, [mode]);
 
