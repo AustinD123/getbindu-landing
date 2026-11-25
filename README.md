@@ -114,8 +114,6 @@ cp app/sitemap.ts app/landing-chrome.tsx "$WEB/app/"
 cp scripts/blog-diagrams.data.mjs scripts/gen-blog-diagrams.mjs "$WEB/scripts/"
 ```
 
-Do not copy `features/landing/home/dev/` (the r63 font trial switcher, dev or `?fontlab` only) or its mount in `home-page.tsx` (`FontLabGate`) back; remove both first.
-
 Then in shelley run `pnpm typecheck`, `pnpm lint`, `pnpm test` and
 `pnpm build`. Changes go live once they land in shelley's `main`.
 
