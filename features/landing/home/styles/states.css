@@ -17,7 +17,9 @@
 
 /* r52 (DESIGN.md v2 section 6): nav and footer links are mute at rest and ink on hover, a colour change only (200ms). No underline. */
 .bindu-home .nav-links a, .bindu-home .foot-col a { text-decoration: none; transition: color var(--t-ui) var(--ease-ui); }
-.bindu-home .nav-links a:hover, .bindu-home .foot-col a:hover { color: var(--on-dark); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .nav-links a:hover, .bindu-home .foot-col a:hover { color: var(--on-dark); }
+}
 
 /* keyboard focus on nav and footer links (every interactive element has a visible focus) */
 .bindu-home .nav-links a:focus-visible, .bindu-home .foot-col a:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
@@ -29,8 +31,10 @@
 
 /* ---------- FAQ accordion rows (light band): text and the icon shift to cobalt ---------- */
 .bindu-home .faq-item summary { transition: color var(--t-fast) var(--ease-out); }
-.bindu-home .faq-item summary:hover { color: var(--cobalt-signal); }
-.bindu-home .faq-item summary:hover .faq-ico { color: var(--cobalt-signal); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .faq-item summary:hover { color: var(--cobalt-signal); }
+  .bindu-home .faq-item summary:hover .faq-ico { color: var(--cobalt-signal); }
+}
 .bindu-home .faq-ico { transition: color var(--t-fast) var(--ease-out); }
 
 /* estimate options (the popup's pills): fill and border brighten; the selected one keeps its cobalt */

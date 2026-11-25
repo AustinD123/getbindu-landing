@@ -27,7 +27,10 @@
 /* r38-1: nav type per DESIGN.md: sans, sentence case, body-sm, 500, muted; full contrast on hover and while open. No mono, caps or tracking. */
 .bindu-home .nav-links { display: flex; align-items: center; gap: var(--s-5); margin-left: auto; font: 500 var(--body-sm)/1 var(--font-sans); letter-spacing: 0; text-transform: none; }   /* r55: body-sm-strong 14px 500 */
 .bindu-home .nav-links a, .bindu-home .nav-reg-btn { text-decoration: none; color: var(--on-dark-mute); padding: 12px 2px; }
-.bindu-home .nav-links a:hover, .bindu-home .nav-reg-btn:hover, .bindu-home .nav-reg.is-open .nav-reg-btn { color: var(--on-dark); }
+.bindu-home .nav-reg.is-open .nav-reg-btn { color: var(--on-dark); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .nav-links a:hover, .bindu-home .nav-reg-btn:hover { color: var(--on-dark); }
+}
 .bindu-home .nav-reg { position: relative; }
 .bindu-home .nav-reg-btn { display: inline-flex; align-items: center; gap: 6px; font: inherit; letter-spacing: inherit; background: none; border: 0; cursor: pointer; white-space: nowrap; transition: color var(--t-fast) var(--ease-out); }
 .bindu-home .nav-reg-btn svg { transition: transform 200ms var(--ease-ui); }
@@ -36,7 +39,10 @@
 .bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); }
 .bindu-home .nav-reg-panel[hidden] { display: none; }
 .bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: var(--r-control); text-decoration: none; }
-.bindu-home .nav-links .nav-reg-panel a:hover, .bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+.bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .nav-links .nav-reg-panel a:hover { color: var(--on-dark); text-decoration: none; background: var(--canvas-mid); }
+}
 @media (prefers-reduced-motion: reduce) { .bindu-home .nav-reg-btn svg { transition: none; } }
 /* r36-3: a shorter bar (56px, like parallel.ai's ~60): the theme toggle is 36px on desktop; phones keep 44px (mobile.css) */
 .bindu-home .nav .theme-toggle { width: 36px; height: 36px; }
@@ -112,7 +118,9 @@
 .bindu-home .foot-brand p { max-width: 416px; margin: 0; }
 .bindu-home .foot-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
 .bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-mute); display: inline-block; padding: 6px 0; font: 400 var(--body-sm)/1.43 var(--font-sans); letter-spacing: 0; }
-.bindu-home .foot-col a:hover { color: var(--on-dark); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .foot-col a:hover { color: var(--on-dark); }
+}
 .bindu-home .foot-legal { margin: var(--s-4) 0 0; }
 /* tablet and phone: brand on its own row, the four link groups in a 2 x 2 grid */
 @media (max-width: 1100px) { .bindu-home .foot-in { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bindu-home .foot-brand { grid-column: 1 / -1; } }

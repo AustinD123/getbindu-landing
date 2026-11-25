@@ -49,7 +49,9 @@
 .bindu-home .foot-roles-wrap { margin-top: var(--s-5); }
 .bindu-home .foot-roles { margin: 0; }
 .bindu-home .foot-roles a { color: var(--on-dark-body); text-decoration: underline; text-decoration-color: var(--hairline-dark); text-underline-offset: 4px; }
-.bindu-home .foot-roles a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .foot-roles a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); }
+}
 .bindu-home .foot-roles a:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 
 /* phones: the hero (headline, sub-line and CTA) has to clear the fixed caption and pause control at 375 x 667 */

@@ -36,9 +36,13 @@
 }
 /* button-pill-on-dark: a white pill with an ink label on the dark card (in the dark theme the card is white, so the pill is the black primary) */
 .bindu-home .r6-cardwrap .r6-cta .btn { background: #fff; color: #000; border-color: #fff; }
-.bindu-home .r6-cardwrap .r6-cta .btn:hover { background: #e5e5e5; border-color: #e5e5e5; }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home .r6-cardwrap .r6-cta .btn:hover { background: #e5e5e5; border-color: #e5e5e5; }
+}
 .bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn { background: #000; color: #fff; border-color: #000; }
-.bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn:hover { background: #090909; }
+@media (hover: hover) and (pointer: fine) {
+  .bindu-home:not([data-theme="light"]) .r6-cardwrap .r6-cta .btn:hover { background: #090909; }
+}
 .bindu-home .r6-left, .bindu-home .r6-right { min-width: 0; padding: var(--s-6) var(--s-7); }
 .bindu-home .r6-right { align-self: stretch; display: flex; flex-direction: column; }
 
