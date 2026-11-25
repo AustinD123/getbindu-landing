@@ -101,7 +101,7 @@
 .bindu-home .bd-story.is-open { opacity: 1; }
 .bindu-home .bd-fade { display: grid; gap: var(--s-2); animation: bd-in 420ms var(--ease-ui) both; }
 @keyframes bd-in { from { opacity: 0; } to { opacity: 1; } }
-.bindu-home .bd-h { margin: 0; min-height: 1.2em; font: var(--display-weight) 22px/1.2 var(--font-sans); letter-spacing: var(--track-sm); }
+.bindu-home .bd-h { margin: 0; min-height: 1.2em; font: var(--display-weight) 22px/1.2 var(--font-display); letter-spacing: var(--track-sm); }   /* r60-7: the display face like every other title (was the body face) */
 .bindu-home .bd-story p { margin: 0; }
 .bindu-home .bd-story .bd-meta { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px var(--s-3); font: 500 12px/1.4 var(--font-mono); letter-spacing: 0; color: var(--on-dark-mute); }   /* r60-6: sentence case, untracked (adaptation 7, no tracked capitals) */
 .bindu-home .bd-verdict.is-pass { color: var(--cobalt-signal); }

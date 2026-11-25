@@ -99,3 +99,20 @@ Method: `node .claude/skills/avoid-ai-design/scripts/detect.mjs features/landing
 | 11 | info | Palette: neutrals plus yellow and cobalt only; no gradients on surfaces; no glow; glass limited to the one feathered blur layer Austin asked for (avoid-ai-design-ignore K3) | | clean |
 
 Not verified: Hallmark sloplint (not installed), the silhouette test by eye on a rendered thumbnail, dark theme by eye.
+
+## Pass 7: consistency (one font and one design everywhere, DESIGN.md v4)
+
+Method: a computed-style census in headless Chromium at 1440 (every text element: family, size, weight; every heading; every radius), then the CSS read for each outlier.
+
+| # | Sev | Finding | Where | Status |
+|---|---|---|---|---|
+| 1 | P1 | The departures verdict story titles (`.bd-h`, h3) were in the body face (Inter 27px) while every other title is the display face | styles/story.css:104 | fixed: display face, weight 500 |
+| 2 | P2 | The shipment lead had -0.02em tracking; every other lead is 0 | styles/shipment.css:170 | fixed (styles/r59.css) |
+| 3 | P3 | Shipment milestone h3 sizes are fluid 14 to 17px (by window height, to keep one screen) and weight 600, between the scale's 16 and 18 | styles/shipment.css:60,194 | left: functional fit in a pinned window, not a free choice |
+| 4 | P3 | Rules tile names are `display-lg` 36px, the same size as the section h2 above them | styles/r44.css:229 | left: the rules gallery concept (keep) |
+| 5 | P3 | Full Circle overlay labels 14px sans 500 and 11px floor, map and ship labels 10px mono | theatre.css, shipment.css | left (r59-0, r59-4: labels inside drawings) |
+| 6 | P3 | Dialog title 20px, finale wordmark 27px/600, "Your year" and the mini-check titles 20px | site.css:92 | left: pricing, finale and footer are keeps |
+| 7 | info | Census: three families only (Nunito/ui-rounded for titles, Inter for text, ui-monospace for data), weights 400/500/600 except hidden board column headers (700, screen-reader only); radii 12px (cards), 8px (small surfaces), pills (9999px), one 28px (the collapsed nav island, a keep) | | consistent |
+| 8 | info | Section titles are all 36px/500; hero 115px/600 (adaptation 8); the 500 vs 600 choice is Austin's open question and was not touched | | untouched |
+
+Not verified: 768 to 1024px widths, dark theme census.
