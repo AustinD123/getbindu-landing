@@ -8,8 +8,7 @@ const cols = [...footer.cols, { h: "Platform", l: FOOTER_PAGES }, { h: "Guides a
 export function Footer() {
   return (
     <footer className="foot band-dark" role="contentinfo">
-      <div className="foot-card">
-      <div className="foot-in">
+      <div className="container foot-in">
         <div className="foot-brand">
           <span className="foot-mark"><Logo size={40} /><span>Bindu</span></span>
           <p className="t-body-sm t-muted">{footer.line}</p>
@@ -21,11 +20,10 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <div className="foot-roles-wrap">
+      <div className="container foot-roles-wrap">
         <p className="foot-roles t-body-sm t-muted">{footerRoles.lead}{" "}{footerRoles.items.map((r, i) => <span key={r.t}>{i > 0 && <span aria-hidden="true"> · </span>}<a href={r.href}>{r.t}</a></span>)}</p>
       </div>
-      <p className="t-caption t-muted foot-legal">{footer.legal}</p>
-      </div>
+      <div className="container"><hr className="rule" /><p className="t-caption t-muted foot-legal">{footer.legal}</p></div>
     </footer>
   );
 }

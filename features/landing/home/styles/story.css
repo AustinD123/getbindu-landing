@@ -28,14 +28,14 @@
 .bindu-home .fz-dot { position: absolute; z-index: 1; opacity: var(--g, 1); pointer-events: none; transform-origin: 50% 50%; }
 /* r30-2: the dot of the i is a golden-angle disc of 34 dots, yellow in the middle blending to cobalt at the rim; each dot appears when its ship dot lands */
 .bindu-home .fz-dot svg { display: block; overflow: visible; }
-.bindu-home .fz-dot circle { opacity: 0; fill: color-mix(in srgb, var(--proof-dot) calc(var(--m, 1) * 100%), var(--cobalt-signal)); stroke: color-mix(in srgb, var(--yellow-outline) calc(var(--m, 1) * 100%), transparent); stroke-width: 0.025; }
+.bindu-home .fz-dot circle { opacity: 0; fill: var(--proof-dot); stroke: var(--yellow-outline); stroke-width: 0.025; }   /* r55: the i is yellow (Austin), no cobalt rim */
 .bindu-home .fz-grad { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--ink) 72%, transparent), transparent 55%), color-mix(in srgb, var(--ink) 52%, transparent); }
 .bindu-home .fz-flow { position: relative; z-index: 1; }
 .bindu-home .fz-spacer { height: 395vh; height: 395svh; }   /* r32-1: 120vh of ship hand-off and a 20vh hold come first (was 275) */
 /* the footer rides up over the photo on a dark gradient; its text uses the on-photo tokens (AA on the gradient, both themes) */
-/* r54: the footer is a centred --canvas-mid card (site.css), so its text keeps the normal tokens; only the gradient under the card remains */
-.bindu-home .finale .foot { text-align: left;
-  background: linear-gradient(to bottom, transparent 0, color-mix(in srgb, var(--ink) 80%, transparent) 220px, color-mix(in srgb, var(--ink) 94%, transparent)); border-top: 0; padding-top: 240px; padding-bottom: var(--s-6); content-visibility: visible; }
+.bindu-home .finale .foot { --on-dark: var(--on-photo); --on-dark-body: var(--on-photo-body); --on-dark-mute: var(--on-photo-mute); --hairline-dark: var(--on-photo-line); text-align: left;
+  background: linear-gradient(to bottom, transparent 0, color-mix(in srgb, var(--ink) 80%, transparent) 220px, color-mix(in srgb, var(--ink) 94%, transparent)); border-top: 0; padding-top: 240px; color: var(--on-photo); content-visibility: visible; }
+.bindu-home .finale .foot .t-muted { color: var(--on-photo-mute); }
 /* reduced motion: the masked wordmark (no zoom), then the photo filling the view with the footer */
 .bindu-home .finale.is-static .fz-stage { position: relative; margin-bottom: 0; }
 .bindu-home .finale.is-static .fz-flow { background: var(--canvas) var(--photo) 60% 50% / cover no-repeat; }
