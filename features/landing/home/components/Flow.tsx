@@ -254,6 +254,7 @@ export function Flow() {
           if (b !== last) { last = b; setStep(b); }
         });
         ScrollTrigger.create({ animation: tl, trigger: el, start: "top 64px", end: "bottom bottom", scrub: 1 });
+        setStep(0);   // the timeline starts at step 1; the marker follows from here (its onUpdate takes over once the scroll moves)
         ScrollTrigger.refresh();
       }, root);
     };

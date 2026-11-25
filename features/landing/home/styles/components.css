@@ -1,9 +1,11 @@
 /* Bindu v3 components, built only from the three source systems (see v3/DESIGN.md "Components"). */
 
 /* ---------- band classes: kept as scope hooks only. r54: one --canvas everywhere, no colour bands (the crossfade is retired). ---------- */
-.bindu-home .band-dark  { background: var(--canvas); color: var(--on-dark); }
-.bindu-home .band-light { background: var(--paper);  color: var(--ink); }
-.bindu-home .band-soft  { background: var(--paper-soft); color: var(--ink); }
+/* r56-2: the fixed dot map (MapLayer .stage) shows behind EVERY section, so no section paints a full-width background. Content that needs a solid ground
+   is a hairline card or panel (canvas fill) or sits on the feathered blur layer (story.css r48), never a band. */
+.bindu-home .band-dark  { background: transparent; color: var(--on-dark); }
+.bindu-home .band-light { background: transparent;  color: var(--ink); }
+.bindu-home .band-soft  { background: transparent; color: var(--ink); }
 .bindu-home .container  { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
 
 /* ---------- type ---------- */
