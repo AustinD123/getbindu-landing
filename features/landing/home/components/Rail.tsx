@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { scrollPos, viewH } from "../lib/pos";
 
 /* Round 22, item 13: a thin scroll-progress rail of dots in the right gutter. One dot per section; the dots fill cobalt as you read and the current
    section's dot is yellow. Hidden where the gutter is too narrow (under 1100px). aria-hidden; no dot-grid background anywhere. */
@@ -12,7 +13,7 @@ export function Rail() {
     const measure = () => { ys.current = secs.map((s) => s.getBoundingClientRect().top + window.scrollY); };
     let lastCur = -1;
     const on = () => {
-      const y = window.scrollY + window.innerHeight * 0.45;
+      const y = scrollPos() + viewH() * 0.45;   // r65-13: no layout read in the scroll handler
       let c = 0; ys.current.forEach((v, i) => { if (y >= v) c = i; });
       if (c !== lastCur) { lastCur = c; setCur(c); }
     };

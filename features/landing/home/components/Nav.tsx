@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
 import { onReady } from "../lib/ready";
+import { scrollPos } from "../lib/pos";
 import { DEMO_URL, cta, nav } from "../content";
 import { BtnLabel, Logo } from "./bits";
 import { getTheme, setTheme, useTheme } from "../lib/theme";
@@ -280,7 +281,7 @@ export function Nav() {
     return () => { mq.removeEventListener("change", sync); disable(); };
   }, [mounted]);
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 24);
+    const on = () => setScrolled(scrollPos() > 24);   // r65-13: no layout read in the scroll handler
     on(); window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);

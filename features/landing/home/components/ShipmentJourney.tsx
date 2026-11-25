@@ -1,7 +1,7 @@
 import { getRoot } from "../lib/root";
 import { isPhone } from "../lib/phone";
 import { tRaf, tCaf } from "../lib/loop";
-import { track } from "../lib/pos";
+import { track, viewH } from "../lib/pos";
 import { shipHome, mapU } from "../lib/shiphome";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { journey } from "../content";
@@ -142,7 +142,7 @@ export function ShipmentJourney() {
 
     // the scroll position, 0 to 1 (the ship's place is shipProgress of this). Pinned: the pin's own scroll range.
     const tk = track(el);
-    const moveRange = () => tk.h - window.innerHeight - tail() * window.innerHeight;   // the part of the pin the ship sails in
+    const moveRange = () => tk.h - viewH() - tail() * viewH();   // the part of the pin the ship sails in
     const progress = () => {
       const range = moveRange();
       return shipProgress(range > 0 ? clamp(-tk.rectTop() / range) : 0);
@@ -150,7 +150,7 @@ export function ShipmentJourney() {
     // the hand-off (0 to 1): from the moment the ship is at the port (p = 0.96 of the sailing range) through the tail of the pin
     const handoff = () => {
       const range = moveRange();
-      return range > 0 ? clamp((-tk.rectTop() - 0.96 * range) / (tail() * window.innerHeight + 0.04 * range)) : 0;
+      return range > 0 ? clamp((-tk.rectTop() - 0.96 * range) / (tail() * viewH() + 0.04 * range)) : 0;
     };
     let lastT = isStatic ? 1 : progress();
     let raf = 0, tween = 0, fadeRaf = 0;

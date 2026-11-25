@@ -1,5 +1,5 @@
 import { tRaf, tCaf } from "../lib/loop";
-import { track } from "../lib/pos";
+import { track, viewH } from "../lib/pos";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { gsap, useReducedMotion } from "../lib/motion";
 
@@ -168,7 +168,7 @@ export function Examples() {
     const update = () => {
       raf = 0;
       if (!visible) return;
-      const range = tk.h - window.innerHeight;
+      const range = tk.h - viewH();
       const p = range > 0 ? clamp(-tk.rectTop() / range) : 0;
       const q = p * N;   // one row per unit: the row starts to flip at the step and is current from then on
       const c = q > 0.02 ? Math.min(N - 1, Math.floor(q)) : -1;

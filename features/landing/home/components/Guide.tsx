@@ -7,7 +7,7 @@ import { rng, smoothPath } from "../lib/guide";
 import { isPaused, subscribePause } from "../lib/pause";
 import { shipHome, fin, FINP, BREAK_SPAN, outQuart, mapU } from "../lib/shiphome";
 import { subscribeTheme } from "../lib/theme";
-import { track } from "../lib/pos";
+import { track, scrollPos } from "../lib/pos";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 
 /* Round 18, item 1: the guide is a small container ship. It is drawn by us in ink (side view, about 40px wide on desktop) and sails
@@ -167,14 +167,14 @@ export function Guide() {
 
     /* ---------- one frame: a pure function of scroll and fin.t ---------- */
     // r34-2: the finale's zoom starts at FINP.zoom viewport heights into its pin (the same place the finale's own scroll trigger uses)
-    const isGone = (sy: number) => !!ftk && sy >= ftk.top + FINP.zoom * window.innerHeight;
+    const isGone = (sy: number) => !!ftk && sy >= ftk.top + FINP.zoom * CH;
     let goneNow = false;
-    const onScrollGone = () => { if (rm && isGone(window.scrollY) !== goneNow) kick(); };   // reduced motion has no scroll redraw: only the hide and show change
+    const onScrollGone = () => { if (rm && isGone(scrollPos()) !== goneNow) kick(); };   // reduced motion has no scroll redraw: only the hide and show change
     const draw = () => {
       raf = 0;
       const mm = m;
       if (!mm || !CW) return;
-      const s = window.scrollY, vh = CH, W = CW;
+      const s = scrollPos(), vh = CH, W = CW;   // r65-13: no layout read inside the frame
       // r34-2: from the start of the finale's zoom on, the lane, the ship and its dots are not drawn (the final view is the photo, the button and the footer); they come back on scroll up
       goneNow = isGone(s);
       if (goneNow) { if (lastKey !== "gone") { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, vh); lastKey = "gone"; } wakeAlive = false; shipAt.a = 0; return; }
@@ -330,7 +330,7 @@ export function Guide() {
     };
     const kick = () => { if (!raf && !isPaused()) raf = tRaf(draw); };
     // r62-1: the break of the ship at the end of its lane follows the scroll position (SCRUB_SOFT), starting where the ship reaches the lane end
-    const rawB = () => (m ? clamp((window.scrollY - (m.yEnd - CH * 0.55)) / (BREAK_SPAN * CH)) : 0);
+    const rawB = () => (m ? clamp((scrollPos() - (m.yEnd - CH * 0.55)) / (BREAK_SPAN * CH)) : 0);
     const bv = { v: fin.b };   // private, so the finale's own cleanup (killTweensOf(fin)) cannot stop it
     const onScrollB = () => { const r = rawB(); if (r !== bv.v) gsap.to(bv, { v: r, duration: SCRUB_SOFT, ease: "power2.out", overwrite: true, onUpdate: () => { fin.b = bv.v; kick(); } }); };
     shipHome.kick = kick; shipHome.now = () => { if (raf) { tCaf(raf); raf = 0; } draw(); };
