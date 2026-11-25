@@ -107,7 +107,7 @@ export function Pricing() {
                 ))}
               </ul>
               <div className="r6-cta">
-                <button type="button" className="btn bh-btn-primary" aria-haspopup="dialog" onClick={(e) => estimate.show(e.currentTarget)}><BtnLabel>{cta.estimate}</BtnLabel></button>
+                <button type="button" className="btn btn-solid" aria-haspopup="dialog" onClick={(e) => estimate.show(e.currentTarget)}><BtnLabel arrow={false}>{cta.estimate}</BtnLabel></button>
                 {tab!.id === "eudr" && <EudrCheck />}
               </div>
               <ul className="r6-trust" aria-label="Pricing notes">

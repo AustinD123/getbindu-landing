@@ -2,7 +2,7 @@ import { getRoot } from "../lib/root";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { sunflowerCircles } from "../lib/phyllotaxis";
-import { gsap, lockScroll, reduceMotion } from "../lib/motion";
+import { lockScroll, reduceMotion } from "../lib/motion";
 
 /* r25-2b: the site mark is the golden-angle sunflower drawn as dots in two colours: yellow in the inner part, cobalt toward the outside, blended over the middle rings
    (colour-mix of two tokens, so it follows both themes). Same box and spiral as before. This is the site's mark, not Bindu's official logo file; the colour change needs
@@ -36,48 +36,23 @@ export function Logo({ size = 24 }: { size?: number }) {
   );
 }
 
-/* round 22 item 9, r34-1: the filled pill's label stays still (the letter roll is removed). The label is one plain span; the link keeps its accessible name (aria-label).
-   On hover the magnetic pull (within about 80px, max 6px, the label 3px further) and the arrow's 4px nudge (CSS) stay, and the click sends a tiny burst of 6 to 8 yellow and
-   cobalt dots from the arrow. Those need a fine pointer without reduced motion. The yellow never changes on hover. */
-export function BtnLabel({ children }: { children: string }) {
+/* r52 (DESIGN.md v2 section 5): a button's label, with an optional plain arrow after it (for links that leave the section).
+   Nothing moves: the magnetic pull, the click dot burst and the arrow nudge are retired with v1. The label is set in caps by CSS,
+   so the link keeps its sentence-case accessible name (aria-label). */
+export function BtnLabel({ children, arrow = true }: { children: string; arrow?: boolean }) {
   const host = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    const el = host.current;
-    const link = el?.closest<HTMLElement>("a,button");
-    if (!el || !link) return;
-    if (!link.hasAttribute("aria-label")) link.setAttribute("aria-label", children);
-    if (reduceMotion() || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    // r22-17: a tiny burst of 6 to 8 yellow and cobalt dots from the arrow on click (pointer devices, never under reduced motion)
-    const burst = () => {
-      const ar = link.querySelector<HTMLElement>(".btn-arrow"); if (!ar) return;
-      const r = ar.getBoundingClientRect(), n = 7;
-      for (let k = 0; k < n; k++) {
-        const d = document.createElement("i"); d.setAttribute("aria-hidden", "true");
-        d.style.cssText = `position:fixed;left:${r.left + r.width / 2}px;top:${r.top + r.height / 2}px;width:4px;height:4px;margin:-2px;border-radius:50%;pointer-events:none;z-index:300;background:${k % 2 ? "var(--cobalt-signal)" : "var(--proof-dot)"}`;
-        document.body.appendChild(d);
-        const a = (k / n) * 6.283 + Math.random() * 0.6, dist = 26 + Math.random() * 18;
-        gsap.to(d, { x: Math.cos(a) * dist, y: Math.sin(a) * dist, opacity: 0, duration: 0.4, ease: "power2.out", onComplete: () => d.remove() });
-      }
-    };
-    link.addEventListener("click", burst);
-    const st = { x: 0, y: 0 };
-    const apply = () => { link.style.translate = `${st.x.toFixed(2)}px ${st.y.toFixed(2)}px`; el.style.translate = `${(st.x * 0.5).toFixed(2)}px ${(st.y * 0.5).toFixed(2)}px`; };
-    const isPrimary = link.classList.contains("bh-btn-primary");
-    const move = (e: PointerEvent) => {
-      const r = link.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-      const dx = e.clientX - cx, dy = e.clientY - cy, near = Math.abs(dx) < r.width / 2 + 80 && Math.abs(dy) < r.height / 2 + 80;
-      const tx = near ? Math.max(-6, Math.min(6, dx * 0.12)) : 0, ty = near ? Math.max(-6, Math.min(6, dy * 0.12)) : 0;
-      gsap.to(st, { x: tx, y: ty, duration: near ? 0.35 : 0.8, ease: "power3.out", overwrite: true, onUpdate: apply });
-    };
-    if (isPrimary) window.addEventListener("pointermove", move, { passive: true });
-    return () => { link.removeEventListener("click", burst); window.removeEventListener("pointermove", move); gsap.killTweensOf(st); link.style.translate = ""; el.style.translate = ""; };
+    const link = host.current?.closest<HTMLElement>("a,button");
+    if (link && !link.hasAttribute("aria-label")) link.setAttribute("aria-label", children);
   }, [children]);
   return (
     <>
       <span ref={host} className="btn-l">{children}</span>
-      <span className="btn-arrow" aria-hidden="true">
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
-      </span>
+      {arrow && (
+        <span className="btn-arrow" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 8h10M9 4l4 4-4 4" /></svg>
+        </span>
+      )}
     </>
   );
 }

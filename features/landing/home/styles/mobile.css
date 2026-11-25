@@ -1,17 +1,14 @@
 /* Round 35: phones only (767px and under). Nothing here applies at 768px and up. Loaded last, so equal-specificity rules from the section sheets lose to it.
    Aims: calmer (shorter pins, fewer things moving), readable (16px body, 20px gutters, short headings), touch-friendly (44px targets, no hover-only state). */
 @media (max-width: 767px) {
-  .bindu-home { --gutter: 20px; --section-y: 96px; --display-lg: 32px; --display-md: 28px; --body-sm: 16px; --lh-body-sm: 1.45; }
+  .bindu-home { --btn-h: 44px; --gutter: 20px; --section-y: 96px; --display-lg: 32px; --display-md: 28px; --body-sm: 16px; --lh-body-sm: 1.45; }
   .bindu-home { -webkit-tap-highlight-color: transparent; }
   .bindu-home a, .bindu-home button, .bindu-home summary, .bindu-home [role="tab"] { touch-action: manipulation; }
 
   /* nav and drawer: safe areas, 44px targets, the drawer scrolls if the screen is short */
   .bindu-home .nav-in { padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
-  .bindu-home .nav .nav-demo, .bindu-home .nav .nav-menu, .bindu-home .nav .theme-toggle { min-height: 44px; }
   .bindu-home .nav .theme-toggle { width: 44px; height: 44px; }
   .bindu-home .nav-drawer { max-height: calc(100svh - 56px); overflow-y: auto; padding-bottom: max(20px, env(safe-area-inset-bottom)); padding-left: max(var(--gutter), env(safe-area-inset-left)); padding-right: max(var(--gutter), env(safe-area-inset-right)); }
-  .bindu-home .mockup-badge { bottom: max(12px, env(safe-area-inset-bottom)); }
-  .bindu-home .scene-btn { min-height: 44px; }
   .bindu-home .foot-col a { padding: 12px 0; overflow-wrap: anywhere; }
   .bindu-home .seg-opt { min-height: 44px; }
 

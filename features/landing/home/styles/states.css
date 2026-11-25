@@ -4,20 +4,13 @@
    is inside prefers-reduced-motion: no-preference, so reduced motion gets colour changes only. */
 
 /* ---------- buttons: hover, press, focus, disabled ---------- */
-/* r19: no hover darkening on any button or pill. Hover feedback is motion only (the letter roll, the dot to arrow, the lift). */
+/* r52 (Austin, 25 Nov 2026): no button motion at all. Hover is a colour change only (components.css); no lift, no press scale. */
 
-@media (prefers-reduced-motion: no-preference) {
-  /* hover: subtle lift on buttons; text-link arrow nudges 2px (round 7 item 1, restored at the human's request) */
-  .bindu-home .btn:not(:is(:disabled, [aria-disabled="true"])):hover { transform: translateY(var(--lift)); }
-  /* press: scale .98 on every .btn (DESIGN.md, one press state) */
-  .bindu-home .btn:not(:is(:disabled, [aria-disabled="true"])):active { transform: scale(0.98); }
-}
-
-/* disabled: dimmed, no lift, no pointer */
-.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { opacity: var(--disabled-dim); cursor: not-allowed; transform: none; }
+/* disabled: mute label on the nested fill (components.css), no motion, no pointer */
+.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { cursor: not-allowed; transform: none; }
 
 /* focus-visible: a clear cobalt ring on every button and text link */
-.bindu-home .btn:focus-visible, .bindu-home .btn-icon:focus-visible, .bindu-home .link:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
+.bindu-home .btn:focus-visible, .bindu-home .btn-icon:focus-visible, .bindu-home .link:focus-visible { outline: var(--focus-ring-dark); outline-offset: 2px; }
 .bindu-home .band-light .btn:focus-visible, .bindu-home .band-soft .btn:focus-visible, .bindu-home .band-light .link:focus-visible, .bindu-home .band-soft .link:focus-visible { outline: var(--focus-ring-light); }
 
 /* ---------- links: the underline grows (colour and thickness only, so reduced motion keeps it) ---------- */

@@ -102,6 +102,7 @@
 
   /* ---------- shape ---------- */
   --r-sm: 12px;         /* r17: cards, inputs (Notion) */
+  --r-control: 4px;     /* r52 v2: buttons, inputs, tab boxes, chips */
   --r-lg: 16px;         /* r17: large containers */
   --r-pill: 9999px;     /* r17: pills for CTAs (and status chips) only */
 
@@ -135,10 +136,8 @@
 
 /* ---------- round 7: buttons and interaction (used by components.css and states.css) ---------- */
 .bindu-home {
-  --btn-h: 44px;                        /* every button and text-link row: one height */
-  --btn-px: 24px;                       /* generous side padding on pills */
-  --lift: -1px;                         /* hover: subtle lift */
-  --nudge: 3px;                         /* arrow nudge on hover (text links use 2px) */
+  --btn-h: 36px;                        /* r52 v2: every button 36px from 768px; 44px on phones (below) */
+  --btn-px: 16px;                       /* r52 v2: 16px sides (padding 9 / 16 / 7 / 16) */
   --hover-fill-dark: rgb(var(--fg-rgb) / 0.06);
   --hover-fill-light: rgb(var(--ink-rgb) / 0.04);
   --hover-line-dark: rgb(var(--fg-rgb) / 0.6);
