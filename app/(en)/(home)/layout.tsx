@@ -5,15 +5,14 @@
  * and the intro state on the wrapper before first paint, so nothing flashes.
  */
 
-import { Nunito } from "next/font/google";
+import { Rubik } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-// r55 (DESIGN.md v4, adaptation 1): the display face. SF Pro Rounded is Apple-licensed, so Nunito (SIL OFL, the file's own named substitute)
-// is the fallback behind ui-rounded; the tokens put ui-rounded first. Weights 500 and 600 only.
-const nunito = Nunito({
+// r64 (DESIGN.md v4, adaptation 1): Rubik (SIL OFL) for headings and body, chosen by Austin from a 25-font trial.
+const rubik = Rubik({
   subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-nunito",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-rubik",
   display: "swap",
 });
 
@@ -29,7 +28,7 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${nunito.variable}`}
+        className={`bindu-home ${rubik.variable}`}
         data-theme="light"
         suppressHydrationWarning
       >

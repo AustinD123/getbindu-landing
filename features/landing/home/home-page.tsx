@@ -2,7 +2,7 @@
 
 /* The homepage, composed in the mockup's section order (v3 App.tsx, minus its hash-route sub-pages and the "Mockup"
    badge). One client boundary: the sections server-render for the text, and everything animated starts in effects. */
-import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect } from "react";
 import "./styles/reset.css";
 import "./styles/tokens.css";
 import "./styles/components.css";
