@@ -5,7 +5,7 @@ import { track } from "../lib/pos";
 import { shipHome, mapU } from "../lib/shiphome";
 import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { journey } from "../content";
-import { gsap, useReducedMotion } from "../lib/motion";
+import { gsap, getLenis, useReducedMotion } from "../lib/motion";
 import { subscribeTheme } from "../lib/theme";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 import { toRgb } from "../lib/shipcanvas";
@@ -62,6 +62,8 @@ export function ShipmentJourney() {
   const askSeen = useRef(false);
   const ask = story!.ask;
   const askOn = current >= ask.at && current <= ask.at + 1;
+  const askOnRef = useRef(false);
+  askOnRef.current = askOn;
   useEffect(() => {
     const el = askEl.current;
     if (!el) return;
@@ -82,6 +84,7 @@ export function ShipmentJourney() {
     let ink = "rgba(237,232,218,", dpr = 1;
     const inkRgb = () => { const [r, g, b] = toRgb(cols.ink); ink = `rgba(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},`; };
     inkRgb();
+    let askBox = [0, 0, 0, 0];   // the question card in the frame (measured on resize, never per frame): an obstacle for the notes while it shows
     let ppu = 1;   // screen pixels per map unit, measured on resize
     // round 15 item 10: the frame may be height-limited (the viewBox is letterboxed), so a map unit is min(w / MAP_W, h / MAP_H) pixels
     let vw = MAP_W, vh = MAP_H;
@@ -123,9 +126,10 @@ export function ShipmentJourney() {
     const measure = () => {
       const r = fEl.getBoundingClientRect();
       vw = r.width || MAP_W; vh = r.height || MAP_H;
-      dpr = Math.min(1.5, window.devicePixelRatio || 1);
+      dpr = Math.min(isPhone() ? 1.5 : 2, window.devicePixelRatio || 1);   // r58: the real device pixel ratio, up to 2 on desktop (was 1.5), so the map and the ship are sharp
       cvs.width = Math.round(vw * dpr); cvs.height = Math.round(vh * dpr);
       ppu = Math.min(vw / MAP_W, vh / MAP_H) || 1;
+      const ae = askEl.current; if (ae) askBox = [8, vh - 12 - ae.offsetHeight - 6, 12 + ae.offsetWidth + 6, vh - 6];
       // round 17: where the route start sits in the figure at the start frame (the ink guide's dot lands here and becomes the cargo)
       const fr = mapFig.current?.getBoundingClientRect(), og = originEl.current;
       if (fr && og) {
@@ -174,8 +178,12 @@ export function ShipmentJourney() {
     const frOff = { x: 0, y: 0 };
     /* ---------- the live canvas ---------- */
     const circle = (x: number, y: number, r: number) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); };
-    const draw = () => {
+    let drawT = 0;
+    const draw = (soft = false) => {
       if (!st.inited) return;
+      const nowT = performance.now();
+      if (soft && nowT - drawT < 10) return;   // r58: the fade loop does not repaint a frame the scroll render has just painted
+      drawT = nowT;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, vw, vh);
       const { s, cx, cy, t, d } = st, S = ppu * s, X = (x: number) => vw / 2 + S * (x - cx), Y = (y: number) => vh / 2 + S * (y - cy);
       // the base: the pre-rendered bitmap, moved and scaled with the camera (drawn live only while the camera is outside it, e.g. while easing between stories)
@@ -257,6 +265,7 @@ export function ShipmentJourney() {
       /* r55-5 (kept in r56, look unchanged): notes never overlap each other, a map label or another milestone point. The current note is placed first, then the earlier ones,
          newest first; each tries its own offset, then flipped and pushed ones, and takes the first clear one; an earlier note with no clear place is hidden. */
       const placed: number[][] = [];
+      if (askOnRef.current && askBox[2]! > 0) placed.push(askBox);
       geo!.labels.forEach((l, i) => {
         if (!tw[i] || lT[i] === 0) return;
         const a = l.off?.[2] ?? "start", x = X(l.p[0]) + (l.off?.[0] ?? 7), y = Y(l.p[1]) + (l.off?.[1] ?? -6) - 8, lf = x - (a === "end" ? tw[i]! : 0);
@@ -300,7 +309,7 @@ export function ShipmentJourney() {
       let more = false;
       const step = (a: number[], tg: number[]) => a.forEach((v, i) => { const dv = tg[i]! - v; if (Math.abs(dv) < 0.02) a[i] = tg[i]!; else { a[i] = v + dv * 0.25; more = true; } });
       step(nA, nT); step(lA, lT);
-      text(); draw();
+      text(); draw(true);
       if (more) fadeRaf = tRaf(fade);
     };
     const settleFades = () => { if (isStatic) { nA.forEach((_, i) => (nA[i] = nT[i]!)); lA.forEach((_, i) => (lA[i] = lT[i]!)); } else if (!fadeRaf) fadeRaf = tRaf(fade); };
@@ -370,7 +379,9 @@ export function ShipmentJourney() {
     };
     const onScroll = () => { if (!raf) raf = tRaf(update); };
     const onResize = () => { measure(); onScroll(); };
-    const io = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) onScroll(); gsap.to(shipHome, { pres: visible ? 1 : 0, duration: 0.4, overwrite: true, onUpdate: () => paintBreak() }); });
+    /* r58: while this pin is on screen the page scroll is smoothed for about 0.3s (Lenis lerp 0.2) instead of the page's 0.1 (about 0.6s), so the ship answers the wheel */
+    const lerpTo = (v: number) => { const l = getLenis(); if (l) l.options.lerp = v; };
+    const io = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; lerpTo(visible ? 0.2 : 0.1); if (visible) onScroll(); gsap.to(shipHome, { pres: visible ? 1 : 0, duration: 0.4, overwrite: true, onUpdate: () => paintBreak() }); });
     io.observe(el);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -379,7 +390,7 @@ export function ShipmentJourney() {
     onScroll();
     document.fonts?.ready.then(() => { tw.length = 0; nw.length = 0; measure(); onScroll(); });
     return () => {
-      detach(); io.disconnect(); gsap.killTweensOf(shipHome); shipHome.pres = 1; shipHome.dock = 0; shipHome.brk = 0; shipHome.markOn = false; shipHome.kick(); gsap.killTweensOf(brk.current); brk.current.v = 0;
+      detach(); io.disconnect(); lerpTo(0.1); gsap.killTweensOf(shipHome); shipHome.pres = 1; shipHome.dock = 0; shipHome.brk = 0; shipHome.markOn = false; shipHome.kick(); gsap.killTweensOf(brk.current); brk.current.v = 0;
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (raf) tCaf(raf);

@@ -179,14 +179,15 @@
 
 /* r41-1: the map is sharp everywhere; each content block past the hero blurs only the map right behind it. A ::before layer 12 to 24px beyond the text, backdrop-filter blur, edges feathered by a mask: no box, border or shadow. Solid panels (Full Circle stage, pricing card, departures board) are left alone. */
 /* r43-4: Pricing (head, and the tabs from 601px; on phones the tab strip scrolls and would clip the layer) and the Examples head join the list */
+/* r58: the shipment head and caption no longer have a blur layer (it repainted over the map canvas every frame); the map has a solid ground.
 /* r48: one blur layer per content WINDOW instead of one per text block. Per-block layers nested inside each other (double blur) and resized
    whenever a caption changed length, which made the patch jump; and the gaps between blocks left the map sharp right behind content.
    Now each section past the hero has one layer the size of its content area (the sticky window for pinned sections), so the map is
    softly blurred everywhere content sits and sharp in the side gutters. Blur only, no colour, feathered edges. */
-.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ship .sec-head, .ship-cap, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
-.bindu-home :is(.stmt > .container, .ship .sec-head, .ship-cap, .rl, .r6-pricing > .container, .container.faq,
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
+.bindu-home :is(.stmt > .container, .rl, .r6-pricing > .container, .container.faq,
   .fl-pin.is-static .fl-win, .th-pin.is-flat .th-win, .ex-pin.is-static .ex-stage, .vc-pin:not(.is-arc) .vc-win) { position: relative; }
-.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ship .sec-head, .ship-cap, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {
   content: ""; position: absolute; z-index: -1; inset: -24px -64px; pointer-events: none;
   /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);

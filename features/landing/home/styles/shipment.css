@@ -197,3 +197,11 @@
 .bindu-home .ship-ms[data-state="done"] h3 { color: var(--on-dark-body); }
 .bindu-home .ship-ms p, .bindu-home .ship-ms[data-state="done"] p { color: var(--on-dark-body); }
 .bindu-home .ship-pin:not(.is-static) .ship-ms[data-state="next"] { opacity: 0; }
+
+/* r58: the map stage has its own solid ground, so the page's background dots never show through it; no blur or filter on the stage itself */
+.bindu-home .ship-svg { background: var(--canvas); }
+/* the head and the caption sit on a plain canvas fill with feathered edges (no filter), so their text never lies on the page dots */
+.bindu-home .ship .sec-head, .bindu-home .ship-cap { position: relative; isolation: isolate; }
+.bindu-home .ship .sec-head::before, .bindu-home .ship-cap::before { content: ""; position: absolute; z-index: -1; inset: -16px -48px; pointer-events: none; background: var(--canvas);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 14px, #000 calc(100% - 14px), transparent); mask-composite: intersect; }
