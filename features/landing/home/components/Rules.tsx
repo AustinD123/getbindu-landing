@@ -3,6 +3,7 @@ import { rules as c } from "../content";
 import { NAV_REGULATIONS } from "../links";
 import { gsap, ScrollTrigger, getLenis, useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
+import { isPending, onReady } from "../lib/ready";
 import { BtnLabel } from "./bits";
 
 /* Round 52 item 3: "The rules Bindu covers" (id `rules`). The section pins and the vertical scroll moves the row of five tiles sideways (GSAP ScrollTrigger, scrubbed, so it
@@ -10,7 +11,7 @@ import { BtnLabel } from "./bits";
    no drag, tilt, snap, arrows, hint, flaps or lane. Phones, reduced motion, short windows and no JS: no pin, a native horizontal scroll-snap row of the same tiles.
    A tile's links stay real links; focusing one scrolls the page so that tile is in view. */
 const linkOf = (name: string) => NAV_REGULATIONS.find((l) => l.t === name)?.u ?? "/";
-const MIN_H = 620;   // a window shorter than this cannot hold a tile and the heading, so it gets the native row
+const MIN_H = 680;   // a window shorter than this cannot hold a tile and the heading, so it gets the native row
 const DIM = 0.62;
 
 export function Rules() {
@@ -61,9 +62,14 @@ export function Rules() {
       if (l) l.scrollTo(y, { immediate: true }); else window.scrollTo({ top: y, behavior: "auto" });
     };
     t.addEventListener("focusin", onFocus);
-    const fonts = document.fonts?.ready.then(() => ScrollTrigger.refresh());
+    /* r55-7: the trigger is made after the section hydrates, when sections above may still be settling; re-measure once the layout is final (fonts, late sections, the next frame) */
+    const refresh = () => { if (!isPending(p)) ScrollTrigger.refresh(); };
+    const fonts = document.fonts?.ready.then(refresh);
     void fonts;
+    const offReady = onReady(refresh);
+    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
     return () => {
+      offReady(); cancelAnimationFrame(raf);
       t.removeEventListener("focusin", onFocus);
       st.kill(); tw.kill();
       gsap.killTweensOf(bodies);
