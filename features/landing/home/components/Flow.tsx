@@ -11,7 +11,7 @@ gsap.registerPlugin(CustomEase, MotionPathPlugin);
 /* Round 50 (r50-1): "What Bindu does", id `story`. Same structure as r49 (a pinned window in a 500svh track: the step line held on the left, ONE object on the stage on the right),
    new motion. One GSAP timeline, four units long (one per step), scrubbed by the scroll with smoothing (scrub 1). Each step plays in its first ~60% and then holds still to be read.
    Choreography, one lead per step and supporting parts on overlapping offsets:
-     1 a cobalt caret blinks on the empty stage; the sentence types at a human cadence (irregular gaps, longer between words); the caret settles into the yellow dot
+     1 an ink caret blinks on the empty stage; the sentence types at a human cadence (irregular gaps, longer between words); the caret settles into the yellow dot
      2 the sentence docks into the record (lead); the record surface unfolds from the sentence's row; labels and rules lines follow; the key words are underlined and
        the rule chips and the customs code travel out of them on arcs
      3 the record slides left (lead); the cobalt routes draw; the two suppliers settle in; a cobalt packet runs each route and lands as the request in the supplier's
@@ -70,6 +70,17 @@ export function Flow() {
   const isStatic = useReducedMotion();
   const [step, setStep] = useState(3);
   const s = story.stage;
+  const prev = useRef(3);
+
+  /* r55: the current marker's label slides in beside it when the step changes (GSAP; the label only exists for the current step, so the
+     server HTML and the reduced-motion page show step 4 with no hidden state) */
+  useEffect(() => {
+    const was = prev.current; prev.current = step;
+    const el = pin.current;
+    if (isStatic || was === step || !el || el.dataset.flow !== "on") return;
+    const l = el.querySelector<HTMLElement>(".fl-pd.is-on .fl-pl");
+    if (l) gsap.fromTo(l, { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "expo.out", overwrite: true });
+  }, [step, isStatic]);
 
   useEffect(() => {
     const root = sec.current, el = pin.current, st8 = stage.current;
@@ -116,7 +127,6 @@ export function Flow() {
         const sayChars = SplitText.create(sayIn, { type: "words,chars", aria: "none" }).chars as HTMLElement[];
         const refChars = SplitText.create(refT, { type: "chars", aria: "none" }).chars as HTMLElement[];
         const beats = qa<HTMLElement>(".fl-beat", el).map((li) => ({
-          n: q(".fl-n", li),
           lines: [
             ...(SplitText.create(q(".fl-t", li), { type: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
             ...(SplitText.create(q(".fl-cap", li), { type: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
@@ -145,9 +155,7 @@ export function Flow() {
         beats.forEach((b, i) => {
           if (i === 0) return;
           const p = beats[i - 1]!;
-          tl.fromTo(p.n, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, i);
           tl.fromTo(p.lines, { opacity: 1, y: 0 }, { opacity: 0, y: -30, duration: 0.09, stagger: 0.012, immediateRender: false }, i);
-          tl.fromTo(b.n, { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: 0.16 }, i + 0.05);
           tl.fromTo(b.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: OUT, duration: 0.22, stagger: 0.028 }, i + 0.06);
         });
         const fill = q(".fl-prog-line", el);
@@ -273,13 +281,16 @@ export function Flow() {
             <div className="fl-prog" aria-hidden="true">
               <span className="fl-prog-line" />
               {story.stops.map((b, i) => (
-                <span key={b.id} className={`fl-pd${i <= step ? " is-done" : ""}${i === step ? " is-on" : ""}`}>0{i + 1}</span>
+                <span key={b.id} className={`fl-pd${i <= step ? " is-done" : ""}${i === step ? " is-on" : ""}`}>
+                  <b className="fl-pm">{i + 1}</b>
+                  {i === step && <span className="fl-pl">{b.short}</span>}
+                </span>
               ))}
             </div>
             <ol className="fl-beats" aria-label={story.label}>
               {story.stops.map((b, i) => (
                 <li key={b.id} className={`fl-beat${i === step ? " is-on" : i < step ? " is-past" : " is-next"}`} aria-current={i === step ? "step" : undefined}>
-                  <h3><span className="fl-n">0{i + 1}</span><span className="fl-t">{b.t}</span></h3>
+                  <h3><span className="fl-t">{b.t}</span></h3>
                   <p className="fl-cap">{b.cap}</p>
                 </li>
               ))}

@@ -328,10 +328,10 @@ export const story = {
   illus: "Illustration",
   caption: "Made-up shipment, suppliers, files, code and reference number.",
   stops: [
-    { id: "describe", t: "Describe the shipment", cap: "You write one plain sentence.", say: "40 bags of coffee from Huila to Rotterdam" },
-    { id: "rules", t: "Rules and customs code", cap: "Bindu works out which rules apply and the customs code.", rules: [{ t: "Deforestation", live: true }, { t: "Packaging", live: false }], code: "HS 0901.11" },
-    { id: "proof", t: "Proof from suppliers", cap: "Bindu asks by email and WhatsApp. Suppliers reply with no login.", files: ["email: plot-file.pdf", "WhatsApp: certificate.pdf"] },
-    { id: "file", t: "Filing and reference", cap: "Bindu prepares the filing and the reference number comes back.", ref: "REF 25NL7K3X9M" }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
+    { id: "describe", t: "Describe the shipment", short: "Describe", cap: "You write one plain sentence about the shipment.", say: "40 bags of coffee from Huila to Rotterdam" },
+    { id: "rules", t: "Rules and customs code", short: "Rules", cap: "Bindu finds the rules that apply and the customs code.", rules: [{ t: "Deforestation", live: true }, { t: "Packaging", live: false }], code: "HS 0901.11" },
+    { id: "proof", t: "Proof from suppliers", short: "Proof", cap: "Bindu asks suppliers by email or WhatsApp. No login.", files: ["email: plot-file.pdf", "WhatsApp: certificate.pdf"] },
+    { id: "file", t: "Filing and reference", short: "Filing", cap: "Bindu prepares the filing; the reference number comes back.", ref: "REF 25NL7K3X9M" }, // avoid-ai-design-ignore: SD4d (field separators in the mock document, r41-3)
   ],
   stage: {
     // the sentence in parts; `k` marks the words that lift out into the rules and the code
