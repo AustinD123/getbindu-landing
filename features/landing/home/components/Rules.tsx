@@ -122,19 +122,22 @@ export function Rules() {
     const leaves = tiles.map((el) => { const h = () => { st.hover = false; if (!st.focus) hot(-1); }; el.addEventListener("pointerleave", h); return h; });
 
     // bring tile i (a real one) to the middle, along the shortest way round the loop
-    const toTile = (i: number, rel = false) => {
+    const toTile = (i: number, rel = false, instant = false) => {
       const centre = i * step + tw / 2 - v.clientWidth / 2;
       let tgt = rel ? i : centre;
       if (!rel) { const d = wrap(tgt - st.pos); tgt = st.pos + (d > W / 2 ? d - W : d); }
       st.lock = true; st.freeV = 0;
       gsap.killTweensOf(st);
+      if (instant) { st.pos = wrap(tgt); st.lock = false; return; }   // r61-5: keyboard focus lands at once
       gsap.to(st, { pos: tgt, duration: 0.7, ease: "power3.out", onComplete: () => { st.lock = false; } });
     };
     const onFocusIn = (e: FocusEvent) => {
       const i = tiles.findIndex((el, j) => j < n && el.contains(e.target as Node));
       if (i < 0) return;
       st.focus = true; hot(i);
-      toTile(i);
+      let kb = false;
+      try { kb = (e.target as Element).matches(":focus-visible"); } catch { /* old engine: glide */ }
+      toTile(i, false, kb);   // keyboard focus is instant; a pointer click keeps the 0.7s glide
     };
     const onFocusOut = () => { st.focus = false; if (!st.hover) hot(-1); };
     t.addEventListener("focusin", onFocusIn);
