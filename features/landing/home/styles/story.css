@@ -10,11 +10,12 @@
 .bindu-home .stmt > .container { max-width: 1040px; }
 /* r55: the statement is a section title at the file's display-lg (30px), 1.2 line height, no tracking */
 .bindu-home .stmt-t { margin: 0 auto; font-size: clamp(34px, 5.2vw, 76px); line-height: 1.12; letter-spacing: 0; text-wrap: balance; }
-.bindu-home .stmt-w { --l: 0; color: color-mix(in srgb, var(--on-dark) calc(var(--l) * 100%), var(--on-dark-mute)); }
-.bindu-home .stmt-chip { --c: 0; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 0;
-  border-radius: var(--r-control); font-size: 0.86em; vertical-align: 0.04em; background: color-mix(in srgb, var(--brand-yellow) calc(var(--c) * 100%), var(--canvas-soft)); }
-.bindu-home .stmt-chip .stmt-w { color: color-mix(in srgb, #000 calc(var(--c) * 100%), var(--on-dark)); }
-.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; color: color-mix(in srgb, #000 calc(var(--c) * 100%), var(--on-dark)); }
+.bindu-home .stmt-w { color: var(--on-dark); }   /* r59-2: dim and lit are opacity, set by GSAP; with no JS the sentence is fully lit */
+.bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 0;
+  border-radius: var(--r-control); font-size: 0.86em; vertical-align: 0.04em; background: var(--canvas-soft); }
+.bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--brand-yellow); }
+.bindu-home .stmt-chip .stmt-w, .bindu-home .stmt-chip .mark { color: #000; }
+.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; }
 
 /* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
 

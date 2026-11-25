@@ -1,53 +1,56 @@
-import { tRaf, tCaf } from "../lib/loop";
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { statement } from "../content";
-import { reduceMotion } from "../lib/motion";
+import { gsap, ScrollTrigger, reduceMotion } from "../lib/motion";
+import { subscribeTheme } from "../lib/theme";
 import { Mark } from "./bits";
-import { track } from "../lib/pos";
 
-/* Round 19, item 3: the statement lights up with the scroll (scrubbed, so it reverses on scroll up; nothing is a one-way trigger).
-   Words go from muted to full ink one by one; the Bindu chip's outline goes from hairline to a yellow fill and the dots of the
-   mark inside it brighten one by one. Progress = where the sentence sits on the screen: 0 when it enters the lower part, 1 at the
-   middle. Only custom properties and opacity are written per frame. Reduced motion: lit at once. */
-const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+/* Round 19 item 3, rebuilt in r59-2 so the light travels smoothly. One GSAP timeline on one ScrollTrigger, scrubbed with a 0.6s smoothing
+   (not raw scroll progress). Every word ramps opacity from its dim value to full over a window three words long, and the windows overlap, so the
+   light moves through the sentence as a wave. The Bindu chip's yellow fill, its text and the dots of its mark are on the same timeline with the same
+   ease, starting when the wave reaches the chip. Opacity (and colour on the two chip glyphs) only: no CSS transition on the words, no layout read
+   while scrolling (ScrollTrigger caches positions), `will-change: opacity` only while the section is on screen. Scrubbed, so it reverses on scroll up.
+   The start state is set here; with no JS, or under reduced motion, the sentence is fully lit. */
+const DIM = 0.45, SPAN = 3;   // dim opacity of an unlit word; the ramp window in words
 export function Statement() {
   const sec = useRef<HTMLElement>(null);
   const words = [...statement.before.split(" "), "\u0000", ...statement.after.split(" ")];
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = sec.current;
-    if (!el) return;
+    if (!el || reduceMotion()) return;
     const ws = Array.from(el.querySelectorAll<HTMLElement>(".stmt-w"));
     const chip = el.querySelector<HTMLElement>(".stmt-chip")!;
+    const chipBg = chip.querySelector<HTMLElement>(".stmt-chip-bg")!;
+    const chipInk = [chip.querySelector<HTMLElement>(".stmt-w")!, chip.querySelector<HTMLElement>(".mark")!];
     const dots = Array.from(chip.querySelectorAll<SVGElement>("svg > *"));
-    const apply = (t: number) => {
-      const N = ws.length + 2;
-      ws.forEach((w, i) => w.style.setProperty("--l", clamp01(t * N - i).toFixed(3)));
-      const c = clamp01((t - 0.2) / 0.5);
-      chip.style.setProperty("--c", c.toFixed(3));
-      dots.forEach((d, i) => { d.style.opacity = String(0.2 + 0.8 * clamp01(c * dots.length * 1.4 - i)); });
+    const ease = "sine.inOut";
+    const ci = ws.indexOf(chip.querySelector<HTMLElement>(".stmt-w")!);
+    gsap.set(ws, { opacity: DIM });
+    gsap.set(chipBg, { opacity: 0 });
+    gsap.set(dots, { opacity: 0.2 });
+    const build = () => {
+      const tl = gsap.timeline({ paused: true, defaults: { ease } });
+      ws.forEach((w, i) => tl.to(w, { opacity: 1, duration: SPAN }, i));
+      tl.to(chipBg, { opacity: 1, duration: SPAN }, ci);
+      tl.fromTo(chipInk, { color: () => getComputedStyle(el).getPropertyValue("--on-dark") || "#000" }, { color: "#000", duration: SPAN }, ci);
+      tl.to(dots, { opacity: 1, duration: SPAN, stagger: { each: SPAN / (dots.length * 1.4) } }, ci);
+      return tl;
     };
-    if (reduceMotion()) { apply(1); return; }
-    let raf = 0, lastP = -1;
-    const tk = track(el);
-    const update = () => {
-      raf = 0;
-      const vh = window.innerHeight;
-      const p = clamp01((vh * 0.9 - (tk.rectTop() + tk.h / 2)) / (vh * 0.45));
-      if (Math.abs(p - lastP) < 0.002 || (p === lastP)) return;   // nothing to write while it is far above or below
-      lastP = p; apply(p);
+    let tl = build();
+    const st = ScrollTrigger.create({ trigger: el, start: "center 90%", end: "center 45%", animation: tl, scrub: 0.6 });
+    const on = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top",
+      onToggle: (s) => ws.forEach((w) => { w.style.willChange = s.isActive ? "opacity" : ""; }) });
+    const unTheme = subscribeTheme(() => tl.invalidate());
+    return () => {
+      unTheme(); on.kill(); st.kill(); tl.kill();
+      gsap.set([...ws, chipBg, ...dots, ...chipInk], { clearProps: "opacity,color,willChange" });
     };
-    const kick = () => { if (!raf) raf = tRaf(update); };
-    window.addEventListener("scroll", kick, { passive: true });
-    window.addEventListener("resize", kick);
-    update();
-    return () => { window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
   }, []);
   return (
     <section ref={sec} className="band-dark sec stmt" id="statement" aria-label="What Bindu does" data-guide-anchor="statement" data-guide-side="r">
       <div className="container">
         <p className="stmt-t t-display-lg">
           {words.map((w, i) => w === "\u0000"
-            ? <span key={i}><span className="stmt-chip"><Mark size={26} white /><span className="stmt-w">Bindu</span></span>{" "}</span>
+            ? <span key={i}><span className="stmt-chip"><span className="stmt-chip-bg" /><Mark size={26} white /><span className="stmt-w">Bindu</span></span>{" "}</span>
             : <span key={i}><span className="stmt-w">{w}</span>{" "}</span>)}
         </p>
       </div>
