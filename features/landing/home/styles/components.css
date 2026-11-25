@@ -93,9 +93,9 @@
 /* Illustration and Placeholder: --canvas-mid fill, mute label (every mock, map and chat carries one) */
 .bindu-home .chip-illus, .bindu-home .chip-neutral { background: var(--canvas-mid); border: 0; color: var(--on-dark-mute); }
 
-/* ---------- panel (r54, v3 section 4): the one surface. --canvas-mid fill, no border, no shadow, 20px (40px for full-width panels from 1024px). Nested surfaces inside use --canvas-soft. ---------- */
-.bindu-home .panel { background: var(--canvas-mid); border: 0; border-radius: var(--r-lg); padding: 24px; }
-@media (min-width: 1024px) { .bindu-home .panel-wide { border-radius: var(--r-4xl); padding: 40px; } }
+/* ---------- panel (r54, v3 section 4, class .v3-panel): the one surface. --canvas-mid fill, no border, no shadow, 20px (40px for full-width panels from 1024px). Nested surfaces inside use --canvas-soft. ---------- */
+.bindu-home .v3-panel { background: var(--canvas-mid); border: 0; border-radius: var(--r-lg); padding: 24px; }
+@media (min-width: 1024px) { .bindu-home .v3-panel-wide { border-radius: var(--r-4xl); padding: 40px; } }
 
 /* ---------- cards (x.ai card on dark; hairline card on light) ---------- */
 .bindu-home .card { border-radius: var(--r-md); padding: var(--s-5); }

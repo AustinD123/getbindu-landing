@@ -18,7 +18,7 @@ gsap.registerPlugin(CustomEase, MotionPathPlugin);
        card; the file appears under it like an attachment and curves back into the proof row
      4 the cobalt bar runs under the header (lead); the reference types in mono behind a caret; the yellow dot leaves the sentence and lands on the reference on an
        arc; then "Filed" rises in and the yellow edge closes the record
-   The step line on the left is part of the same timeline (SplitText lines in masks), so it changes exactly where the stage changes, and reverses with it.
+   The step line on the left is part of the same timeline (SplitText lines, r54: faded up 30px, no masks), so it changes exactly where the stage changes, and reverses with it.
    Two eases for motion: OUT (expo out, the --ease-out token) for anything arriving, MOVE (the --ease-in-out token as a CustomEase) for anything travelling or
    morphing; keystrokes are instant steps and opacity ramps are linear. Only transform and opacity animate (plus clip-path on the record surface and the routes).
    Geometry is read once per build and the build reruns when the stage size changes; never per frame.
@@ -118,8 +118,8 @@ export function Flow() {
         const beats = qa<HTMLElement>(".fl-beat", el).map((li) => ({
           n: q(".fl-n", li),
           lines: [
-            ...(SplitText.create(q(".fl-t", li), { type: "lines", mask: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
-            ...(SplitText.create(q(".fl-cap", li), { type: "lines", mask: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
+            ...(SplitText.create(q(".fl-t", li), { type: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
+            ...(SplitText.create(q(".fl-cap", li), { type: "lines", linesClass: "fl-ln", aria: "none" }).lines as HTMLElement[]),
           ],
         }));
         const caret = mk("fl-caret"); sayIn.appendChild(caret);
@@ -141,14 +141,14 @@ export function Flow() {
 
         const tl = gsap.timeline({ defaults: { ease: MOVE } });
 
-        /* ---- the step line (left): number, title and sentence; lines rise out of masks ---- */
+        /* ---- the step line (left): number, title and sentence; lines fade up (r54) ---- */
         beats.forEach((b, i) => {
           if (i === 0) return;
           const p = beats[i - 1]!;
           tl.fromTo(p.n, { opacity: 1 }, { opacity: 0, duration: 0.06, immediateRender: false }, i);
-          tl.fromTo(p.lines, { yPercent: 0 }, { yPercent: -110, duration: 0.09, stagger: 0.012, immediateRender: false }, i);
+          tl.fromTo(p.lines, { opacity: 1, y: 0 }, { opacity: 0, y: -30, duration: 0.09, stagger: 0.012, immediateRender: false }, i);
           tl.fromTo(b.n, { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: 0.16 }, i + 0.05);
-          tl.fromTo(b.lines, { yPercent: 110 }, { yPercent: 0, ease: OUT, duration: 0.22, stagger: 0.028 }, i + 0.06);
+          tl.fromTo(b.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: OUT, duration: 0.22, stagger: 0.028 }, i + 0.06);
         });
         const fill = q(".fl-prog-line", el);
         tl.fromTo(fill, { scaleX: 0 }, { scaleX: 1 / 3, duration: 0.16 }, 1);
@@ -268,6 +268,7 @@ export function Flow() {
             <h2 id="flow-h" className="t-display-lg">{story.title}</h2>
             <p className="t-body-lg t-soft fl-lead">{story.lead}</p>
           </div>
+          <div className="fl-panel v3-panel v3-panel-wide">
           <div className="fl-left">
             <div className="fl-prog" aria-hidden="true">
               <span className="fl-prog-line" />
@@ -329,6 +330,7 @@ export function Flow() {
               {story.stops[1]!.rules!.map((r) => `${r.t} ${r.live ? "Live" : "In build"}`).join(", ")}. {story.stops[1]!.code}. {story.stops[2]!.files!.join(", ")}. {story.stops[3]!.ref}.
             </p>
             <p className="cargo-cap fl-illus"><span className="chip chip-illus">{story.illus}</span><span className="t-caption t-muted">{story.caption}</span></p>
+          </div>
           </div>
         </div>
       </div>

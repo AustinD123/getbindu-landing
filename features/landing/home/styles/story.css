@@ -3,9 +3,6 @@
 
 /* ---------- 5 hero: headline word by word, then the selector under the CTA ---------- */
 .bindu-home .hero-line { display: block; }
-.bindu-home .hw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
-.bindu-home .hw-i { display: inline-block; animation: mask-up var(--t-scene) var(--ease-out) both; }
-@media (prefers-reduced-motion: reduce) { .bindu-home .hw-i { animation: none; } }
 
 /* ---------- 6 statement ---------- */
 .bindu-home .stmt { text-align: center; min-height: 80vh; min-height: 80svh; display: flex; align-items: center; }
@@ -136,8 +133,6 @@
 }
 @media (prefers-reduced-motion: reduce) { .bindu-home .bd-story, .bindu-home .bd-row .bd-flaps, .bindu-home .bd .bd-route::before { transition: none; } .bindu-home .bd-fade { animation: none; } }
 
-/* r22-6: the heading masks never clip descenders */
-.bindu-home .h-mask { padding-bottom: 0.16em; margin-bottom: -0.16em; }
 
 /* r22-15: the hero headline on exactly two lines at 768 and up (one sentence per line); at 375 up to three lines */
 @media (min-width: 768px) {

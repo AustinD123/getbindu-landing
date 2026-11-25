@@ -35,8 +35,8 @@ export function Theatre() {
   const [step, setStep] = useState(0);
   const flat = isStatic || phone;
   const a = c.acts[act]!;
-  /* r44-2: the heading and the lead are per act (a buyer question each). The shown act lags the chosen one by the out-animation: the old lines mask out (0.25s), the text
-     swaps, the new lines mask in (about 0.5s, the same line mask as lib/headings.ts) and the lead crossfades. Reduced motion: an instant swap. This h2 is skipped by
+  /* r44-2: the heading and the lead are per act (a buyer question each). The shown act lags the chosen one by the out-animation: the old lines fade out up (0.2s), the text
+     swaps, the new lines fade up (the r54 reveal of lib/headings.ts: 30px, 0.7s, 0.08s stagger) and the lead follows. Reduced motion: an instant swap. This h2 is skipped by
      lib/headings.ts (data-own), and nothing here runs before hydration. */
   const [shown, setShown] = useState(0);
   const titleEl = useRef<HTMLSpanElement>(null);
@@ -46,20 +46,20 @@ export function Theatre() {
     const s = swap.current, span = titleEl.current, lead = leadEl.current;
     s.tl?.kill(); s.split?.revert(); s.split = null;
     if (isStatic || !span || !lead) { setShown(i); return; }
-    s.split = SplitText.create(span, { type: "lines", mask: "lines", maskClass: "h-mask", aria: "none" });
+    s.split = SplitText.create(span, { type: "lines", aria: "none" });
     s.tl = gsap.timeline({ onComplete: () => setShown(i) })
-      .to(s.split.lines, { yPercent: -110, duration: 0.25, ease: "power2.in", stagger: 0.04 }, 0)
-      .to(lead, { opacity: 0, duration: 0.25, ease: "power1.in" }, 0);
+      .to(s.split.lines, { opacity: 0, y: -30, duration: 0.2, ease: "power2.in" }, 0)
+      .to(lead, { opacity: 0, duration: 0.2, ease: "power1.in" }, 0);
   };
   useLayoutEffect(() => {
     const s = swap.current, span = titleEl.current, lead = leadEl.current;
     if (s.first) { s.first = false; return; }
     if (isStatic || !span || !lead) return;
     s.tl?.kill(); s.split?.revert();
-    s.split = SplitText.create(span, { type: "lines", mask: "lines", maskClass: "h-mask", aria: "none" });
+    s.split = SplitText.create(span, { type: "lines", aria: "none" });
     s.tl = gsap.timeline()
-      .fromTo(s.split.lines, { yPercent: 110 }, { yPercent: 0, duration: 0.5, ease: "expo.out", stagger: 0.06 }, 0)
-      .fromTo(lead, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out" }, 0.1);
+      .fromTo(s.split.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 }, 0)
+      .fromTo(lead, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out" }, 0.16);
   }, [shown, isStatic]);
   useEffect(() => () => { swap.current.tl?.kill(); swap.current.split?.revert(); }, []);
 
