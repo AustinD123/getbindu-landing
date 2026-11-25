@@ -338,26 +338,46 @@ export const voices = {
    cites the regulation on EUR-Lex. No prices (pricing is the next section). The page links come from NAV_REGULATIONS (links.ts) by name. */
 export const rules = {
   title: "The rules Bindu covers.",
-  lead: "Five EU rules, and where each one stands.",
+  lead: "Six EU rules, and where each one stands.",   /* r65-6, option a */
   label: "Regulations",
-  prev: "Previous rule",
-  next: "Next rule",
-  read: "Read the rule",
   covers: "Covers",
   source: "Source",
-  hint: "Drag, scroll sideways or use the arrow keys",
-  pause: "Pause the rules row",
-  play: "Play the rules row",
+  note: "Illustration. The clips are from each rule's page on getbindu.com.",
+  /* r65-6: six cards in the parallel.ai shape (Austin). Facts, statuses, regulation numbers and sources as before; the passport card is split
+     into textiles (Live) and batteries (In build). `page` is the getbindu.com path the clip comes from; `chip` is the one floating line of the
+     record, an illustration with no invented numbers. The battery passport source is the Battery Regulation (EU) 2023/1542 (verify). */
   items: [
-    { id: "eudr", reg: "EU 2023/1115", t: "EUDR", full: "Deforestation rule", link: "EUDR", d: "Proof that goods did not come from land deforested after 31 December 2020, and were produced legally.", covers: "Coffee, cocoa, rubber", chips: [{ t: "Live", live: true }],
-      date: "Applies from 30 Dec 2026 for medium and large companies, and from 30 Jun 2027 for most micro and small ones.", src: { t: "European Commission", u: EUDR_SOURCE } },
-    { id: "cbam", reg: "EU 2023/956", t: "CBAM", full: "Carbon border adjustment", link: "CBAM", d: "A carbon charge on certain goods brought into the EU, based on the emissions made producing them.", covers: "Steel, aluminium, cement, fertilisers", chips: [{ t: "In build", live: false }],
-      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2023/956/oj" } },
-    { id: "dpp", reg: "EU 2024/1781", t: "Product passports (DPP)", full: "Digital product passport", link: "Passports", d: "A record you reach by QR code, with a product's materials, origin and care details.", covers: "Textiles now, batteries and other groups later", chips: [{ t: "Textiles Live", live: true }, { t: "Batteries In build", live: false }],
-      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2024/1781/oj" } },
-    { id: "reach", reg: "EC 1907/2006", t: "REACH", full: "Chemicals rule", link: "REACH", d: "The EU list of restricted chemical substances. Each substance in a product is checked against it.", covers: "Chemicals and products that contain them", chips: [{ t: "In build", live: false }],
-      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2006/1907/oj" } },
-    { id: "ppwr", reg: "EU 2025/40", t: "PPWR", full: "Packaging rule", link: "PPWR", d: "The EU packaging rules, checked pack by pack for material and weight.", covers: "Packaged goods", chips: [{ t: "In build", live: false }],
-      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2025/40/oj" } },
-  ] as { id: string; reg: string; t: string; full: string; link: string; d: string; covers: string; chips: { t: string; live: boolean }[]; date?: string; src: { t: string; u: string } }[],
+    { id: "eudr", reg: "EU 2023/1115", t: "EUDR", full: "Deforestation rule", href: "/eudr", read: "Read about EUDR", icon: "tree", d: "Proof that goods did not come from land deforested after 31 December 2020, and were produced legally.", covers: "Coffee, cocoa, rubber", live: true,
+      date: "Applies from 30 Dec 2026 for medium and large companies, and from 30 Jun 2027 for most micro and small ones.", src: { t: "European Commission", u: EUDR_SOURCE },
+      page: "getbindu.com/eudr", video: "/videos/eudr-forest-hero.webm", poster: "/images/eudr-forest-hero.webp", chip: "Reference returned" },
+    { id: "textiles", reg: "EU 2024/1781", t: "Textile passport", full: "Digital product passport", href: "/dpp/textiles", read: "Read about textile passports", icon: "shirt", d: "A record you reach by QR code, with a garment's materials, origin and care details.", covers: "Clothing and textiles", live: true,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2024/1781/oj" },
+      page: "getbindu.com/dpp/textiles", video: "/videos/dpp-textiles-hero.webm", poster: "/images/dpp-textiles-hero.jpg", chip: "Passport readable by QR" },
+    { id: "battery", reg: "EU 2023/1542", t: "Battery passport", full: "Digital product passport", href: "/dpp/battery", read: "Read about battery passports", icon: "battery", d: "A digital record for each industrial and EV battery: what it is made of, where, and its carbon footprint.", covers: "Industrial and EV batteries", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2023/1542/oj" },
+      page: "getbindu.com/dpp/battery", video: "/videos/dpp-battery-hero.webm", poster: "/images/dpp-battery-hero.jpg", chip: "Battery record, coming" },
+    { id: "cbam", reg: "EU 2023/956", t: "CBAM", full: "Carbon border adjustment", href: "/cbam", read: "Read about CBAM", icon: "factory", d: "A carbon charge on certain goods brought into the EU, based on the emissions made producing them.", covers: "Steel, aluminium, cement, fertilisers", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2023/956/oj" },
+      page: "getbindu.com/cbam", video: "/videos/cbam-steel-hero.webm", poster: "/images/cbam-steel-hero.jpg", chip: "Emissions per shipment" },
+    { id: "reach", reg: "EC 1907/2006", t: "REACH", full: "Chemicals rule", href: "/reach", read: "Read about REACH", icon: "flask", d: "The EU list of restricted chemical substances. Each substance in a product is checked against it.", covers: "Chemicals and products that contain them", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2006/1907/oj" },
+      page: "getbindu.com/reach", video: "/videos/reach-tide-hero.webm", poster: "/images/reach-tide-hero.webp", chip: "Substances checked" },
+    { id: "ppwr", reg: "EU 2025/40", t: "PPWR", full: "Packaging rule", href: "/ppwr", read: "Read about PPWR", icon: "package", d: "The EU packaging rules, checked pack by pack for material and weight.", covers: "Packaged goods", live: false,
+      src: { t: "EUR-Lex", u: "https://eur-lex.europa.eu/eli/reg/2025/40/oj" },
+      page: "getbindu.com/ppwr", video: "/videos/ppwr-recycling-hero.webm", poster: "/images/ppwr-recycling-hero.webp", chip: "Pack by pack" },
+  ] as { id: string; reg: string; t: string; full: string; href: string; read: string; icon: string; d: string; covers: string; live: boolean; date?: string; src: { t: string; u: string }; page: string; video: string; poster: string; chip: string }[],
+  live: "Live",
+  build: "In build",
 };
+
+/* Round 65 (r65-7): the blog row after pricing. Titles, dates and thumbnails come from each post's frontmatter (app/(en)/(home)/page.tsx). */
+export const blogRow = {
+  title: "From the blog.",   /* r65-7, option a */
+  all: "All posts",
+  read: "Read",
+  label: "Blog posts",
+  prev: "Previous posts",
+  next: "Next posts",
+  slugs: ["eudr-traces", "cbam-report", "digital-product-passport-textiles", "battery-passport", "reach-compliance", "eudr-timeline"],
+};
+export type BlogRowPost = { slug: string; title: string; date: string; iso: string; image: string; alt: string; category: string };

@@ -1,0 +1,74 @@
+/* Round 65 (r65-6, r65-7): the parallel.ai card, rebuilt in our own CSS (measured on parallel.ai in Chrome, 25 Nov 2026; no code, assets or
+   fonts copied). Used by the rules grid (#rules) and the blog row (#blog). A warm-grey container (4px), an inner tray with a soft inset, a white
+   window set low and left that bleeds off the right and bottom edges, one white chip with a long soft shadow, then the text under the box.
+   These two windows and chips are the only shadows on the page (Austin's brief for this round). */
+.bindu-home {
+  --pc-box: #F5F4F1;
+  --pc-tray: rgb(31 27 12 / 0.03);
+  --pc-tray-in: inset 0 0 18px rgb(31 27 12 / 0.045);
+  --pc-win: #FFFFFF;
+  --pc-ring: 0 0 0 0.66px rgb(0 0 0 / 0.08), 0 1px 0.5px rgb(0 0 0 / 0.03), 0 2px 0.3px rgb(0 0 0 / 0.02);
+  --pc-float: 0 3px 1px rgb(0 0 0 / 0.02), 0 7px 3px rgb(0 0 0 / 0.03), 0 13px 5px rgb(0 0 0 / 0.04), 0 22px 9px rgb(0 0 0 / 0.04), 0 42px 17px rgb(0 0 0 / 0.05);
+}
+.bindu-home:not([data-theme="light"]) {
+  --pc-box: #161616;
+  --pc-tray: rgb(255 255 255 / 0.025);
+  --pc-tray-in: inset 0 0 18px rgb(0 0 0 / 0.35);
+  --pc-win: #0A0A0A;
+  --pc-ring: 0 0 0 1px rgb(255 255 255 / 0.10);
+  --pc-float: 0 0 0 1px rgb(255 255 255 / 0.10), 0 16px 32px rgb(0 0 0 / 0.5);
+}
+
+.bindu-home .pc-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 24px; }
+@media (max-width: 1023px) { .bindu-home .pc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 639px) { .bindu-home .pc-grid { grid-template-columns: minmax(0, 1fr); gap: 40px; } }
+.bindu-home .pc { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+.bindu-home .pc-box { position: relative; aspect-ratio: 3 / 2; border-radius: 4px; background: var(--pc-box); overflow: hidden; isolation: isolate; }
+.bindu-home .pc-tray { position: absolute; inset: 8px; border-radius: 10px; background: var(--pc-tray); box-shadow: var(--pc-tray-in); }
+.bindu-home .pc-win { position: absolute; left: 10%; top: 13%; width: 100%; height: 100%; border-radius: 4px; background: var(--pc-win); box-shadow: var(--pc-ring);
+  overflow: hidden; display: flex; flex-direction: column; }
+.bindu-home .pc-bar { flex: none; height: 30px; display: flex; align-items: center; padding: 0 12px; border-bottom: 1px solid var(--hairline-dark); }
+.bindu-home .pc-url { font: 400 12px/1 var(--font-mono); color: var(--on-dark); white-space: nowrap; }
+.bindu-home .pc-media { display: block; width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: left top; background: var(--pc-box); }
+.bindu-home .pc-chip { position: absolute; left: 5%; bottom: 12%; z-index: 1; margin: 0; display: inline-flex; align-items: center; gap: 8px; max-width: 78%;
+  padding: 9px 14px; border-radius: 4.5px; background: var(--pc-win); box-shadow: var(--pc-float); font: 500 14px/1.2 var(--font-sans); color: var(--on-dark); }
+.bindu-home .pc-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cobalt-signal); flex: none; }
+
+.bindu-home .pc-text { display: grid; gap: 8px; }
+.bindu-home .pc-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.bindu-home .pc-t { margin: 0; display: inline-flex; align-items: center; gap: 10px; font: 500 20px/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--on-dark); }
+.bindu-home .pc-icon { width: 26px; height: 26px; flex: none; display: inline-grid; place-items: center; border-radius: 4px; box-shadow: 0 0 0 1px var(--hairline-dark); color: var(--on-dark); }
+.bindu-home .pc-status { flex: none; }
+.bindu-home .pc-d { margin: 0; font: 400 15px/1.45 var(--font-sans); color: var(--on-dark); max-width: 46ch; text-wrap: pretty; }
+.bindu-home .pc-date { font-size: 14px; }
+.bindu-home .pc-links { margin: 4px 0 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; font: 500 14px/1.4 var(--font-sans); }
+.bindu-home .pc-read { color: var(--link-wipe); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.bindu-home .pc-src { color: var(--on-dark); font-weight: 400; text-decoration: none; }
+@media (hover: hover) { .bindu-home .pc-src:hover { text-decoration: underline; } .bindu-home .pc-read:hover { text-decoration-thickness: 2px; } }
+.bindu-home .pc-note { margin: 32px 0 0; font: 400 14px/1.4 var(--font-sans); color: var(--on-dark); text-align: center; }
+.bindu-home .sec.rg { overflow-x: clip; }
+
+/* r65-7: the blog row */
+.bindu-home .bl-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: var(--s-6); }
+.bindu-home .bl-head h2 { margin: 0; }
+.bindu-home .bl-ctl { display: flex; align-items: center; gap: 8px; flex: none; }
+.bindu-home .bl-all { margin-right: 8px; font: 500 15px/1 var(--font-sans); color: var(--link-wipe); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.bindu-home .bl-arrow { width: 36px; height: 36px; padding: 0; display: inline-grid; place-items: center; border-radius: 50%; }
+.bindu-home .bl-arrow:disabled { opacity: var(--disabled-dim); cursor: default; }
+.bindu-home .bl-row { list-style: none; margin: 0; padding: 0 0 8px; display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - 48px) / 3); gap: 24px;
+  overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.bindu-home .bl-row::-webkit-scrollbar { display: none; }
+.bindu-home .bl-card { scroll-snap-align: start; position: relative; }
+@media (max-width: 1023px) { .bindu-home .bl-row { grid-auto-columns: calc((100% - 24px) / 2); } }
+@media (max-width: 639px) { .bindu-home .bl-row { grid-auto-columns: 86%; gap: 16px; } .bindu-home .bl-arrow { width: 44px; height: 44px; } .bindu-home .bl-all { display: none; } }
+.bindu-home .bl-img { object-fit: cover; object-position: center; background: var(--pc-win); }
+.bindu-home .bl-t { display: block; font-size: 18px; line-height: 1.35; text-wrap: balance; }
+.bindu-home .bl-link { color: inherit; text-decoration: none; }
+.bindu-home .bl-link::after { content: ""; position: absolute; inset: 0; }
+.bindu-home .bl-link:focus-visible { outline: none; }
+.bindu-home .bl-card:has(.bl-link:focus-visible) .pc-box { outline: var(--focus-ring-light); outline-offset: 3px; }
+.bindu-home:not([data-theme="light"]) .bl-card:has(.bl-link:focus-visible) .pc-box { outline: var(--focus-ring-dark); }
+@media (hover: hover) { .bindu-home .bl-card:hover .bl-link { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
+.bindu-home .bl-meta { margin: 0; display: flex; gap: 16px; font: 400 14px/1.4 var(--font-sans); color: var(--on-dark); }
+.bindu-home .bl-read { color: var(--link-wipe); font-weight: 500; }

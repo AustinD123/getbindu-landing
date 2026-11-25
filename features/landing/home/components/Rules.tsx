@@ -1,47 +1,61 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef } from "react";
 import { rules as c } from "../content";
-import { NAV_REGULATIONS } from "../links";
-import { gsap, useReducedMotion } from "../lib/motion";
-import { isPhone, onPhoneChange } from "../lib/phone";
+import { useReducedMotion } from "../lib/motion";
+import { isPhone } from "../lib/phone";
 
-/* Round 57: "The rules Bindu covers" (id `rules`), an infinite, minimal gallery (reference: Daydream's infinite scrolling gallery on Awwwards, made quieter). Not pinned. A centred
-   title and one line, then ONE endless row of the five type-only rule tiles, shown three times so it never ends (the copies are rendered once when the section hydrates; the loop
-   wraps one transform, nothing is cloned while scrolling). The row drifts by itself (DRIFT px/s). The page's scroll velocity is added to the drift (faster scroll, faster row, then it
-   eases back) and while the row runs fast every tile bends: skewX up to MAX_BEND degrees (the shape of a page being flicked), a little rotation, and the ghost number slides inside the
-   tile. At rest everything is flat. Drag and a sideways wheel move it with momentum. Hovering a tile pauses the drift and lifts its name to ink (the others go mute); focus does the
-   same and scrolls the focused tile to the middle; arrow keys step one tile. GSAP ticker, one quickSetter per tile and per ghost, transforms only; the ticker stops off screen. The
-   duplicate tiles are aria-hidden with unfocusable links, so a screen reader reads the five rules once. Phones, reduced motion and the first paint: a native horizontal scroll-snap
-   row of the five tiles (no loop, no drift, no bend). Content, statuses, regulation numbers, dates and source links are the brief's, unchanged. */
-const linkOf = (name: string) => NAV_REGULATIONS.find((l) => l.t === name)?.u ?? "/";
-const DRIFT = 20;        // px per second, on its own
-const MAX_BEND = 8;      // degrees of skew at full speed
-const FULL = 1400;       // px/s of total speed that counts as "full speed" for the bend
-const COPIES = 3;        // the row is the five tiles three times
+/* Round 65 (r65-6, Austin): "The rules Bindu covers" (id `rules`) as a static three-column grid of six cards, in the shape of parallel.ai's product
+   grid (measured in Chrome, rebuilt here in our own CSS: styles/r65.css). Each card is a warm-grey container holding a white window that bleeds off
+   its right and bottom edges; the window plays that rule's clip from its getbindu.com page, and one white chip floats over it with a line of the
+   record (an Illustration). Under the container: a small outlined icon, the name, one line of what the rule asks, the status chip and a small
+   "Read about X" link to the page. No drift, no drag, no pin. Clips are muted and looping, load nothing until near the screen (preload none),
+   play only while in view, and never play on phones or with reduced motion (the poster shows). */
 
 type Item = (typeof c.items)[number];
-const ghostLines = (reg: string) => reg.split(/[\s/]+/).filter(Boolean);
 
-function Tile({ r, copy }: { r: Item; copy: boolean }) {
-  const lines = ghostLines(r.reg);
+/* Lucide (ISC) outlines, 24px grid, drawn at 16px with a 1.5px stroke */
+const ICONS: Record<string, string> = {
+  tree: "M10 10v.2A3 3 0 0 1 8.9 16H5a3 3 0 0 1-1-5.8V10a3 3 0 0 1 6 0Z M7 16v6 M13 19v3 M12 19h8.3a1 1 0 0 0 .7-1.7L18 14h.3a1 1 0 0 0 .7-1.7L16 9h.2a1 1 0 0 0 .8-1.7L13 3l-1.4 1.5",
+  shirt: "M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z",
+  battery: "M16 7h1a2 2 0 0 1 2 2v.5a.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5v3a.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5v.5a2 2 0 0 1-2 2h-1 M7 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h3 M11 7l-3 5h4l-3 5",
+  factory: "M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z M17 18h1 M12 18h1 M7 18h1",
+  flask: "M9 3h6 M10 9V3 M14 9V3 M10 9 4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9 M7 15h10",
+  package: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z M12 22V12 M3.3 7 12 12l8.7-5 M7.5 4.27l9 5.15",
+};
+
+export function CardIcon({ name }: { name: string }) {
   return (
-    <li className="rl-tile" aria-hidden={copy ? true : undefined}>
-      <span className="rl-ghost" aria-hidden="true">{lines.map((l, i) => <span key={i}>{l}</span>)}</span>
-      <div className="rl-over">
-        <div className="rl-top">
-          <span className="sr">{r.reg}. </span>
-          <h3 className="rl-t">{r.t}</h3>
-          <p className="rl-full">{r.full}</p>
+    <span className="pc-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        {(ICONS[name] ?? "").split(" M").map((d, i) => <path key={i} d={i ? `M${d}` : d} />)}
+      </svg>
+    </span>
+  );
+}
+
+function Card({ r }: { r: Item }) {
+  return (
+    <li className="pc rg-card">
+      <div className="pc-box">
+        <div className="pc-tray" aria-hidden="true" />
+        <div className="pc-win">
+          <div className="pc-bar"><span className="pc-url">{r.page}</span></div>
+          <video className="pc-media" muted loop playsInline preload="none" poster={r.poster} aria-hidden="true" tabIndex={-1}>
+            <source src={r.video} type="video/webm" />
+          </video>
         </div>
-        <div className="rl-bot">
-          <p className="rl-d">{r.d}</p>
-          <p className="rl-cov"><span>{c.covers}: </span>{r.covers}</p>
-          {r.date ? <p className="rl-date">{r.date}</p> : null}
-          <ul className="rl-chips">{r.chips.map((k) => <li key={k.t} className={`chip ${k.live ? "chip-live" : "chip-build"}`}>{k.t}</li>)}</ul>
-          <p className="rl-links">
-            <a className="rl-read" href={linkOf(r.link)} tabIndex={copy ? -1 : undefined} aria-label={`${c.read}: ${r.t}`}>{c.read}</a>
-            <a className="rl-src" href={r.src.u} target="_blank" rel="noopener noreferrer" tabIndex={copy ? -1 : undefined}>{c.source}: {r.src.t}</a>
-          </p>
+        <p className="pc-chip"><span className="pc-chip-dot" aria-hidden="true" />{r.chip}</p>
+      </div>
+      <div className="pc-text">
+        <div className="pc-row">
+          <h3 className="pc-t"><CardIcon name={r.icon} /><span>{r.t}</span><span className="sr">, {r.full} ({r.reg})</span></h3>
+          <span className={`chip ${r.live ? "chip-live" : "chip-build"} pc-status`}>{r.live ? c.live : c.build}</span>
         </div>
+        <p className="pc-d">{r.d}</p>
+        {r.date ? <p className="pc-d pc-date">{r.date}</p> : null}
+        <p className="pc-links">
+          <a className="pc-read" href={r.href}>{r.read}</a>
+          <a className="pc-src" href={r.src.u} target="_blank" rel="noopener noreferrer">{c.source}: {r.src.t}</a>
+        </p>
       </div>
     </li>
   );
@@ -49,172 +63,32 @@ function Tile({ r, copy }: { r: Item; copy: boolean }) {
 
 export function Rules() {
   const reduced = useReducedMotion();
-  const [phone, setPhone] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const view = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLUListElement>(null);
-  const [stopped, setStopped] = useState(false);   // r61-3: the user's pause for the drift (WCAG 2.2.2)
-  const stoppedRef = useRef(false);
-  stoppedRef.current = stopped;
-  const loop = mounted && !reduced && !phone;
-
+  const grid = useRef<HTMLUListElement>(null);
+  /* play a clip only while its card is on screen; phones and reduced motion keep the poster */
   useEffect(() => {
-    setMounted(true);
-    const sync = () => setPhone(isPhone());
-    sync();
-    const off = onPhoneChange(sync);
-    return () => off();
-  }, []);
-
-  useEffect(() => {
-    const v = view.current, t = track.current;
-    if (!loop || !v || !t) return;
-    const n = c.items.length;
-    const tiles = Array.from(t.querySelectorAll<HTMLElement>(".rl-tile"));
-    const ghosts = tiles.map((el) => el.querySelector<HTMLElement>(".rl-ghost")!);
-    const setX = gsap.quickSetter(t, "x", "px");
-    const skew = tiles.map((el) => gsap.quickSetter(el, "skewX", "deg"));
-    const rot = tiles.map((el) => gsap.quickSetter(el, "rotation", "deg"));
-    const gx = ghosts.map((g) => gsap.quickSetter(g, "x", "px"));
-    let step = 0, W = 0, tw = 0, vw = 0;
-    const measure = () => { step = tiles[1]!.offsetLeft - tiles[0]!.offsetLeft; tw = tiles[0]!.offsetWidth; W = step * n; vw = v.clientWidth; };
-    measure();
-    const st = { pos: 0, freeV: 0, bend: 0, hover: false, focus: false, lock: false, drag: false, vis: true };
-    let lastY = window.scrollY, sVel = 0, flat = false;
-    const wrap = (p: number) => ((p % W) + W) % W;
-    const tick = (_t: number, dtMs: number) => {
-      if (!W) return;
-      const dt = Math.min(dtMs, 64) / 1000;
-      const sy = window.scrollY;
-      sVel += ((sy - lastY) / Math.max(dt, 0.001) - sVel) * Math.min(1, dt * 10);   // the page's scroll speed, smoothed
-      lastY = sy;
-      st.freeV *= Math.pow(0.04, dt);                                                  // drag and wheel momentum eases back
-      const drift = st.hover || st.focus || stoppedRef.current ? 0 : DRIFT;
-      const speed = drift + sVel * 0.45 + st.freeV;
-      if (!st.lock && !st.drag) st.pos += speed * dt;
-      st.pos = wrap(st.pos);
-      setX(-st.pos);
-      const b = Math.max(-1, Math.min(1, (st.lock || st.drag ? st.freeV : speed - drift) / FULL));
-      st.bend += (b - st.bend) * Math.min(1, dt * 8);
-      if (Math.abs(st.bend) < 0.002 && st.bend !== 0) st.bend = 0;
-      if (st.bend === 0 && flat) return;
-      const wasFlat = flat;
-      flat = st.bend === 0;
-      if (wasFlat && !flat) v.classList.add("is-bend");   // tiles become their own layers only while they bend, so a bend does not re-rasterise their text every frame
-      const k = -st.bend;
-      /* only the tiles in (or just next to) the window are written: the other copies of the loop are off screen, and when the bend ends every tile is put back flat */
-      for (let i = 0; i < tiles.length; i++) {
-        const x = i * step - st.pos;
-        if (flat || (x > -tw - 80 && x < vw + 80)) { skew[i]!(k * MAX_BEND); rot[i]!(k * 1.5); gx[i]!(k * 56); }
-      }
-      if (flat) v.classList.remove("is-bend");
-    };
-    gsap.ticker.add(tick);
-    const io = new IntersectionObserver(([e]) => {
-      if (e!.isIntersecting && !st.vis) { st.vis = true; lastY = window.scrollY; gsap.ticker.add(tick); }
-      else if (!e!.isIntersecting && st.vis) { st.vis = false; gsap.ticker.remove(tick); }
-    });
-    io.observe(v);
-
-    // hover: pause the drift, lift this rule's name (every copy of it), mute the others
-    const hot = (idx: number) => { v.toggleAttribute("data-hot", idx >= 0); tiles.forEach((el, j) => el.classList.toggle("is-hot", idx >= 0 && j % n === idx)); };
-    const enters = tiles.map((el, j) => { const h = () => { st.hover = true; hot(j % n); }; el.addEventListener("pointerenter", h); return h; });
-    const leaves = tiles.map((el) => { const h = () => { st.hover = false; if (!st.focus) hot(-1); }; el.addEventListener("pointerleave", h); return h; });
-
-    // bring tile i (a real one) to the middle, along the shortest way round the loop
-    const toTile = (i: number, rel = false, instant = false) => {
-      const centre = i * step + tw / 2 - v.clientWidth / 2;
-      let tgt = rel ? i : centre;
-      if (!rel) { const d = wrap(tgt - st.pos); tgt = st.pos + (d > W / 2 ? d - W : d); }
-      st.lock = true; st.freeV = 0;
-      gsap.killTweensOf(st);
-      if (instant) { st.pos = wrap(tgt); st.lock = false; return; }   // r61-5: keyboard focus lands at once
-      gsap.to(st, { pos: tgt, duration: 0.7, ease: "power3.out", onComplete: () => { st.lock = false; } });
-    };
-    const onFocusIn = (e: FocusEvent) => {
-      const i = tiles.findIndex((el, j) => j < n && el.contains(e.target as Node));
-      if (i < 0) return;
-      st.focus = true; hot(i);
-      let kb = false;
-      try { kb = (e.target as Element).matches(":focus-visible"); } catch { /* old engine: glide */ }
-      toTile(i, false, kb);   // keyboard focus is instant; a pointer click keeps the 0.7s glide
-    };
-    const onFocusOut = () => { st.focus = false; if (!st.hover) hot(-1); };
-    t.addEventListener("focusin", onFocusIn);
-    t.addEventListener("focusout", onFocusOut);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-      e.preventDefault();
-      const next = (Math.round(st.pos / step) + (e.key === "ArrowRight" ? 1 : -1)) * step;
-      toTile(next, true);
-    };
-    v.addEventListener("keydown", onKey);
-
-    // drag with momentum, and a sideways wheel
-    let x0 = 0, tPrev = 0, moved = 0;
-    const down = (e: PointerEvent) => {
-      if (e.button !== 0) return;
-      st.drag = true; moved = 0; x0 = e.clientX; tPrev = performance.now(); st.freeV = 0;
-      gsap.killTweensOf(st); st.lock = false;
-      v.setPointerCapture(e.pointerId); v.classList.add("is-drag");
-    };
-    const move = (e: PointerEvent) => {
-      if (!st.drag) return;
-      const dx = e.clientX - x0, now = performance.now(), dtm = Math.max(1, now - tPrev);
-      x0 = e.clientX; tPrev = now; moved += Math.abs(dx);
-      st.pos = wrap(st.pos - dx);
-      st.freeV += (-(dx / dtm) * 1000 - st.freeV) * 0.4;
-    };
-    const up = (e: PointerEvent) => { if (!st.drag) return; st.drag = false; v.classList.remove("is-drag"); try { v.releasePointerCapture(e.pointerId); } catch { /* already released */ } };
-    const click = (e: MouseEvent) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); moved = 0; } };
-    const wheel = (e: WheelEvent) => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); st.pos = wrap(st.pos + e.deltaX); st.freeV += e.deltaX * 5; } };
-    v.addEventListener("pointerdown", down); v.addEventListener("pointermove", move);
-    v.addEventListener("pointerup", up); v.addEventListener("pointercancel", up);
-    v.addEventListener("click", click, true); v.addEventListener("wheel", wheel, { passive: false });
-    const ro = new ResizeObserver(measure);
-    ro.observe(v);
-    const fonts = document.fonts?.ready.then(measure);
-    void fonts;
-    return () => {
-      gsap.ticker.remove(tick); io.disconnect(); ro.disconnect(); gsap.killTweensOf(st);
-      tiles.forEach((el, j) => { el.removeEventListener("pointerenter", enters[j]!); el.removeEventListener("pointerleave", leaves[j]!); });
-      t.removeEventListener("focusin", onFocusIn); t.removeEventListener("focusout", onFocusOut);
-      v.removeEventListener("keydown", onKey);
-      v.removeEventListener("pointerdown", down); v.removeEventListener("pointermove", move);
-      v.removeEventListener("pointerup", up); v.removeEventListener("pointercancel", up);
-      v.removeEventListener("click", click, true); v.removeEventListener("wheel", wheel);
-      v.removeAttribute("data-hot");
-      gsap.set([t, ...tiles, ...ghosts], { clearProps: "transform" });
-    };
-  }, [loop]);
-
-  const sets = loop ? COPIES : 1;
+    const g = grid.current;
+    if (!g || reduced || isPhone()) return;
+    const vids = Array.from(g.querySelectorAll<HTMLVideoElement>("video"));
+    const io = new IntersectionObserver((es) => es.forEach((e) => {
+      const v = e.target as HTMLVideoElement;
+      if (e.isIntersecting) { if (v.preload !== "auto") { v.preload = "auto"; v.load(); } v.play().catch(() => { /* autoplay refused: the poster stays */ }); }
+      else v.pause();
+    }), { rootMargin: "120px 0px", threshold: 0.2 });
+    vids.forEach((v) => io.observe(v));
+    return () => { io.disconnect(); vids.forEach((v) => v.pause()); };
+  }, [reduced]);
   return (
-    <section className="band-dark sec rl" id="rules" aria-labelledby="rl-h">
+    <section className="band-dark sec rg" id="rules" aria-labelledby="rl-h">
       <div className="container rl-head">
         <h2 id="rl-h" className="t-display-lg">{c.title}</h2>
         <p className="t-body-lg rl-lead">{c.lead}</p>
       </div>
-      <div
-        ref={view}
-        className={`rl-view${loop ? " is-loop" : " is-native"}`}
-        role="group"
-        aria-roledescription="carousel"
-        aria-label={c.label}
-        tabIndex={loop ? 0 : undefined}
-        style={{ "--rl-n": c.items.length } as CSSProperties}
-      >
-        <ul ref={track} className="rl-track">
-          {Array.from({ length: sets }).flatMap((_, s) => c.items.map((r) => <Tile key={`${s}-${r.id}`} r={r} copy={s > 0} />))}
+      <div className="container">
+        <ul ref={grid} className="pc-grid" aria-label={c.label}>
+          {c.items.map((r) => <Card key={r.id} r={r} />)}
         </ul>
+        <p className="pc-note">{c.note}</p>
       </div>
-      {loop && (
-        <div className="rl-ctl">
-          <button type="button" className="btn btn-ghost rl-pause" aria-pressed={stopped} onClick={() => setStopped((v) => !v)}>
-            {stopped ? c.play : c.pause}
-          </button>
-        </div>
-      )}
     </section>
   );
 }
