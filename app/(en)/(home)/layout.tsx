@@ -5,16 +5,16 @@
  * and the intro state on the wrapper before first paint, so nothing flashes.
  */
 
-import { IBM_Plex_Mono } from "next/font/google";
+import { Nunito } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-const plexMono = IBM_Plex_Mono({
+// r55 (DESIGN.md v4, adaptation 1): the display face. SF Pro Rounded is Apple-licensed, so Nunito (SIL OFL, the file's own named substitute)
+// is the fallback behind ui-rounded; the tokens put ui-rounded first. Weights 500 and 600 only.
+const nunito = Nunito({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  weight: ["500", "600"],
+  variable: "--font-nunito",
   display: "swap",
-  // the arrow (U+2192) is not in the Latin subset; let it fall to the system mono face, as the mockup does, not to a metric-adjusted Arial
-  adjustFontFallback: false,
 });
 
 // Light unless the reader chose dark; the intro plays unless reduced motion is on or the screen is a phone (under 768px), where the hero paints at once.
@@ -29,7 +29,7 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${plexMono.variable}`}
+        className={`bindu-home ${nunito.variable}`}
         data-theme="light"
         suppressHydrationWarning
       >

@@ -10,7 +10,7 @@ what ships here.
 | GSAP, ScrollTrigger, SplitText | GSAP Standard "no charge" licence | Yes, free for commercial use since 30 Apr 2025 |
 | Lenis (`lenis`) | MIT | Yes. Added for the homepage only; no other route imports it |
 | three.js | MIT | Yes (already a dependency). Replaces OGL, which the mockup used |
-| Inter, IBM Plex Mono (via `next/font/google`) | SIL OFL 1.1 | Yes |
+| Inter and Nunito (via `next/font/google`; Nunito 500 and 600 is the display-face fallback behind ui-rounded, r55). IBM Plex Mono is retired | SIL OFL 1.1 | Yes |
 | Map coastlines (`lib/worldmap.ts`, `lib/shipmap.ts`) | Own work, hand-typed, simplified | Yes |
 
 ## Data
