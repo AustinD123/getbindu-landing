@@ -103,7 +103,7 @@
 .bindu-home .chip-illus, .bindu-home .chip-neutral { background: transparent; border: 1px solid var(--hairline-dark); color: var(--on-dark-mute); }
 
 /* ---------- cards (x.ai card on dark; hairline card on light) ---------- */
-.bindu-home .card { border-radius: var(--r-sm); padding: var(--s-5); }
+.bindu-home .card { border-radius: var(--r-md); padding: var(--s-5); }
 .bindu-home .band-dark .card { background: var(--canvas-soft); border: 1px solid var(--line-white-12); }
 .bindu-home .band-light .card { background: var(--paper); border: 1px solid var(--hairline-light); }
 .bindu-home .band-soft .card { background: var(--paper); border: 1px solid var(--hairline-light); }

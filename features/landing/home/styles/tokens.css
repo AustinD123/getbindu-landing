@@ -101,10 +101,12 @@
   --gutter: clamp(16px, 4vw, 32px);
 
   /* ---------- shape ---------- */
-  --r-sm: 12px;         /* r17: cards, inputs (Notion) */
-  --r-control: 4px;     /* r52 v2: buttons, inputs, tab boxes, chips */
-  --r-lg: 16px;         /* r17: large containers */
-  --r-pill: 9999px;     /* r17: pills for CTAs (and status chips) only */
+  /* r52 (DESIGN.md v2 section 4): five radii. Pills are retired; only dots, the collapsed nav and the 44px icon button are round. */
+  --r-control: 4px;     /* buttons, inputs, tab boxes, chips */
+  --r-ui: 6px;          /* small cards, popovers (the Regulations dropdown) */
+  --r-md: 8px;          /* cards, nested panels (was --r-sm 12px) */
+  --r-lg: 16px;         /* large panels: pricing card, dialogs, the story stage, the departures board */
+  --r-hero: 24px;       /* one full-bleed framed media per page at most */
 
   /* ---------- elevation: hairlines, not shadows ---------- */
   --frame-shadow: none;   /* r17: cards are level 0, no shadow */

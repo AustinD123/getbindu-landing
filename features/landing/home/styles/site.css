@@ -7,7 +7,7 @@
 .bindu-home img, .bindu-home svg, .bindu-home canvas { display: block; max-width: 100%; }
 .bindu-home a { color: inherit; }
 .bindu-home button, .bindu-home input, .bindu-home select, .bindu-home textarea { font: inherit; }
-.bindu-home .skip { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 10px 14px; border-radius: var(--r-pill); background: var(--on-dark); color: var(--ink); }
+.bindu-home .skip { position: absolute; left: 12px; top: -60px; z-index: 200; padding: 10px 14px; border-radius: var(--r-control); background: var(--on-dark); color: var(--ink); }
 .bindu-home .skip:focus { top: 12px; }
 .bindu-home .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .bindu-home :focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
@@ -30,9 +30,9 @@
 .bindu-home .nav-reg-btn svg { transition: transform 200ms var(--ease-ui); }
 .bindu-home .nav-reg.is-open .nav-reg-btn svg { transform: rotate(180deg); }
 .bindu-home .nav-reg-btn:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
-.bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: var(--r-sm); }
+.bindu-home .nav-reg-panel { position: absolute; top: calc(100% + 2px); left: -12px; min-width: 176px; padding: var(--s-2); display: grid; background: var(--canvas-soft); border: 1px solid var(--hairline-dark); border-radius: var(--r-ui); }
 .bindu-home .nav-reg-panel[hidden] { display: none; }
-.bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: 8px; text-decoration: none; }
+.bindu-home .nav-links .nav-reg-panel a { display: flex; align-items: center; min-height: 44px; padding: 0 var(--s-3); border-radius: var(--r-control); text-decoration: none; }
 .bindu-home .nav-links .nav-reg-panel a:hover, .bindu-home .nav-links .nav-reg-panel a:focus-visible { color: var(--on-dark); text-decoration: none; background: rgb(var(--canvas-rgb) / 0.6); }
 @media (prefers-reduced-motion: reduce) { .bindu-home .nav-reg-btn svg { transition: none; } }
 /* r36-3: a shorter bar (56px, like parallel.ai's ~60): the theme toggle is 36px on desktop; phones keep 44px (mobile.css) */
@@ -99,7 +99,7 @@
 .bindu-home .check fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
 .bindu-home .check legend { margin-bottom: 12px; line-height: 1.5; }
 .bindu-home .check-opts { display: flex; flex-wrap: wrap; gap: 8px; }
-.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-pill); border: 1px solid var(--line-white-25); cursor: pointer; font-size: 15px; }
+.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-control); border: 1px solid var(--line-white-25); cursor: pointer; font-size: 15px; }
 .bindu-home .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 .bindu-home .opt.is-on { border-color: var(--cobalt-signal); background: rgb(var(--cobalt-rgb) / 0.14); box-shadow: 0 0 0 1px var(--cobalt-signal); }
 .bindu-home .opt:focus-within { outline: var(--focus-ring-dark); outline-offset: 2px; }
@@ -141,7 +141,7 @@
 .bindu-home .calc-lines > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; border-top: 1px solid var(--hairline-dark); color: var(--on-dark-body); font-size: var(--caption); }
 .bindu-home .calc-lines dd { margin: 0; }
 .bindu-home .calc-book { width: 100%; }
-.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-sm); background: var(--canvas-mid); border: 1px solid var(--hairline-dark); }
+.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--canvas-mid); border: 1px solid var(--hairline-dark); }
 .bindu-home .calc-sum { font-size: var(--display-sm); line-height: 1; letter-spacing: -0.03em; }
 
 /* ---------- 5 trust (round 2 #8: minimal; one motion, the row rules draw in) ---------- */
@@ -175,9 +175,9 @@
 .bindu-home .it-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
 .bindu-home .it-layers li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .bindu-home .it-layers b { font-weight: 500; color: var(--on-dark); }
-.bindu-home .it-layers code { font: 500 11px/1 var(--font-mono); letter-spacing: 0.04em; padding: 5px 7px; border-radius: 6px; border: 1px solid var(--hairline-dark); color: var(--on-dark-body); }
+.bindu-home .it-layers code { font: 500 11px/1 var(--font-mono); letter-spacing: 0.04em; padding: 5px 7px; border-radius: var(--r-control); border: 1px solid var(--hairline-dark); color: var(--on-dark-body); }
 .bindu-home .it-layers .t-caption { flex-basis: 100%; margin: 0; color: var(--on-dark-mute); }
-.bindu-home .ph { font: 500 12px/1.5 var(--font-mono); letter-spacing: 0.04em; color: var(--on-dark-mute); align-self: start; justify-self: start; border: 1px dashed var(--build-line-dark); border-radius: 6px; padding: 6px 8px; }
+.bindu-home .ph { font: 500 12px/1.5 var(--font-mono); letter-spacing: 0.04em; color: var(--on-dark-mute); align-self: start; justify-self: start; border: 1px dashed var(--build-line-dark); border-radius: var(--r-control); padding: 6px 8px; }
 @keyframes it-in { from { opacity: 0; transform: translateY(-8px); } }
 
 /* ---------- 6 roles, FAQ, finale ---------- */
@@ -189,7 +189,7 @@
 .bindu-home .faq-item { --faq-q: clamp(18.4px, 1.8vw, 24px); }
 .bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-5) 0; }
 .bindu-home .faq-item summary::-webkit-details-marker { display: none; }
-.bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: 6px; }
+.bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: var(--r-control); }
 .bindu-home .faq-item .t-display-sm { font-size: var(--faq-q); }
 /* the icon: 18px, the nav's stroke (1.6, round caps), centred on the first line box; minus when open (the bar turns) */
 .bindu-home .faq-ico { flex: none; margin-left: auto; width: 18px; height: calc(var(--faq-q) * var(--lh-display-sm)); display: flex; align-items: center; color: var(--ink); }
@@ -240,7 +240,7 @@
   .bindu-home .nav-brand { flex: none; }
 }
 .bindu-home .nav-links > a, .bindu-home .nav-reg { position: relative; z-index: 1; }
-.bindu-home .nav-pill, .bindu-home .nav-hover { position: absolute; left: 0; top: 0; height: 26px; border-radius: 999px; box-sizing: border-box; pointer-events: none; z-index: 0; }
+.bindu-home .nav-pill, .bindu-home .nav-hover { position: absolute; left: 0; top: 0; height: 26px; border-radius: var(--r-control); box-sizing: border-box; pointer-events: none; z-index: 0; }
 .bindu-home .nav-pill { height: 28px; background: rgb(var(--cobalt-rgb) / 0.16); border: 1px solid rgb(var(--cobalt-rgb) / 0.55); }
 .bindu-home .nav-hover { height: 28px; background: rgb(var(--fg-rgb) / 0.07); border: 1px solid rgb(var(--fg-rgb) / 0.10); }
 .bindu-home .nav-dot { z-index: 1; }
