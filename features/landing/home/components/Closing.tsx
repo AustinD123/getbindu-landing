@@ -71,7 +71,7 @@ const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
    width, so whole rows of containers show inside the letters. The point under the middle of the wordmark is FX, FY: the coloured stacks right of centre, by the crane.
    During the first quarter of the zoom it grows to the cover size of the full-bleed view (pinned PX, PY), so it always covers whatever the growing letters show.
    The poster is the layer's background (background-size/-position); the clip sits on top as a <video> of its own size moved only by transform (translate + scale). */
-const IW = 1280, IH = 676, SHOW = 0.65, FX = 0.62, FY = 0.5, PX = 0.6, PY = 0.5, PHOTO_Q = 0.25, STEPS = 1500;
+const IW = 1280, IH = 676, SHOW = 0.65, FX = 0.62, FY = 0.5, PX = 0.5, PY = 0.5, PHOTO_Q = 0.25, STEPS = 1500;
 const POSTER = "/home/images/port-poster.webp";
 type Row = { ms: string; mp: string; bs: string; bp: string; v: string; dot: string; g: string };
 /* r29-5: everything the zoom needs, worked out once per measure (no arithmetic or string building while scrolling): the row for each of STEPS + 1 points of q */
@@ -114,17 +114,17 @@ export function Finale() {
       for (const [path, type] of [["/videos/rotterdam-port-hero.av1.webm", 'video/webm; codecs="av01.0.05M.08"'], ["/videos/rotterdam-port-hero.webm", 'video/webm; codecs="vp9"']] as const) {
         const source = document.createElement("source"); source.src = cdnAsset(path); source.type = type; video.appendChild(source);
       }
-      video.muted = true; video.hidden = false; video.load(); loaded = true;
+      video.muted = true; video.preload = "auto"; video.hidden = false; video.load(); loaded = true;
       video.addEventListener("canplay", sync, { once: true });
     };
     // r42: the picture is fetched only when the finale is about 2 viewports away
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", `url(${cdnAsset(POSTER)})`); if (useClip) load(); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
     io.observe(sec);
-    const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); }); 
+    const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); }, { rootMargin: "100% 0px 0px 0px" });
     vis.observe(sec);   // r62-3: playing (so decoded) from one viewport before the finale
     const offPause = subscribePause(sync);
     const tk = track(sec), dotDots = Array.from(dot.querySelectorAll<SVGCircleElement>("circle"));
-    let L = layout(stage.clientWidth, stage.clientHeight), rows: Row[] = [], lastP = -1, willChange = false, formed = false, dashed = false, resolved = false;
+    let L = layout(stage.clientWidth, stage.clientHeight), rows: Row[] = [], lastP = -1, formed = false, dashed = false, resolved = false;
     const zp = { p: 0 };
 
     // p 0 to 1: the mask grows (0 to 0.8), then the dark gradient under the footer comes in. The zoom only reads a row of the precomputed table and writes mask-size, mask-position,
@@ -133,8 +133,6 @@ export function Finale() {
       if (p === lastP) return;
       lastP = p; fin.z = p;
       const q = c01(p), ct = smooth((p - 0.78) / 0.22);
-      const zooming = q > 0 && q < 1;
-      if (zooming !== willChange) { willChange = zooming; photo.style.willChange = zooming ? "transform" : ""; }
       if (q >= 1) {
         setMask(photo, "none", "auto", "0 0");
         photo.style.removeProperty("background-size"); photo.style.removeProperty("background-position");
@@ -189,7 +187,7 @@ export function Finale() {
       scrollTrigger: { trigger: sec, start: () => `top+=${FINP.hold * window.innerHeight} top`, end: () => `top+=${(FINP.hold + FINP.span) * window.innerHeight} top`, scrub: SCRUB_SOFT, invalidateOnRefresh: true },
     });
     const tween = gsap.fromTo(zp, { p: 0 }, {
-      p: 1, ease: "none", onUpdate: () => apply(zp.p),
+      p: 1, ease: "power2.in", onUpdate: () => apply(zp.p),
       scrollTrigger: { trigger: sec, start: () => `top+=${FINP.zoom * window.innerHeight} top`, end: () => `top+=${(FINP.zoom + FINP.zoomLen) * window.innerHeight} top`, scrub: SCRUB_SOFT, invalidateOnRefresh: true },
     });
     // the page above can change height after load (sections that skip rendering, fonts): re-measure the zoom's start and end when the finale has moved
