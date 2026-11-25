@@ -5,14 +5,15 @@
  * and the intro state on the wrapper before first paint, so nothing flashes.
  */
 
-import { Rubik } from "next/font/google";
+import { Newsreader } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-// r64 (DESIGN.md v4, adaptation 1): Rubik (SIL OFL) for headings and body, chosen by Austin from a 25-font trial.
-const rubik = Rubik({
+// r65-1: one font for the whole homepage, Newsreader (SIL OFL), the getbindu.com heading face, variable with the optical-size axis.
+const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-rubik",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 
@@ -28,7 +29,7 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${rubik.variable}`}
+        className={`bindu-home ${newsreader.variable}`}
         data-theme="light"
         suppressHydrationWarning
       >
