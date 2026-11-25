@@ -4,7 +4,7 @@ import { isPending, onReady } from "./ready";
 /* Round 54 (DESIGN.md v3 section 5): one reveal for every heading and lead on the page. Each line fades up from 30px below (opacity 0 to 1,
    y 30 to 0), expo-out, 0.7s, lines staggered 0.08s, played ONCE when the heading reaches 92% down the viewport (it does not reverse). The
    line masks of r20 are gone. GSAP SplitText (lines, no mask) re-splits on resize (autoSplit); a heading that already played is not hidden
-   again by a re-split. The yellow full stop stays: it is cut from the last line and drops in after the lines. The lead under a heading
+   again by a re-split. The yellow full stop is gone (r55: Ollama has none); a heading keeps its plain full stop. The lead under a heading
    (.sec-head p, the Full Circle / Story / journey leads) fades up as one block just after it. Body text is not touched; the finale wordmark
    and Full Circle's own heading (data-own) are skipped. Reduced motion: nothing runs, everything shows at once. */
 const LEADS = "main .sec-head > p, main .fl-lead, main .ship-sub, main .ex-head > p, main .vc-head > p, main .rl-head > p";
@@ -26,23 +26,9 @@ export function startHeadings(): () => void {
       splits.push(SplitText.create(h, {
         type: "lines", autoSplit: true, aria: "auto",
         onSplit: (self) => {
-          // r22-17 / r54: the full stop becomes a small yellow Bindu dot that drops in after the lines
-          const ln = self.lines[self.lines.length - 1] as HTMLElement | undefined;
-          let dot: HTMLElement | null = null;
-          if (ln) {
-            const tw = document.createTreeWalker(ln, NodeFilter.SHOW_TEXT);
-            let last: Text | null = null;
-            while (tw.nextNode()) last = tw.currentNode as Text;
-            if (last && /\.$/.test(last.data)) {
-              last.data = last.data.slice(0, -1);
-              dot = document.createElement("span"); dot.className = "dot-stop"; dot.setAttribute("aria-hidden", "true");
-              last.parentNode!.insertBefore(dot, last.nextSibling);
-            }
-          }
           if (played.has(h)) return;   // already revealed: a re-split on resize leaves it shown
           const tl = gsap.timeline({ paused: true, onComplete: () => { played.add(h); } });
           tl.fromTo(self.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", stagger: 0.08 });
-          if (dot) tl.fromTo(dot, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: "expo.out" }, ">-0.45");
           tls.set(h, tl);
           return tl;
         },

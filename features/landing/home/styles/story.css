@@ -7,13 +7,13 @@
 /* ---------- 6 statement ---------- */
 .bindu-home .stmt { text-align: center; }
 .bindu-home .stmt > .container { max-width: 1040px; }
-/* r54: a long sentence, so it sits one step under the section display (40 to 64px) at the display weight, tracking and a tight line height */
-.bindu-home .stmt-t { margin: 0 auto; font-size: clamp(34px, 4.6vw, 64px); line-height: 1; letter-spacing: var(--track-lg); text-wrap: balance; }
+/* r55: the statement is a section title at the file's display-lg (30px), 1.2 line height, no tracking */
+.bindu-home .stmt-t { margin: 0 auto; font-size: var(--display-lg); line-height: 1.2; letter-spacing: 0; text-wrap: balance; }
 .bindu-home .stmt-w { --l: 0; color: color-mix(in srgb, var(--on-dark) calc(var(--l) * 100%), var(--on-dark-mute)); }
 .bindu-home .stmt-chip { --c: 0; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 0;
-  border-radius: var(--r-xs); font-size: 0.86em; vertical-align: 0.04em; background: color-mix(in srgb, var(--brand-yellow) calc(var(--c) * 100%), var(--canvas-mid)); }
-.bindu-home .stmt-chip .stmt-w { color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
-.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; color: color-mix(in srgb, var(--ink) calc(var(--c) * 100%), var(--on-dark)); }
+  border-radius: var(--r-control); font-size: 0.86em; vertical-align: 0.04em; background: color-mix(in srgb, var(--brand-yellow) calc(var(--c) * 100%), var(--canvas-soft)); }
+.bindu-home .stmt-chip .stmt-w { color: color-mix(in srgb, #000 calc(var(--c) * 100%), var(--on-dark)); }
+.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; color: color-mix(in srgb, #000 calc(var(--c) * 100%), var(--on-dark)); }
 
 /* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
 
@@ -108,8 +108,6 @@
 .bindu-home .hero-h::before { content: ""; position: absolute; z-index: -1; inset: -0.35em -0.7em; pointer-events: none;
   background: radial-gradient(closest-side, rgb(var(--canvas-rgb) / 0.85) 55%, rgb(var(--canvas-rgb) / 0) 100%);
   -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); mask-image: radial-gradient(closest-side, #000 60%, transparent 100%); }
-/* r22-17: the full stop of a heading is a small yellow Bindu dot that drops in last */
-.bindu-home .dot-stop { display: inline-block; width: 0.15em; height: 0.15em; margin-left: 0.04em; border-radius: 50%; background: var(--proof-dot); box-shadow: 0 0 0 1px var(--yellow-outline); vertical-align: baseline; }
 /* r22-13: the dot motif, restrained: dotted section rules and small Bindu dots as bullets (no dot grids) */
 .bindu-home .r6-inc li::before { background: var(--cobalt-signal); }
 
