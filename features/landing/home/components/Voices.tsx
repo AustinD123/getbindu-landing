@@ -5,9 +5,8 @@ import { isPhone, onPhoneChange } from "../lib/phone";
 import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
 
-/* Round 44 (r44-5), flattened in r54 (DESIGN.md v3 section 5, Sublime): "What buyers say" (id `voices`). Large v3 panel cards on a STRAIGHT sideways row that the scroll
-   moves: no 3D, no rotation, no perspective. The front card is full ink at display-sm size; the others sit to its sides, dimmed. The row fades up once on entry.
-   The card transforms and opacity are written by GSAP (gsap.set from one coalesced frame), nothing else moves.
+/* Round 44 (r44-5): "What buyers say" (id `voices`). Large quote cards on a curved 3D track. The front card is full ink at display-sm size; the ones behind recede in depth,
+   turn away and dim. The card transforms and opacity are written by GSAP (gsap.set from one coalesced frame), nothing else moves.
    The one source of truth is the scroll position: the section is a sticky window (like Full Circle), each quote owns 70svh of scroll, and the position is eased toward it
    (so a wheel tick moves it a little). Dragging moves the page scroll (so it works with the pin and reverses with it) and on release throws the position by its velocity
    and snaps to a card; when the wheel stops, it settles on the nearest card. Arrow keys step one card. The dots show (and jump to) the active card.
@@ -22,7 +21,7 @@ const clamp = (v: number, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
 const CC: Record<string, string> = { Netherlands: "NL", Uganda: "UG", Belgium: "BE", Switzerland: "CH", Germany: "DE" };
 const SEEDS = Array.from({ length: 13 }, (_, k) => { const a = (k + 1) * 2.399963, r = 1.9 * Math.sqrt(k + 1); return { x: +(12 + r * Math.cos(a)).toFixed(2), y: +(12 + r * Math.sin(a)).toFixed(2) }; });
 
-type Mode = "list" | "arc";
+type Mode = "list" | "swipe" | "arc";
 
 export function Voices() {
   const reduced = useReducedMotion();
@@ -33,9 +32,19 @@ export function Voices() {
   const stage = useRef<HTMLDivElement>(null);
   const cards = useRef<(HTMLLIElement | null)[]>([]);
   const goRef = useRef<(i: number) => void>(() => {});
-  const mode: Mode = !mounted || reduced || phone ? "list" : "arc";   // r54 (v3): phones and reduced motion get the list (the swipe row is no longer used)
+  const mode: Mode = !mounted || reduced ? "list" : phone ? "swipe" : "arc";
 
   useEffect(() => { setMounted(true); setPhone(isPhone()); return onPhoneChange(() => setPhone(isPhone())); }, []);
+
+  /* the swiped list on phones: the active dot follows the card that is in view */
+  useEffect(() => {
+    if (mode !== "swipe") return;
+    const host = stage.current;
+    if (!host) return;
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setActive(cards.current.indexOf(e.target as HTMLLIElement)); }), { root: host, threshold: 0.6 });
+    cards.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, [mode]);
 
   useEffect(() => {
     if (mode !== "arc") return;
@@ -54,15 +63,17 @@ export function Voices() {
       else window.scrollTo({ top: y, behavior: smooth ? "smooth" : "auto" });
     };
     // one card's place on the arc: d is its distance from the shown position, in cards
-    const cw = () => Math.min(560, w * 0.8), GAP = 24;   // card width (matches r44.css .vc-card) and the gap between cards
-    const place = (d: number) => ({ x: d * (cw() + GAP), o: clamp(1 - 0.5 * Math.abs(d), 0.35) });
+    const place = (d: number) => {
+      const k = clamp(w / 1200, 0.55, 1), R = 760 * k, th = d * 0.62, a = Math.abs(d);
+      return { x: R * Math.sin(th), z: -R * (1 - Math.cos(th)), ry: -th * 57.2958 * 0.9, s: 1 - 0.06 * Math.min(a, 2), o: clamp(1 - 0.55 * a) };
+    };
     const paint = () => {
       const key = shown.toFixed(3) + "|" + w;
       if (key === lastKey) return;
       lastKey = key;
       els.forEach((c, i) => {
         const d = i - shown, p = place(d);
-        gsap.set(c, { xPercent: -50, x: p.x, opacity: p.o, zIndex: 10 - Math.round(Math.abs(d) * 2), pointerEvents: "auto" });
+        gsap.set(c, { xPercent: -50, x: p.x, z: p.z, rotationY: p.ry, scale: p.s, opacity: p.o, zIndex: 10 - Math.round(Math.abs(d) * 2), pointerEvents: p.o > 0.3 ? "auto" : "none" });
       });
       const a = Math.round(shown);
       setActive((v) => (v === a ? v : a));
@@ -95,7 +106,7 @@ export function Voices() {
 
     // drag: the page scroll follows the pointer, a throw on release, then a snap
     let sx = 0, sp = 0, moved = 0, vp = 0, lx = 0, lt = 0, down = false, pid = -1;
-    const spacing = () => cw() + GAP;
+    const spacing = () => 440 * clamp(w / 1200, 0.55, 1);
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0 || (e.target as HTMLElement).closest("a,button")) return;
       down = true; moved = 0; sx = lx = e.clientX; lt = performance.now(); vp = 0; sp = posOf(); pid = e.pointerId;
@@ -130,11 +141,7 @@ export function Voices() {
     host.addEventListener("pointercancel", onUp);
     host.addEventListener("click", onClickCap, true);
     shown = posOf(); lastKey = ""; paint(); kick();
-    // the row fades up once as it comes into view (not a per-card state, so it never fights paint())
-    const row = host.querySelector<HTMLElement>(".vc-cards");
-    const entry = row ? gsap.fromTo(row, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: "expo.out", scrollTrigger: { trigger: host, start: "top 88%", once: true } }) : null;
     return () => {
-      entry?.scrollTrigger?.kill(); entry?.kill(); if (row) gsap.set(row, { clearProps: "opacity,transform" });
       io.disconnect(); window.clearTimeout(idle); tCaf(raf);
       window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize);
       host.removeEventListener("pointerdown", onDown); host.removeEventListener("pointermove", onMove);
@@ -157,6 +164,7 @@ export function Voices() {
 
   const jump = (i: number) => {
     if (mode === "arc") goRef.current(i);
+    else if (mode === "swipe") cards.current[i]?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
   };
   const onKey = (e: KeyboardEvent<HTMLDivElement>) => {
     if (mode !== "arc") return;
@@ -171,7 +179,7 @@ export function Voices() {
     <section className="band-dark sec vc" id="voices" aria-labelledby="vc-h">
       <div ref={pin} className={`vc-pin is-${mode}`} style={{ "--vc-n": N - 1, "--vc-per": PER } as CSSProperties}>
         <div className="vc-win container">
-          <div className="vc-head sec-head">
+          <div className="vc-head">
             <h2 id="vc-h" className="t-display-lg">{c.title}</h2>
             <span className="chip chip-neutral vc-chip" title={c.note}>{c.placeholder}</span>
           </div>

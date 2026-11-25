@@ -144,13 +144,13 @@
   .bindu-home .bd-c { padding-block: clamp(6px, 1.3svh, 12px); }
 }
 
-/* ---------- r44-5 / r54: What buyers say, v3 panel cards on a straight sideways row ---------- */
+/* ---------- r44-5: What buyers say, quote cards on a curved 3D track ---------- */
 .bindu-home .sec.vc { padding: 0; }
 .bindu-home .vc-win { display: grid; gap: var(--s-6); padding-block: var(--section-y); box-sizing: border-box; }
-.bindu-home .vc-head { margin-bottom: 0; }
+.bindu-home .vc-head { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-4); }
 .bindu-home .vc-cards { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); }
-.bindu-home .vc-card { display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6); box-sizing: border-box; padding: var(--s-6); background: var(--canvas-mid); border: 0; border-radius: var(--r-lg); }
-.bindu-home .vc-q { margin: 0; font: var(--display-weight) var(--display-sm)/1.2 var(--font-sans); text-align: left; letter-spacing: var(--track-sm); color: var(--on-dark); text-wrap: pretty; }
+.bindu-home .vc-card { display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-6); box-sizing: border-box; padding: var(--s-6); background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-lg); }
+.bindu-home .vc-q { margin: 0; font: var(--display-weight) var(--display-sm)/1.4 var(--font-display); letter-spacing: 0; color: var(--on-dark); text-wrap: pretty; }
 .bindu-home .vc-who { margin: 0; display: grid; gap: 2px; font: 400 var(--body-sm)/1.4 var(--font-sans); color: var(--on-dark-body); }
 .bindu-home .vc-who b { font-weight: 600; color: var(--on-dark); }
 .bindu-home .vc-foot { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
@@ -165,11 +165,10 @@
 /* the arc: a sticky window, 70svh of scroll per step */
 .bindu-home .vc-pin.is-arc { position: relative; height: calc(var(--vc-n) * var(--vc-per) * 1vh + 100vh); height: calc(var(--vc-n) * var(--vc-per) * 1svh + 100svh); }
 .bindu-home .vc-pin.is-arc .vc-win { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); align-content: center; gap: var(--s-5); padding-block: var(--s-4); }
-.bindu-home .vc-pin.is-arc .vc-head h2 { font-size: min(var(--display-lg), 8svh); }
-.bindu-home .vc-pin.is-arc .vc-stage { position: relative; height: clamp(300px, 46svh, 420px); touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; outline-offset: 6px; }
+.bindu-home .vc-pin.is-arc .vc-stage { position: relative; height: clamp(300px, 46svh, 420px); perspective: 1500px; perspective-origin: 50% 40%; touch-action: pan-y; cursor: grab; user-select: none; -webkit-user-select: none; outline-offset: 6px; }
 .bindu-home .vc-pin.is-arc .vc-stage.is-drag { cursor: grabbing; }
-.bindu-home .vc-pin.is-arc .vc-cards { position: absolute; inset: 0; display: block; }
-.bindu-home .vc-pin.is-arc .vc-card { position: absolute; left: 50%; top: 0; width: min(560px, 80%); height: 100%; cursor: inherit; }
+.bindu-home .vc-pin.is-arc .vc-cards { position: absolute; inset: 0; display: block; transform-style: preserve-3d; }
+.bindu-home .vc-pin.is-arc .vc-card { position: absolute; left: 50%; top: 0; width: min(640px, 80%); height: 100%; backface-visibility: hidden; cursor: inherit; }
 .bindu-home .vc-pin.is-arc .vc-card:not(.is-front) { cursor: pointer; }
 .bindu-home .vc-pin.is-arc .vc-q { font-size: clamp(22px, min(2.2vw, 4.4svh), 32px); }
 /* phones: one card at a time, swiped (scroll snap) */
