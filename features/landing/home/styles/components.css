@@ -16,8 +16,8 @@
 .bindu-home .t-display-md { font-size: var(--display-md); font-weight: 600; letter-spacing: var(--track-md); line-height: 1.33; }
 .bindu-home .t-display-sm { font-size: var(--display-sm); letter-spacing: var(--track-sm); line-height: var(--lh-display-sm); }
 /* r55: the lead is body-md in the body grey; t-soft on a lead does not make it brighter */
-.bindu-home .t-body-lg, .bindu-home .band-dark .t-body-lg.t-soft { font-size: var(--body-lg); line-height: var(--lh-body-lg); letter-spacing: 0; color: var(--on-dark-mute); }
-.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); letter-spacing: 0; }
+.bindu-home .t-body-lg, .bindu-home .band-dark .t-body-lg.t-soft { font-size: var(--body-lg); line-height: var(--lh-body-lg); letter-spacing: 0; color: var(--on-dark-mute); text-wrap: pretty; }
+.bindu-home .t-body    { font-size: var(--body); line-height: var(--lh-body); letter-spacing: 0; text-wrap: pretty; }
 .bindu-home .t-caption { font-size: var(--caption); line-height: 1.33; letter-spacing: 0; }
 .bindu-home .band-dark  .t-muted { color: var(--on-dark-mute); }  .bindu-home .band-dark  .t-soft { color: var(--on-dark-body); }
 .bindu-home .band-light .t-muted, .bindu-home .band-soft .t-muted { color: var(--ink-mute); }
