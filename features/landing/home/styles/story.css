@@ -69,7 +69,7 @@
 /* r33-2: the board is one panel (canvas-mid, a step off the page canvas in both themes) with solid tiles. A tile is --line-ink with
    --canvas characters (light theme: navy tile, ivory characters; dark theme: ivory tile, ink characters). The verdict tiles keep their
    r33-1 colours (--board-pass, --board-stop) with navy characters, so the red and blue read as before. */
-.bindu-home .bd { width: 100%; box-sizing: border-box; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; background: transparent; border-radius: var(--r-lg); padding: var(--s-4) var(--s-5); }   /* r56: no opaque ground, so the dot map shows behind the board (the tiles are solid) */
+.bindu-home .bd { width: 100%; box-sizing: border-box; border-collapse: separate; border-spacing: 0 4px; table-layout: auto; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); padding: var(--s-4) var(--s-5); }   /* r59-6: the board is a solid panel (readable flaps); the map shows around it */   /* r56: no opaque ground, so the dot map shows behind the board (the tiles are solid) */
 
 .bindu-home .bd-c { padding: 0 var(--s-5) 0 0; vertical-align: middle; white-space: nowrap; }
 .bindu-home .bd-c:last-child { padding-right: 0; }
@@ -79,7 +79,7 @@
 /* a flap: dark on the light theme (the ink colour), light on the dark theme, split by a hairline across the middle */
 .bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); position: relative; display: inline-block; width: 1.25em; height: 1.85em; border-radius: 2px; color: var(--tile-ink); }
 /* r58: a flap is four half-height layers: the static top and bottom halves and the two folding flaps (A on top, B beneath it); each half shows half of the same glyph */
-.bindu-home .fl .fh { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--tile); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.bindu-home .fl .fh { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--tile); }
 .bindu-home .fl .fh b { position: absolute; left: 0; right: 0; height: 200%; display: flex; align-items: center; justify-content: center; font-weight: inherit; }
 .bindu-home .fl .fh-t, .bindu-home .fl .fh-fa { top: 0; border-radius: 2px 2px 0 0; }
 .bindu-home .fl .fh-t b, .bindu-home .fl .fh-fa b { top: 0; }
@@ -198,7 +198,7 @@
 .bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq) { isolation: isolate; }
 .bindu-home :is(.stmt > .container, .rl, .r6-pricing > .container, .container.faq,
   .fl-pin.is-static .fl-win, .th-pin.is-flat .th-win, .ex-pin.is-static .ex-stage, .vc-pin:not(.is-arc) .vc-win) { position: relative; }
-.bindu-home :is(.stmt > .container, .fl-win, .th-win, .ex-stage, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {
+.bindu-home :is(.stmt > .container, .fl-win, .th-win, .vc-win, .rl, .r6-pricing > .container, .container.faq)::before {   /* r59-6: .ex-stage left the list: no backdrop blur over the departures board, so the dot map shows */
   content: ""; position: absolute; z-index: -1; inset: -24px -64px; pointer-events: none;
   /* avoid-ai-design-ignore: K3 (r41-1: asked for by Austin) */
   -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
@@ -206,3 +206,13 @@
   -webkit-mask-composite: source-in;
   mask-image: linear-gradient(to right, transparent, #000 96px, #000 calc(100% - 96px), transparent), linear-gradient(to bottom, transparent, #000 64px, #000 calc(100% - 64px), transparent);
   mask-composite: intersect; }
+
+/* r59-6: the board is solid, the heading and the verdict story sit on a plain canvas fill with feathered edges (no filter), and the dot map shows in the rest of the window.
+   Each row's flaps are contained, so a flip repaints nothing outside the row. */
+.bindu-home .ex-head, .bindu-home .bd-story { position: relative; isolation: isolate; }
+.bindu-home .ex-head::before, .bindu-home .bd-story::before { content: ""; position: absolute; z-index: -1; inset: -12px -48px; pointer-events: none; background: var(--canvas);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 12px, #000 calc(100% - 12px), transparent); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 40px, #000 calc(100% - 40px), transparent), linear-gradient(to bottom, transparent, #000 12px, #000 calc(100% - 12px), transparent); mask-composite: intersect; }
+.bindu-home .bd-flaps { contain: layout style; }
+/* the flap layers (two 3D-transformed halves per character) exist only while a row flips: otherwise every idle flap would be its own compositor layer, hundreds of them */
+.bindu-home .bd-row:not(.is-flip) .fl .fh-fa, .bindu-home .bd-row:not(.is-flip) .fl .fh-fb { display: none; }
