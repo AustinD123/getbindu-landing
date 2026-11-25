@@ -13,8 +13,8 @@
 .bindu-home .stmt-w { color: var(--on-dark); }   /* r59-2: dim and lit are opacity, set by GSAP; with no JS the sentence is fully lit */
 .bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 0;
   border-radius: var(--r-control); font-size: 0.86em; vertical-align: 0.04em; background: var(--canvas-soft); }
-.bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--brand-yellow); }
-.bindu-home .stmt-chip .stmt-w, .bindu-home .stmt-chip .mark { color: #FFFFFF; }   /* r65-2: white on the cobalt chip */
+.bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--bindu-yellow); }   /* r65-8: the Bindu chip stays yellow */
+.bindu-home .stmt-chip .stmt-w, .bindu-home .stmt-chip .mark { color: #000; }   /* r65-2: white on the cobalt chip */
 .bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; }
 
 /* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
@@ -30,7 +30,7 @@
 .bindu-home .fz-dot { position: absolute; z-index: 1; opacity: var(--g, 1); pointer-events: none; transform-origin: 50% 50%; }
 /* r30-2: the dot of the i is a golden-angle disc of 34 dots, yellow in the middle blending to cobalt at the rim; each dot appears when its ship dot lands */
 .bindu-home .fz-dot svg { display: block; overflow: visible; }
-.bindu-home .fz-dot circle { opacity: 0; fill: var(--proof-dot); stroke: var(--yellow-outline); stroke-width: 0.025; }   /* r55: the i is yellow (Austin), no cobalt rim */
+.bindu-home .fz-dot circle { opacity: 0; fill: var(--bindu-yellow); stroke: var(--bindu-yellow-edge); stroke-width: 0.025; }   /* r55: the i is yellow (Austin); r65-8: kept yellow after the palette swap */
 .bindu-home .fz-grad { position: absolute; inset: 0; z-index: 1; opacity: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--ink) 72%, transparent), transparent 55%), color-mix(in srgb, var(--ink) 52%, transparent); }
 .bindu-home .fz-flow { position: relative; z-index: 1; }
 .bindu-home .fz-spacer { height: 395vh; height: 395svh; }   /* r32-1: 120vh of ship hand-off and a 20vh hold come first (was 275) */

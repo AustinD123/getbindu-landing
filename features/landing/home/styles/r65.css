@@ -2,6 +2,10 @@
    fonts copied). Used by the rules grid (#rules) and the blog row (#blog). A warm-grey container (4px), an inner tray with a soft inset, a white
    window set low and left that bleeds off the right and bottom edges, one white chip with a long soft shadow, then the text under the box.
    These two windows and chips are the only shadows on the page (Austin's brief for this round). */
+/* r65-8 (Austin): the two "Bindu" moments keep the brand yellow: the statement's Bindu chip and the finale's ı sunflower. Nothing else is yellow. */
+.bindu-home { --bindu-yellow: #FFD400; --bindu-yellow-edge: #FFD400; }
+.bindu-home[data-theme="light"] { --bindu-yellow-edge: #B38F00; }
+
 .bindu-home {
   --pc-box: #F5F4F1;
   --pc-tray: rgb(31 27 12 / 0.03);
