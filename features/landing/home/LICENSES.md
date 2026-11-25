@@ -11,6 +11,7 @@ what ships here.
 | Lenis (`lenis`) | MIT | Yes. Added for the homepage only; no other route imports it |
 | three.js | MIT | Yes (already a dependency). Replaces OGL, which the mockup used |
 | Inter and Nunito (via `next/font/google`; Nunito 500 and 600 is the display-face fallback behind ui-rounded, r55). IBM Plex Mono is retired | SIL OFL 1.1 | Yes |
+| Lucide icons (`lucide-react`, r59: the story stage's file, mail and message icons) | ISC | Yes. Already a dependency of the site |
 | Map coastlines (`lib/worldmap.ts`, `lib/shipmap.ts`) | Own work, hand-typed, simplified | Yes |
 
 ## Data

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CustomEase } from "gsap/CustomEase";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
+import { FileText, Mail, MessageSquare } from "lucide-react";
 import { story } from "../content";
 import { gsap, ScrollTrigger, SplitText, useReducedMotion } from "../lib/motion";
 import { isPhone, onPhoneChange } from "../lib/phone";
@@ -55,12 +56,11 @@ function cadence(chars: HTMLElement[], t0: number, t1: number, wordGap: number) 
   return gaps.map((g) => (t += (g / sum) * (t1 - t0)));
 }
 
-const Mail = () => (<svg className="fl-ic" viewBox="0 0 16 16" aria-hidden="true"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5" /><path d="M2 4.5l6 4.5 6-4.5" /></svg>);
-const Chat = () => (<svg className="fl-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h10a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 13 11H7l-3 2.5V11H3A1.5 1.5 0 0 1 1.5 9.5v-5A1.5 1.5 0 0 1 3 3Z" /></svg>);
-const Doc = () => (<svg className="fl-ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 1.5h5.5L13 5v9.5H4Z M9.5 1.5V5H13" /></svg>);
+/* r59-3: one icon set, Lucide (ISC), 16px, 1.5px stroke */
+const ic = { size: 16, strokeWidth: 1.5, className: "fl-ic", "aria-hidden": true } as const;
 
-/* the two routes, from the record's right edge (54%, 50%) to each supplier's left edge (70%, 24% and 76%), as S-curves; the pills use the same curve in pixels */
-const ROUTES = [{ a: [54, 50], b: [70, 24] }, { a: [54, 50], b: [70, 76] }] as const;
+/* the two routes, from the record's right edge (56%, 50%) to each supplier left edge (68%, 24% and 76%), as S-curves; the pills use the same curve in pixels */
+const ROUTES = [{ a: [56, 50], b: [68, 24] }, { a: [56, 50], b: [68, 76] }] as const;
 const routeD = (r: (typeof ROUTES)[number]) => `M${r.a[0]} ${r.a[1]} C${(r.a[0] + r.b[0]) / 2} ${r.a[1]} ${(r.a[0] + r.b[0]) / 2} ${r.b[1]} ${r.b[0]} ${r.b[1]}`;
 
 export function Flow() {
@@ -150,66 +150,71 @@ export function Flow() {
         const curve = (r: (typeof ROUTES)[number]): [Pt, Pt, Pt, Pt] => { const a = px(r.a), b = px(r.b), m = (a.x + b.x) / 2; return [a, { x: m, y: a.y }, { x: m, y: b.y }, b]; };
 
         const tl = gsap.timeline({ defaults: { ease: MOVE } });
+        /* r59-3: step i owns [i, i + 1]; its choreography plays in the first half (S(i, f) is a position f of the way through that half, D(f) a duration
+           of f of it) and the second half holds still to be read. Groups below are sequenced so at most two things move at once; the step line's own
+           change always rides with the lead. */
+        const HALF = 0.5;
+        const S = (i: number, f: number) => i + f * HALF, D = (f: number) => f * HALF;
 
         /* ---- the step line (left): number, title and sentence; lines fade up (r54) ---- */
         beats.forEach((b, i) => {
           if (i === 0) return;
           const p = beats[i - 1]!;
-          tl.fromTo(p.lines, { opacity: 1, y: 0 }, { opacity: 0, y: -30, duration: 0.09, stagger: 0.012, immediateRender: false }, i);
-          tl.fromTo(b.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: OUT, duration: 0.22, stagger: 0.028 }, i + 0.06);
+          tl.fromTo(p.lines, { opacity: 1, y: 0 }, { opacity: 0, y: -30, duration: D(0.2), stagger: 0.012, immediateRender: false }, S(i, 0));
+          tl.fromTo(b.lines, { opacity: 0, y: 30 }, { opacity: 1, y: 0, ease: OUT, duration: D(0.45), stagger: 0.028 }, S(i, 0.1));
         });
         const fill = q(".fl-prog-line", el);
-        tl.fromTo(fill, { scaleX: 0 }, { scaleX: 1 / 3, duration: 0.16 }, 1);
-        tl.fromTo(fill, { scaleX: 1 / 3 }, { scaleX: 2 / 3, duration: 0.16, immediateRender: false }, 2);
-        tl.fromTo(fill, { scaleX: 2 / 3 }, { scaleX: 1, duration: 0.16, immediateRender: false }, 3);
+        tl.fromTo(fill, { scaleX: 0 }, { scaleX: 1 / 3, duration: D(0.35) }, S(1, 0));
+        tl.fromTo(fill, { scaleX: 1 / 3 }, { scaleX: 2 / 3, duration: D(0.35), immediateRender: false }, S(2, 0));
+        tl.fromTo(fill, { scaleX: 2 / 3 }, { scaleX: 1, duration: D(0.35), immediateRender: false }, S(3, 0));
 
-        /* ---- step 1: a caret on the empty stage; the sentence types at a human cadence; the caret becomes the yellow dot ---- */
-        tl.fromTo(say, { x: big.x, y: big.y, scale: big.scale, transformOrigin: "0 0" }, { x: 0, y: 0, scale: 1, duration: 0.3 }, 1.02);
-        tl.fromTo(caret, { x: 0, opacity: 1 }, { opacity: 0, duration: 0.03, immediateRender: true }, 0.47);
-        cadence(sayChars, 0.04, 0.45, 2.2).forEach((t, i) => {
+        /* ---- step 1: a caret on the empty stage; the sentence types at a human cadence (the only mover); the caret becomes the yellow dot ---- */
+        tl.fromTo(caret, { x: 0, opacity: 1 }, { opacity: 0, duration: TICK, immediateRender: true }, S(0, 0.94));
+        cadence(sayChars, S(0, 0.04), S(0, 0.88), 2.2).forEach((t, i) => {
           const c = sayChars[i]!;
           tl.fromTo(c, { opacity: 0 }, { opacity: 1, duration: TICK, ease: "none" }, t);
           tl.fromTo(caret, { x: i ? right(sayChars[i - 1]!, sayIn) : 0 }, { x: right(c, sayIn), duration: TICK, ease: "none", immediateRender: false }, t);
         });
-        tl.fromTo(pilot, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, ease: OUT, duration: 0.1 }, 0.47);
+        tl.fromTo(pilot, { opacity: 0, scale: 0.3 }, { opacity: 1, scale: 1, ease: OUT, duration: D(0.2) }, S(0, 0.9));
 
-        /* ---- step 2: the sentence docks (lead, above); the record unfolds from its row; the key words give out the rules and the code ---- */
+        /* ---- step 2: the sentence docks (lead) while the record unfolds; the rows come in with the key words underlined; the chips travel out ---- */
+        tl.fromTo(say, { x: big.x, y: big.y, scale: big.scale, transformOrigin: "0 0" }, { x: 0, y: 0, scale: 1, duration: D(0.45) }, S(1, 0.02));
         tl.fromTo(card, { x: cx }, { x: cx, duration: TICK }, 0);   // alone, centred, until step 3
-        tl.fromTo(bg, { opacity: 0 }, { opacity: 1, ease: OUT, duration: 0.1 }, 1.12);
-        tl.fromTo(bg, { clipPath: `inset(${row - 22}px 4% ${ch - row - 22}px 4% round ${radius})` }, { clipPath: `inset(0px 0% 0px 0% round ${radius})`, duration: 0.3 }, 1.12);
-        tl.fromTo([recT, shipL], { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: 0.18, stagger: 0.03 }, 1.24);
-        const slotIn = (sl: HTMLElement, t: number) => {
-          tl.fromTo(q(".fl-hr", sl), { scaleX: 0 }, { scaleX: 1, duration: 0.2 }, t);
-          tl.fromTo(q("dt", sl), { opacity: 0, y: 6 }, { opacity: 1, y: 0, ease: OUT, duration: 0.16 }, t + 0.04);
+        tl.fromTo(bg, { opacity: 0 }, { opacity: 1, ease: OUT, duration: D(0.2) }, S(1, 0.2));
+        tl.fromTo(bg, { clipPath: `inset(${row - 22}px 4% ${ch - row - 22}px 4% round ${radius})` }, { clipPath: `inset(0px 0% 0px 0% round ${radius})`, duration: D(0.4) }, S(1, 0.2));
+        tl.fromTo([recT, shipL], { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: D(0.25), stagger: 0.02 }, S(1, 0.4));
+        const slotIn = (sl: HTMLElement, f: number, d = 0.25) => {
+          tl.fromTo(q(".fl-hr", sl), { scaleX: 0 }, { scaleX: 1, duration: D(d) }, S(sl === slots[2] ? 2 : sl === slots[3] ? 3 : 1, f));
+          tl.fromTo(q("dt", sl), { opacity: 0, y: 6 }, { opacity: 1, y: 0, ease: OUT, duration: D(d) }, S(sl === slots[2] ? 2 : sl === slots[3] ? 3 : 1, f + 0.04));
         };
-        slotIn(slots[0]!, 1.26); slotIn(slots[1]!, 1.3);
-        tl.fromTo(qa(".fl-ul", sayIn), { scaleX: 0 }, { scaleX: 1, duration: 0.1, stagger: 0.04 }, 1.32);
+        slotIn(slots[0]!, 0.5); slotIn(slots[1]!, 0.56);
+        tl.fromTo(qa(".fl-ul", sayIn), { scaleX: 0 }, { scaleX: 1, duration: D(0.2), stagger: 0.02 }, S(1, 0.55));
         /* each chip comes out from under its underlined word (never on top of it, so the sentence stays readable), kept inside the record, and arcs down into its row */
         const inner = box(sayIn, st8).x;
         chips.forEach((c, i) => {
           const wb = box(q(`[data-w="${c.dataset.from}"]`, sayIn), st8), b = mid(c, st8);
           const a = { x: Math.max(wb.x + wb.w / 2, inner + c.offsetWidth / 2), y: wb.y + wb.h + c.offsetHeight / 2 + 4 };
-          const t = 1.38 + i * 0.05;
-          tl.fromTo(c, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.08 }, t);
-          tl.fromTo(c, { scale: 0.94 }, { scale: 1, duration: 0.2 }, t);
-          tl.fromTo(c, { x: a.x - b.x, y: a.y - b.y }, { motionPath: { path: arc({ x: a.x - b.x, y: a.y - b.y }, { x: 0, y: 0 }, 0.08), type: "cubic" }, duration: 0.2 }, t);
+          const t = S(1, 0.74 + i * 0.05);
+          tl.fromTo(c, { opacity: 0 }, { opacity: 1, ease: "none", duration: D(0.12) }, t);
+          tl.fromTo(c, { scale: 0.94 }, { scale: 1, duration: D(0.22) }, t);
+          tl.fromTo(c, { x: a.x - b.x, y: a.y - b.y }, { motionPath: { path: arc({ x: a.x - b.x, y: a.y - b.y }, { x: 0, y: 0 }, 0.04), type: "cubic" }, duration: D(0.22) }, t);
         });
 
-        /* ---- step 3: the record slides left (lead); routes draw; suppliers settle; requests travel out; files travel back ---- */
-        tl.fromTo(card, { x: cx }, { x: 0, duration: 0.28, immediateRender: false }, 2.02);
-        slotIn(slots[2]!, 2.12);
+        /* ---- step 3: the record slides left (lead) with the proof row; routes draw while the suppliers settle; the requests run; the files come back ---- */
+        tl.fromTo(card, { x: cx }, { x: 0, duration: D(0.3), immediateRender: false }, S(2, 0));
+        slotIn(slots[2]!, 0.06, 0.2);
         routes.forEach((r, i) => {
           const a = ROUTES[i]!.a[0], b = ROUTES[i]!.b[0];
-          tl.fromTo(r, { clipPath: `inset(0% ${100 - a}% 0% ${a}%)` }, { clipPath: `inset(0% ${100 - b - 0.5}% 0% ${a}%)`, duration: 0.18 }, 2.14 + i * 0.04);
+          tl.fromTo(r, { clipPath: `inset(0% ${100 - a}% 0% ${a}%)` }, { clipPath: `inset(0% ${100 - b - 0.5}% 0% ${a}%)`, duration: D(0.22) }, S(2, 0.32 + i * 0.03));
         });
-        tl.fromTo(nodes, { opacity: 0, x: 14, scale: 0.98 }, { opacity: 1, x: 0, scale: 1, ease: OUT, duration: 0.2, stagger: 0.04 }, 2.18);
+        tl.fromTo(nodes, { opacity: 0, x: 14 }, { opacity: 1, x: 0, ease: OUT, duration: D(0.22), stagger: 0.02 }, S(2, 0.36));
         /* a request is a cobalt packet that runs the route; it lands as the message in the supplier's card */
         packets.forEach((pk, i) => {
-          const path = curve(ROUTES[i]!), t = 2.22 + i * 0.05;
-          tl.fromTo(pk, { opacity: 0 }, { opacity: 1, ease: "none", duration: 0.03 }, t);
-          tl.fromTo(pk, { x: path[0].x, y: path[0].y, xPercent: -50, yPercent: -50 }, { motionPath: { path, type: "cubic" }, duration: 0.14 }, t);
-          tl.fromTo(pk, { opacity: 1 }, { opacity: 0, ease: "none", duration: 0.03, immediateRender: false }, t + 0.13);
-          tl.fromTo(asks[i]!, { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: 0.16 }, t + 0.13);
+          const path = curve(ROUTES[i]!), t = S(2, 0.6 + i * 0.03);
+          tl.fromTo(pk, { opacity: 0 }, { opacity: 1, ease: "none", duration: D(0.04) }, t);
+          tl.fromTo(pk, { x: path[0].x, y: path[0].y, xPercent: -50, yPercent: -50 }, { motionPath: { path, type: "cubic" }, duration: D(0.2) }, t);
+          tl.fromTo(pk, { opacity: 1 }, { opacity: 0, ease: "none", duration: D(0.04), immediateRender: false }, t + D(0.18));
+          tl.fromTo(asks[i]!, { opacity: 0, y: 8 }, { opacity: 1, y: 0, ease: OUT, duration: D(0.18) }, t + D(0.18));
         });
         /* the file appears under the supplier's message (an attachment), leaves the card level, curves back to the record's edge and settles in the proof row */
         files.forEach((f, i) => {
@@ -219,28 +224,28 @@ export function Flow() {
           const pts = [s0, { x: s0.x + (out.x - s0.x) / 3, y: s0.y }, { x: s0.x + (2 * (out.x - s0.x)) / 3, y: s0.y }, out,
             { x: m, y: out.y }, { x: m, y: a.y }, a, { x: a.x - reach, y: a.y }, { x: e.x + reach, y: e.y }, e]
             .map((p) => ({ x: p.x - e.x, y: p.y - e.y }));
-          const t = 2.42 + i * 0.05;
-          tl.fromTo(f, { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, ease: OUT, duration: 0.08 }, t);
-          tl.fromTo(f, { x: pts[0]!.x, y: pts[0]!.y }, { motionPath: { path: pts, type: "cubic" }, duration: 0.2 }, t);
+          const t = S(2, 0.8 + i * 0.03);
+          tl.fromTo(f, { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, ease: OUT, duration: D(0.1) }, t);
+          tl.fromTo(f, { x: pts[0]!.x, y: pts[0]!.y }, { motionPath: { path: pts, type: "cubic" }, duration: D(0.2) }, t);
         });
 
         /* ---- step 4: the bar runs (lead); the reference types; the yellow dot lands on it; the status rises and the yellow edge closes the record ---- */
-        slotIn(slots[3]!, 3.04);
-        tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: 0.24 }, 3.02);
-        tl.fromTo(status, { opacity: 0, y: 6 }, { opacity: 1, y: 0, ease: OUT, duration: 0.18 }, 3.58);   // "Filed" confirms once the reference is back
-        tl.fromTo(caret2, { opacity: 0, x: 0 }, { opacity: 1, duration: TICK }, 3.12);
-        cadence(refChars, 3.14, 3.36, 1.6).forEach((t, i) => {
+        slotIn(slots[3]!, 0.02, 0.2);
+        tl.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: D(0.3) }, S(3, 0));
+        tl.fromTo(caret2, { opacity: 0, x: 0 }, { opacity: 1, duration: TICK }, S(3, 0.34));
+        cadence(refChars, S(3, 0.36), S(3, 0.56), 1.6).forEach((t, i) => {
           const c = refChars[i]!;
           tl.fromTo(c, { opacity: 0 }, { opacity: 1, duration: TICK, ease: "none" }, t);
           tl.fromTo(caret2, { x: i ? right(refChars[i - 1]!, refT) : 0 }, { x: right(c, refT), duration: TICK, ease: "none", immediateRender: false }, t);
         });
-        tl.fromTo(caret2, { opacity: 1 }, { opacity: 0, duration: 0.03, immediateRender: false }, 3.39);
+        tl.fromTo(caret2, { opacity: 1 }, { opacity: 0, duration: TICK, immediateRender: false }, S(3, 0.58));
         const p0 = mid(pilot, st8), p1 = mid(refDot, st8), d = { x: p1.x - p0.x, y: p1.y - p0.y };
-        tl.fromTo(pilot, { x: 0, y: 0 }, { motionPath: { path: arc({ x: 0, y: 0 }, d, -0.22), type: "cubic" }, duration: 0.18 }, 3.38);
-        tl.fromTo(pilot, { scale: 1 }, { scale: refDot.offsetWidth / pilot.offsetWidth, duration: 0.18, immediateRender: false }, 3.38);
-        tl.fromTo(pilot, { opacity: 1 }, { opacity: 0, duration: TICK, immediateRender: false }, 3.56);
-        tl.fromTo(refDot, { opacity: 0 }, { opacity: 1, duration: TICK }, 3.56);
-        tl.fromTo(ring, { opacity: 0 }, { opacity: 1, ease: OUT, duration: 0.14 }, 3.56);
+        tl.fromTo(pilot, { x: 0, y: 0 }, { motionPath: { path: arc({ x: 0, y: 0 }, d, -0.12), type: "cubic" }, duration: D(0.22) }, S(3, 0.6));
+        tl.fromTo(pilot, { scale: 1 }, { scale: refDot.offsetWidth / pilot.offsetWidth, duration: D(0.22), immediateRender: false }, S(3, 0.6));
+        tl.fromTo(pilot, { opacity: 1 }, { opacity: 0, duration: TICK, immediateRender: false }, S(3, 0.82));
+        tl.fromTo(refDot, { opacity: 0 }, { opacity: 1, duration: TICK }, S(3, 0.82));
+        tl.fromTo(ring, { opacity: 0 }, { opacity: 1, ease: OUT, duration: D(0.18) }, S(3, 0.82));
+        tl.fromTo(status, { opacity: 0, y: 6 }, { opacity: 1, y: 0, ease: OUT, duration: D(0.18) }, S(3, 0.84));   // "Filed" confirms once the reference is back
         tl.to({}, { duration: 0.001 }, 3.999);   // exactly four steps long, so the last one holds too
 
         /* the step the stage is on (for aria-current and the progress dots), from the timeline's own time, so it lags the scroll exactly as the picture does */
@@ -253,7 +258,7 @@ export function Flow() {
           for (let i = 1; i < 4; i++) if (t >= i + 0.1) b = i;
           if (b !== last) { last = b; setStep(b); }
         });
-        ScrollTrigger.create({ animation: tl, trigger: el, start: "top 64px", end: "bottom bottom", scrub: 1 });
+        ScrollTrigger.create({ animation: tl, trigger: el, start: "top 64px", end: "bottom bottom", scrub: 0.4 });
         setStep(0);   // the timeline starts at step 1; the marker follows from here (its onUpdate takes over once the scroll moves)
         ScrollTrigger.refresh();
       }, root);
@@ -298,7 +303,9 @@ export function Flow() {
             </ol>
           </div>
           <div className="fl-right">
-            <div ref={stage} className="fl-stage" aria-hidden="true">
+            <div className="fl-app" aria-hidden="true">
+            <div className="fl-appbar"><span className="fl-appname">Bindu</span><span className="chip chip-illus">{story.illus}</span></div>
+            <div ref={stage} className="fl-stage">
               <div className="fl-card">
                 <span className="fl-card-bg" />
                 <span className="fl-ring" />
@@ -319,7 +326,7 @@ export function Flow() {
                   </dd></div>
                   <div className="fl-slot"><i className="fl-hr" /><dt>{s.slots.code}</dt><dd><span className="fl-chip fl-code fl-fly" data-beat="1" data-from="coffee">{s.code}</span></dd></div>
                   <div className="fl-slot"><i className="fl-hr" /><dt>{s.slots.proof}</dt><dd className="fl-chips fl-docs">
-                    {s.threads.map((t, i) => (<span key={t.file} className="fl-chip fl-fly" data-beat="2" data-from={`node${i}`}><Doc />{t.file}</span>))}
+                    {s.threads.map((t, i) => (<span key={t.file} className="fl-chip fl-fly" data-beat="2" data-from={`node${i}`}><FileText {...ic} />{t.file}</span>))}
                   </dd></div>
                   <div className="fl-slot"><i className="fl-hr" /><dt>{s.slots.ref}</dt><dd className="fl-ref"><span className="fl-ref-t">REF {s.ref}</span><i className="fl-dot" /></dd></div>
                 </dl>
@@ -331,17 +338,17 @@ export function Flow() {
               </div>
               {s.threads.map((t, i) => (
                 <div key={t.ch} className={`fl-node n${i}`} data-w={`node${i}`}>
-                  <span className="fl-node-h">{i === 0 ? <Mail /> : <Chat />}<b>{t.who}</b></span>
-                  <span className="fl-node-c">{t.ch}</span>
+                  <span className="fl-node-h"><span className="fl-av" aria-hidden="true">{t.who.charAt(0)}</span><b>{t.who}</b>{i === 0 ? <Mail {...ic} /> : <MessageSquare {...ic} />}<span className="fl-node-c">{t.ch}</span></span>
                   <span className="fl-node-ask">{t.ask}</span>
                 </div>
               ))}
+            </div>
             </div>
             <p className="sr">
               {`${story.stops[0]!.say}. `}
               {story.stops[1]!.rules!.map((r) => `${r.t} ${r.live ? "Live" : "In build"}`).join(", ")}. {story.stops[1]!.code}. {story.stops[2]!.files!.join(", ")}. {story.stops[3]!.ref}.
             </p>
-            <p className="cargo-cap fl-illus"><span className="chip chip-illus">{story.illus}</span><span className="t-caption t-muted">{story.caption}</span></p>
+            <p className="cargo-cap fl-illus"><span className="t-caption t-muted">{story.caption}</span></p>
           </div>
           </div>
         </div>
