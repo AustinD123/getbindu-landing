@@ -17,15 +17,9 @@
 .bindu-home .link:hover, .bindu-home .band-dark .link:hover { text-decoration-thickness: 2px; }
 .bindu-home .link { transition: text-decoration-thickness var(--t-fast) var(--ease-out); }
 
-/* nav items: grey to white, with a cobalt underline that grows in */
-.bindu-home .nav-links a { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 8px;
-  transition: color var(--t-fast) var(--ease-out), text-decoration-color var(--t-fast) var(--ease-out), text-decoration-thickness var(--t-fast) var(--ease-out); }
-.bindu-home .nav-links a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); text-decoration-thickness: 2px; }
-
-/* footer links: same treatment on the dark band */
-.bindu-home .foot-col a { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1px; text-underline-offset: 6px;
-  transition: color var(--t-fast) var(--ease-out), text-decoration-color var(--t-fast) var(--ease-out), text-decoration-thickness var(--t-fast) var(--ease-out); }
-.bindu-home .foot-col a:hover { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); text-decoration-thickness: 2px; }
+/* r52 (DESIGN.md v2 section 6): nav and footer links are mute at rest and ink on hover, a colour change only (200ms). No underline. */
+.bindu-home .nav-links a, .bindu-home .foot-col a { text-decoration: none; transition: color var(--t-ui) var(--ease-ui); }
+.bindu-home .nav-links a:hover, .bindu-home .foot-col a:hover { color: var(--on-dark); }
 
 /* keyboard focus on nav and footer links (every interactive element has a visible focus) */
 .bindu-home .nav-links a:focus-visible, .bindu-home .foot-col a:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }

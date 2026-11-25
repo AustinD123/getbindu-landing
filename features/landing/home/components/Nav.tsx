@@ -81,9 +81,8 @@ function pillRect(row: HTMLElement, a: HTMLElement) {
   return { x: r.left - o.left - 22, y: r.top - o.top + r.height / 2 - 14, width: r.width + 34 };
 }
 
-/* x.ai nav: mark + links + the hero treatment (round 3, change 5): an OUTLINE pill for Estimate and a text link for
-   the demo. The nav is on every view, so it never adds a filled pill: the filled one belongs to each section's main
-   CTA (one filled pill per view). Under 520px the demo link moves into the drawer. Frosted once the page scrolls (Apple). */
+/* The nav: logo, links, the Regulations menu, the theme toggle and (r52) Book a demo at the right end of the floating bar.
+   Phones get a drawer that keeps its own Book a demo. From 861px the bar collapses past the hero to a pill with the logo and the button. */
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -95,6 +94,7 @@ export function Nav() {
   const navIn = useRef<HTMLDivElement>(null);
   const restEl = useRef<HTMLDivElement>(null);
   const brandEl = useRef<HTMLAnchorElement>(null);
+  const bookEl = useRef<HTMLAnchorElement>(null);   // r52: the bar's Book a demo (absolute at the right end from 861px, so the pill can keep it)
   const pill = useRef<HTMLSpanElement>(null);      // r43: the active pill (slides and resizes under the scroll-spy)
   const hov = useRef<HTMLSpanElement>(null);       // r43: the quieter hover pill (follows the pointer, returns to the active link)
   const [mounted, setMounted] = useState(false);   // the dot and the rail exist only once GSAP can own them (no CSS hidden states)
@@ -191,19 +191,23 @@ export function Nav() {
       gsap.killTweensOf(h);
     };
   }, [mounted, current]);
-  /* r43-1/3: the island. From 861px, scrolling down past the hero contracts the bar into a round pill that holds only the mark. Scrolling up,
+  /* r43-1/3, r52: the island. From 861px, scrolling down past the hero contracts the bar into a round pill that holds the mark and Book a demo. Scrolling up,
      hover, or keyboard focus expands it. One timeline on the bar (width and radius, one smooth ease) with the links fading ahead of it;
      the links never change size, the bar just clips them while it is narrow, so there is no per-frame relayout of the row.
      Every change kills the last tween and starts from the current values, so it can be interrupted at any point. The bar is fixed. */
   useEffect(() => {
     if (!mounted) return;
-    const nav = header.current, rest = restEl.current, brand = brandEl.current, nin = navIn.current;
-    if (!nav || !rest || !brand || !nin) return;
+    const nav = header.current, rest = restEl.current, brand = brandEl.current, nin = navIn.current, book = bookEl.current;
+    if (!nav || !rest || !brand || !nin || !book) return;
     const mq = window.matchMedia("(min-width: 861px)");
     const s = { want: false, hover: false, focus: false, collapsed: false };
     let tl: gsap.core.Timeline | null = null, st: ScrollTrigger | null = null, leaveT = 0, last = 0, inited = false, off: (() => void)[] = [];
     const natural = () => { const w0 = nav.style.width; nav.style.width = ""; const w = nav.offsetWidth; nav.style.width = w0; return w; };
-    const compactW = () => 56;
+    /* r52: the pill holds the logo and the Book a demo button: 16px padding, logo, 16px gap, button, 16px padding, 1px borders.
+       The button sits at the bar's right end (absolute), so it never moves while the width changes; the row reserves its width (--nav-book-w). */
+    const logoW = () => brand.querySelector<HTMLElement>(".logo")?.offsetWidth ?? 24;
+    const reserve = () => nav.style.setProperty("--nav-book-w", `${book.offsetWidth}px`);
+    const compactW = () => 16 + logoW() + 16 + book.offsetWidth + 16 + 2;
     const build = (collapsed: boolean, instant: boolean) => {
       tl?.kill(); s.collapsed = collapsed;
       const nv = collapsed ? { width: compactW(), "--nav-r": "28px" } : { width: natural(), "--nav-r": "14px" };
@@ -254,7 +258,8 @@ export function Nav() {
       nav.classList.remove("is-island"); nav.style.removeProperty("width"); nav.style.removeProperty("--nav-r");
       gsap.set(rest, { clearProps: "all" });
     };
-    const sync = () => { if (mq.matches) enable(); else disable(); };
+    const sync = () => { if (mq.matches) { reserve(); enable(); } else disable(); };
+    document.fonts?.ready.then(() => { if (mq.matches) { reserve(); if (s.collapsed) gsap.set(nav, { width: compactW() }); } });
     sync();
     mq.addEventListener("change", sync);
     return () => { mq.removeEventListener("change", sync); disable(); };
@@ -287,6 +292,8 @@ export function Nav() {
         <button ref={btn} type="button" className="btn btn-outline nav-menu" aria-expanded={open} aria-controls="nav-drawer" onClick={() => setOpen(!open)}>
           {open ? nav.close : nav.menu}
         </button>
+        {/* r52 (Austin, 25 Nov 2026): Book a demo is back on the bar, at its right end; it stays in the collapsed pill next to the logo */}
+        <a ref={bookEl} className="btn bh-btn-primary nav-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
       </div>
       <div id="nav-drawer" ref={drawer} className="nav-drawer" hidden={!open}>
         {nav.links.map((l) => <a key={l.href} href={l.href} onClick={() => setOpen(false)}>{l.t}</a>)}

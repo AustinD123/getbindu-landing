@@ -113,7 +113,7 @@
 .bindu-home .foot-mark { display: inline-flex; align-items: center; gap: 12px; font: 500 22px/1 var(--font-sans); margin-bottom: var(--s-4); }
 .bindu-home .foot-brand p { max-width: 416px; margin: 0; }
 .bindu-home .foot-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
-.bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-body); display: inline-block; padding: 6px 0; }
+.bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-mute); display: inline-block; padding: 6px 0; font: 500 var(--body-sm)/1.35 var(--font-sans); letter-spacing: 0; }   /* r52: v2 Label voice */
 .bindu-home .foot-col a:hover { color: var(--on-dark); }
 .bindu-home .foot-legal { margin: var(--s-4) 0 0; }
 /* tablet and phone: brand on its own row, the four link groups in a 2 x 2 grid */
@@ -248,3 +248,13 @@
 
 /* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
 .bindu-home .nav.is-moving { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(var(--canvas-rgb) / 0.94); }
+
+/* r52 (Austin, 25 Nov 2026): Book a demo on the floating bar, at its right end after the theme toggle. Phones use the drawer's button.
+   From 861px it is pinned to the bar's right edge (the row reserves its width through --nav-book-w, set by Nav.tsx), so the collapsed
+   pill keeps the logo and the button while the bar's width changes, and the button never moves. */
+.bindu-home .nav-book { display: none; }
+@media (min-width: 768px) { .bindu-home .nav .nav-book { display: inline-flex; flex: none; } }
+@media (min-width: 861px) {
+  .bindu-home .nav-in { padding-right: calc(16px + var(--nav-book-w, 132px) + var(--s-5)); }
+  .bindu-home .nav .nav-book { position: absolute; right: 16px; top: 50%; translate: 0 -50%; z-index: 2; }
+}
