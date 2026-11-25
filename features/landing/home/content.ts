@@ -30,7 +30,7 @@ export const nav = {
 /* the intro (components/Intro.tsx): the dot line, then one mono label, then the hand-off to the page */
 export const intro = {
   dot: "Every proof is a dot.",
-  tag: "BINDU · TRADE COMPLIANCE OS",
+  tag: "Bindu, trade compliance OS",
 };
 
 export const hero = {

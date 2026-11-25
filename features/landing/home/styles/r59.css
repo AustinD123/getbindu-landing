@@ -27,3 +27,6 @@
 
 /* r60-5 (better-ui): colour transitions are suspended for the frame the theme changes in (lib/theme.ts adds and removes the class) */
 .bindu-home.theme-swap, .bindu-home.theme-swap *, .bindu-home.theme-swap *::before, .bindu-home.theme-swap *::after { transition: none !important; }
+
+/* r60-6: the testimonial dots are 26px hit areas around a 10px dot; touch gets the 44px minimum (the dot itself does not change) */
+@media (pointer: coarse) { .bindu-home .vc-dot { width: 44px; height: 44px; } }

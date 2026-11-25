@@ -47,7 +47,8 @@ const Glyph = () => (
 const Meta = ({ r }: { r: Row }) => (
   <p className="bd-meta">
     <span className={`bd-verdict is-${r.verdict}`}>{verdictText(r)}</span>
-    <span className="bd-rule">{r.rule} · {r.goods}</span>
+    <span className="bd-rule">{r.rule}</span>
+    <span className="bd-goods">{r.goods}</span>
     <span className="bd-route"><Glyph />{r.route}</span>
   </p>
 );

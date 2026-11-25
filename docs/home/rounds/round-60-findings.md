@@ -79,3 +79,23 @@ Detection table run over styles/*.css and components (transition all, will-chang
 | ok | | no `transition: all`, no `will-change: all`, bounce 0 everywhere, icons use currentColor (the illustrations' own fills are drawing colours), `-webkit-tap-highlight-color: transparent` on phones | | |
 
 Not verified: theme swap by eye (class logic read, not replayed), touch hover on a real device. Verdict: Approve (no HIGH).
+
+## Pass 6: anti-slop audit (antislop, antislop-ui, avoid-ai-design, hallmark, heydamir-unslop, make-interfaces-feel-better)
+
+Method: `node .claude/skills/avoid-ai-design/scripts/detect.mjs features/landing/home` (77 files): 1 finding (P2 SD4d), now 0. Then each skill's checklist walked by hand against the page; each skill defers to bindu-design and DESIGN.md v4 on themes, palettes and fonts. Hallmark's scripts are not installed (gates read by hand). Copy: no em dashes, no buzzwords or invented numbers found in features/landing/home (grep).
+
+| # | Sev | Finding (skill) | Where | Status |
+|---|---|---|---|---|
+| 1 | P2 | Meta strings joined with middle dots (avoid-ai-design SD4d, hallmark floor 10) | content.ts:33 (`intro.tag`, unused text, tracked capitals too); components/Examples.tsx:50 (rule dot goods in the verdict line) | fixed: sentence case with a comma; the verdict line is separate spans in the existing flex gap. The footer legal line (content.ts:299) is a keep and carries its own ignore comment |
+| 2 | P2 | Tracked capitals on a label: the departures verdict meta line was uppercase, 0.06em (hallmark floor 9, heydamir type pass, DESIGN.md adaptation 7 sentence case) | styles/story.css:106 | fixed: sentence case, untracked, still mono |
+| 3 | P3 | Hero illustration label tracked 0.04em | styles/site.css:72 | fixed: 0 |
+| 4 | P2 | Testimonial dots are 26px hit areas (make-interfaces-feel-better: 40 to 44px) | styles/r44.css:181 | fixed on touch: 44px under `pointer: coarse` (styles/r59.css) |
+| 5 | P3 | Map labels and ship readout in 10px mono with 0.04 to 0.08em tracking | styles/shipment.css:52,53,179 | left (r59-0: labels inside a drawing) |
+| 6 | conflict | "Full Circle." act label reads as an eyebrow (hallmark floor 9) | components/Theatre.tsx, r44.css:140 | conflict, not fixed (Austin's keep: Full Circle structure, acts, tabs) |
+| 7 | conflict | Arrow glyph on Book a demo (hallmark floor 10, antislop R-08) | Hero.tsx:119, Nav.tsx | conflict, not fixed (nav keep; hero button is the kept Ollama button-primary shape with the one yellow CTA) |
+| 8 | conflict | Departures board, rules gallery, curved testimonials, hero map, bento-like story frame would each be a "default shape" to a template reader | | conflict, not fixed (Austin's keeps) |
+| 9 | conflict | "Testimonials" section and its "Placeholder" chip (antislop R-18 forbids fictional reviews) | components/Voices.tsx, content.ts | conflict, not fixed: testimonial track is Austin's keep; the quotes are labelled Placeholder and use Example company names. Go-live item: replace with real quotes or remove (see project-context) |
+| 10 | info | Lucide icons in the story stage (antislop R-04, library look) | components/Flow.tsx | left: relevant glyphs (file, mail, message) from one set at one stroke, as r59-3 decided |
+| 11 | info | Palette: neutrals plus yellow and cobalt only; no gradients on surfaces; no glow; glass limited to the one feathered blur layer Austin asked for (avoid-ai-design-ignore K3) | | clean |
+
+Not verified: Hallmark sloplint (not installed), the silhouette test by eye on a rendered thumbnail, dark theme by eye.
