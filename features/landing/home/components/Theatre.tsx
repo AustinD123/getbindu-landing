@@ -179,6 +179,7 @@ export function Theatre() {
               </div>
             </div>
           </div>
+          <div className="th-card v3-panel v3-panel-wide">
           <div id="th-panel" role="tabpanel" aria-labelledby={`th-tab-${a.id}`} className="th-panel">
             <div className="th-stage" data-ready={ready ? "true" : "false"}>
               {/* the stage art is a constant string (lib/theatre-stages.ts); GSAP animates it by id */}
@@ -197,6 +198,7 @@ export function Theatre() {
               </ol>
             </div>
           )}
+          </div>
           <p className="cargo-cap th-cap">
             <span className="chip chip-illus">{c.illus}</span>
             {act === 2 ? <span className="chip chip-live">{c.live}</span> : null}

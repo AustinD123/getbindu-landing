@@ -17,7 +17,7 @@ export function Faq() {
         <div className="sec-head">
           <h2 id="faq-h" className="t-display-lg" suppressHydrationWarning>{faq.title}</h2>
         </div>
-        <div className="faq-list">
+        <div className="faq-list v3-panel v3-panel-wide">
           {faq.items.map((f) => (
             <details key={f.q} className="faq-item">
               <summary><span className="t-display-sm">{f.q}</span>

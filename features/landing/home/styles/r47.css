@@ -16,19 +16,4 @@
 .bindu-home .vc-dot svg { width: 22px; height: 22px; fill: var(--on-dark-mute); opacity: 0.7; transition: fill var(--t-base) var(--ease-ui), opacity var(--t-base) var(--ease-ui); }
 .bindu-home .vc-dot.is-on svg { fill: var(--proof-dot); opacity: 1; }
 
-.bindu-home .rl-ref { margin: 0; display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
-.bindu-home .rl-flaps { display: inline-flex; gap: 2px; font: 500 12px/1 var(--font-mono); }
-.bindu-home .rl-flaps .fl-sp { width: 0.6em; }
-.bindu-home .rl-flaps .fl { width: 1.1em; height: 1.7em; line-height: 1.7em; }
-.bindu-home .rl-dots { display: inline-flex; gap: 8px; }
-.bindu-home .rl-dot { display: block; width: 11px; height: 11px; box-sizing: border-box; border-radius: 50%; }
-.bindu-home .rl-dot.is-live { background: var(--proof-dot); border: 1.5px solid var(--yellow-outline); }
-.bindu-home .rl-dot.is-build { border: 1.5px dashed var(--on-dark-mute); }
-.bindu-home .rl-lane { position: relative; display: flex; justify-content: space-between; margin-top: var(--s-5); padding-top: 22px; font: 500 11px/1 var(--font-mono); letter-spacing: 0.08em; color: var(--on-dark-mute); }
-.bindu-home .rl-lane::before { content: ""; position: absolute; left: var(--gutter); right: var(--gutter); top: 5px; border-top: 1.5px dashed var(--route-line); }
-.bindu-home .rl-tick { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
-.bindu-home .rl-tick b { font-weight: 500; }
-.bindu-home .rl-tk { position: absolute; left: 0; top: -22px; width: 1.5px; height: 11px; background: var(--route-line); }
-.bindu-home .rl-pos { position: absolute; left: 0; top: 0; width: 11px; height: 11px; box-sizing: border-box; border-radius: 50%; background: var(--proof-dot); border: 1.5px solid var(--yellow-outline); }
-@media (max-width: 767px) { .bindu-home .rl-lane { display: none; } }
 @media (prefers-reduced-motion: reduce) { .bindu-home .vc-card > .vc-map, .bindu-home .vc-dot svg { transition: none; } }

@@ -6,7 +6,7 @@
    the regulation control is a segmented track with a sliding cobalt indicator. */
 
 /* the pinned stage: the head on top, the map and the milestones below, one window */
-.bindu-home .ship .sec-head { max-width: none; margin: 0; padding: 0; gap: var(--s-3); }
+.bindu-home .ship .sec-head { max-width: 900px; margin: 0 auto; padding: 0; gap: var(--s-3); }   /* r54: centred head: title, story line, tabs, status */
 .bindu-home .ship-pin { position: relative; height: 420vh; height: 420svh; }   /* r30-1: 340 for the route plus 80 of pinned scroll for the hand-off to the guide ship (ShipmentJourney TAIL) */
 .bindu-home .ship-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); max-width: 1320px; margin: 0 auto; padding: 0 var(--gutter);
   display: flex; flex-direction: column; justify-content: center; gap: var(--s-5); }
@@ -20,7 +20,7 @@
    with the viewport height (svh): the sizes below only drop below their usual values on short screens. */
 .bindu-home .ship-stage { gap: clamp(8px, 2svh, 24px); }
 .bindu-home .ship .sec-head { gap: clamp(4px, 1.1svh, 12px); }
-.bindu-home .ship .sec-head h2 { font-size: min(var(--display-md), 6svh); }
+.bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6svh); }
 .bindu-home .ship .sec-head .t-soft { margin: 0; font-size: clamp(14px, 2.1svh, var(--body)); line-height: 1.4; }
 .bindu-home .ship-cap { margin-top: clamp(6px, 1.6svh, 16px); }
 
@@ -115,7 +115,7 @@
   .bindu-home .ship-pin:not(.is-static) .ship-now.is-coming { border-top-style: dashed; color: var(--on-dark); }
 }
 
-.bindu-home .ship .ship-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.bindu-home .ship .ship-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 
 /* round 15, item 7: colours. Route lines in bright cobalt (deeper on light); the cargo icon and the milestone markers in
    yellow, with the darker outline on light (--ship-outline is transparent on dark). In build stories end in "coming":
@@ -134,7 +134,7 @@
 .bindu-home .ship .ship-ms.is-coming h3 { font-weight: 500; }
 
 /* round 15 item 14: the control sits in the head; its width is capped */
-.bindu-home .ship .ship-seg { max-width: 720px; }
+.bindu-home .ship .ship-seg { max-width: 900px; }
 
 /* ---------- round 19, item 6: a paper chart in the page's own tokens (both themes), the guide ship, notes along the route ---------- */
 .bindu-home .ship .ship-coast { stroke: var(--line-ink); stroke-width: 1; stroke-dasharray: none; stroke-linecap: round; stroke-linejoin: round; opacity: 0.7; }
@@ -167,7 +167,7 @@
 
 /* r22-12: the journey title steps up one size (display-lg, still limited by the screen height so the section fits one window); the story line is body-lg in full ink */
 .bindu-home .ship .sec-head h2 { font-size: min(var(--display-lg), 6.6svh); }
-.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 60ch; color: var(--on-dark); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.4; }
+.bindu-home .ship .sec-head .ship-sub { margin: 0; max-width: 56ch; color: var(--on-dark-mute); font-size: clamp(15px, 2.3svh, 20px); line-height: 1.35; letter-spacing: -0.02em; }
 @media (max-width: 600px) { .bindu-home .ship .sec-head h2 { font-size: min(24px, 4.4svh); } .bindu-home .ship .sec-head .ship-sub { font-size: 13px; line-height: 1.35; } }
 
 /* r23-5: the map fills the content container exactly (no bleed) */

@@ -84,7 +84,7 @@
 /* ---------- dialog: grows from the button that opened it ---------- */
 .bindu-home .dlg { padding: 0; border: 0; background: transparent; max-width: min(640px, calc(100vw - 24px)); width: 100%; color: var(--on-dark); overflow: visible; }
 .bindu-home .dlg::backdrop { background: rgb(var(--shade-rgb) / 0.62); }
-.bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--line-white-12); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; }
+.bindu-home .dlg-in { border-radius: var(--r-lg); border: 0; box-shadow: var(--shadow-float); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; }
 .bindu-home .dlg.is-in:not(.no-motion) { animation: dlg-in var(--t-base) var(--ease-out) both; }
 @keyframes dlg-in { from { opacity: 0; transform: translate(calc(var(--ox, 50vw) - 50vw), calc(var(--oy, 50vh) - 50vh)) scale(0.4); } }
 .bindu-home .dlg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-2); }
@@ -98,25 +98,31 @@
 .bindu-home .check fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
 .bindu-home .check legend { margin-bottom: 12px; line-height: 1.5; }
 .bindu-home .check-opts { display: flex; flex-wrap: wrap; gap: 8px; }
-.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-control); border: 1px solid var(--line-white-25); cursor: pointer; font-size: 15px; }
+.bindu-home .opt { position: relative; display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border-radius: var(--r-xs); border: 0; background: var(--canvas-mid); color: var(--on-dark-mute); cursor: pointer; font-size: 15px; }
 .bindu-home .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.bindu-home .opt.is-on { border-color: var(--cobalt-signal); background: rgb(var(--cobalt-rgb) / 0.14); box-shadow: 0 0 0 1px var(--cobalt-signal); }
+.bindu-home .opt.is-on { background: var(--on-dark); color: var(--canvas); }
 .bindu-home .opt:focus-within { outline: var(--focus-ring-dark); outline-offset: 2px; }
-.bindu-home .check-out { min-height: 120px; border-top: 1px solid var(--hairline-dark); padding-top: var(--s-4); }
+.bindu-home .check-out { min-height: 120px; padding-top: var(--s-4); }
 .bindu-home .check-out p { margin: 0 0 8px; }
 
 /* ---------- footer ---------- */
-.bindu-home .foot { padding: var(--s-9) 0 var(--s-6); border-top: 1px solid var(--hairline-dark); }
-/* one grid: brand + four link groups share a single row, top-aligned, equal gaps (r5 item 5) */
-.bindu-home .foot-in { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(4, minmax(0, 1fr)); gap: var(--s-7) var(--s-6); align-items: start; margin-bottom: var(--s-7); }
+/* r54 (DESIGN.md v3 section 4, Sublime's footer card): one centred panel, max 400px on phones and 780px from 1024px, 20px corners (40px from 1024px), the link columns in a
+   row with 48px gaps, the legal line inside the card. No rule above it. */
+.bindu-home .foot { padding: var(--s-6) var(--gutter) var(--s-6); }
+.bindu-home .foot-card { box-sizing: border-box; width: 100%; max-width: 400px; margin: 0 auto; padding: 24px; border-radius: var(--r-lg); background: var(--canvas-mid); color: var(--on-dark); }
+@media (min-width: 1024px) { .bindu-home .foot-card { max-width: 780px; padding: 40px; border-radius: var(--r-4xl); } }
+@media (min-width: 640px) and (max-width: 1023px) { .bindu-home .foot-card { max-width: 560px; } }
+/* brand on its own row, then the link groups in a wrapping row with 48px column gaps */
+.bindu-home .foot-in { display: flex; flex-wrap: wrap; gap: var(--s-6) 48px; align-items: flex-start; margin-bottom: var(--s-6); }
+.bindu-home .foot-brand { flex: 1 1 100%; }
+.bindu-home .foot-col { min-width: 0; }
 .bindu-home .foot-mark { display: inline-flex; align-items: center; gap: 12px; font: 500 22px/1 var(--font-sans); margin-bottom: var(--s-4); }
 .bindu-home .foot-brand p { max-width: 416px; margin: 0; }
 .bindu-home .foot-col ul { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
 .bindu-home .foot-col a { text-decoration: none; color: var(--on-dark-mute); display: inline-block; padding: 6px 0; font: 500 var(--body-sm)/1.35 var(--font-sans); letter-spacing: 0; }   /* r52: v2 Label voice */
 .bindu-home .foot-col a:hover { color: var(--on-dark); }
 .bindu-home .foot-legal { margin: var(--s-4) 0 0; }
-/* tablet and phone: brand on its own row, the four link groups in a 2 x 2 grid */
-@media (max-width: 1100px) { .bindu-home .foot-in { grid-template-columns: repeat(2, minmax(0, 1fr)); } .bindu-home .foot-brand { grid-column: 1 / -1; } }
+@media (max-width: 639px) { .bindu-home .foot-in { gap: var(--s-5) var(--s-6); } .bindu-home .foot-col { flex: 1 1 40%; } }
 
 
 
@@ -137,10 +143,10 @@
 .bindu-home .calc-keep legend { margin-bottom: var(--s-2); }
 .bindu-home .calc .opt { min-height: 36px; padding: 0 var(--s-3); font-size: var(--caption); }
 .bindu-home .calc-lines { margin: 0; display: grid; }
-.bindu-home .calc-lines > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; border-top: 1px solid var(--hairline-dark); color: var(--on-dark-body); font-size: var(--caption); }
+.bindu-home .calc-lines > div { display: flex; justify-content: space-between; gap: var(--s-3); padding: var(--s-2) 0; color: var(--on-dark-body); font-size: var(--caption); }
 .bindu-home .calc-lines dd { margin: 0; }
 .bindu-home .calc-book { width: 100%; }
-.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--canvas-mid); border: 1px solid var(--hairline-dark); }
+.bindu-home .calc-total { display: grid; gap: var(--s-1); padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--canvas-mid); border: 0; }
 .bindu-home .calc-sum { font-size: var(--display-sm); line-height: 1; letter-spacing: -0.03em; }
 
 /* ---------- 5 trust (round 2 #8: minimal; one motion, the row rules draw in) ---------- */
@@ -181,12 +187,12 @@
 
 /* ---------- 6 roles, FAQ, finale ---------- */
 
-.bindu-home .faq { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: var(--s-8); align-items: start; }
-@media (max-width: 900px) { .bindu-home .faq { grid-template-columns: 1fr; gap: 0; } }
-.bindu-home .faq-list { border-top: 1px solid var(--hairline-dark); }
-.bindu-home .faq-item { border-bottom: 1px solid var(--hairline-dark); }
-.bindu-home .faq-item { --faq-q: clamp(18.4px, 1.8vw, 24px); }
-.bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-5) 0; }
+/* r54 (v3 step 4): a centred head over a centred list (max 768px) in one panel; the rows are separated by space only */
+.bindu-home .faq { display: block; }
+.bindu-home .faq-list { max-width: 768px; margin: 0 auto; padding: 12px 24px; }
+@media (min-width: 1024px) { .bindu-home .faq-list.v3-panel-wide { padding: 16px 40px; } }
+.bindu-home .faq-item { --faq-q: clamp(18px, 1.8vw, 22px); }
+.bindu-home .faq-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: var(--s-4) 0; }
 .bindu-home .faq-item summary::-webkit-details-marker { display: none; }
 .bindu-home .faq-item summary:focus-visible { outline: var(--focus-ring-dark); outline-offset: 4px; border-radius: var(--r-control); }
 .bindu-home .faq-item .t-display-sm { font-size: var(--faq-q); }
@@ -196,7 +202,7 @@
 .bindu-home .faq-ico-v { transform-box: view-box; transform-origin: 12px 12px; transition: transform 200ms var(--ease-out); }
 .bindu-home .faq-item[open] .faq-ico-v { transform: rotate(90deg); }
 @media (prefers-reduced-motion: reduce) { .bindu-home .faq-ico-v { transition: none; } }
-.bindu-home .faq-a { padding: 0 0 var(--s-5); max-width: 640px; }
+.bindu-home .faq-a { padding: 0 0 var(--s-4); max-width: 640px; }
 .bindu-home .faq-a p { margin: 0 0 12px; }
 @media (prefers-reduced-motion: no-preference) { .bindu-home .faq-item[open] .faq-a { animation: it-in var(--t-base) var(--ease-out) both; } }
 

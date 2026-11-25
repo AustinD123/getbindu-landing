@@ -4,29 +4,27 @@
    Estimate pill, trust notes). Yellow is the one filled pill (Estimate your cost). Cobalt marks the active tab and the
    checklist dots. The whole section is one window at 1440x900 and 1920x1080; at 860px and below the halves stack. */
 
-.bindu-home .sec.r6-pricing { padding: var(--s-7) 0; }
-@media (min-width: 861px) {
-  .bindu-home .sec.r6-pricing { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; box-sizing: border-box; padding: 88px 0 var(--s-6); }
-}
+/* r54: the generic section rhythm (site.css .sec) applies; the card is the v3 panel */
 .bindu-home .r6-pricing > .container { max-width: 1080px; width: 100%; }
 
 /* 1. centred head */
-.bindu-home .r6-head { display: grid; justify-items: center; text-align: center; gap: var(--s-3); margin-bottom: var(--s-6); }
-.bindu-home .r6-head .t-display-md { margin: 0; }
-.bindu-home .r6-head .t-body-lg { margin: 0; max-width: 44ch; }
+.bindu-home .r6-head { display: grid; justify-items: center; text-align: center; gap: 24px; margin-bottom: var(--lead-gap); }
+.bindu-home .r6-head .t-display-lg { margin: 0; text-wrap: balance; }
+.bindu-home .r6-head .t-body-lg { margin: 0; max-width: 32ch; text-wrap: balance; }
 
 /* 2. the toggle: the shared segmented control (components.css, round 15 item 14) */
-.bindu-home .r6-tabs { margin: 0 auto var(--s-6); max-width: 640px; }
+.bindu-home .r6-tabs { margin: 0 auto var(--s-6); max-width: 720px; }
 .bindu-home .r6-card:focus-visible { outline: var(--focus-ring-dark); outline-offset: 3px; }
 
 /* 3. one card, two equal halves on one top line */
 .bindu-home .r6-cardwrap { position: relative; border-radius: var(--r-lg); }
+@media (min-width: 1024px) { .bindu-home .r6-cardwrap { border-radius: var(--r-4xl); } }
 .bindu-home .r6-card {
   position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start;
-  border: 1px solid var(--line-white-12); border-radius: var(--r-lg); background: var(--canvas-soft); overflow: hidden;
+  border: 0; border-radius: inherit; background: var(--canvas-mid); overflow: hidden;
 }
 .bindu-home .r6-left, .bindu-home .r6-right { min-width: 0; padding: var(--s-6) var(--s-7); }
-.bindu-home .r6-right { align-self: stretch; border-left: 1px solid var(--line-white-12); display: flex; flex-direction: column; }
+.bindu-home .r6-right { align-self: stretch; display: flex; flex-direction: column; }
 
 .bindu-home .r6-tag { display: flex; align-items: center; gap: 12px; min-height: 24px; margin: 0 0 var(--s-4); }
 .bindu-home .r6-tag .bh-eyebrow, .bindu-home .r6-inc-h { color: var(--on-dark-mute); margin: 0; }
@@ -85,7 +83,6 @@
 /* narrower screens: the halves stack, receipt first */
 @media (max-width: 860px) {
   .bindu-home .r6-card { grid-template-columns: minmax(0, 1fr); }
-  .bindu-home .r6-right { border-left: 0; border-top: 1px solid var(--line-white-12); }
   .bindu-home .r6-left, .bindu-home .r6-right { padding: var(--s-5); }
 }
 @media (max-width: 600px) {
