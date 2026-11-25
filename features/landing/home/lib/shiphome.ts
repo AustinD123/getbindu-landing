@@ -18,7 +18,10 @@ const syncFinp = () => { const p = isPhone(); FINP.hold = p ? 0.1 : 0.2; FINP.sp
 syncFinp();
 if (typeof window !== "undefined") onPhoneChange(syncFinp);
 /* t: the master time; z: the zoom's progress 0 to 1 (r28-3) */
-export const fin = { t: 0, z: 0 };
+/* r62-1: b is the guide ship's break at the end of its lane, 0 to 1 (smoothed in the Guide from the scroll position); nothing travels from it into the finale */
+export const fin = { t: 0, z: 0, b: 0 };
+/* r62-1: the break starts when the ship reaches the lane end (the ship sits 0.55 viewport heights down the screen there) and takes this many viewport heights of scroll */
+export const BREAK_SPAN = 0.4;
 
 const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 export const sm01 = (x: number) => { const t = c01(x); return t * t * (3 - 2 * t); };
