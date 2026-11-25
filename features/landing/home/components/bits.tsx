@@ -12,7 +12,16 @@ const MARK_DOTS = sunflowerCircles(MARK_N, 100, 4).map((d, i) => {
   const t = i / (MARK_N - 1), p = Math.round(Math.min(1, Math.max(0, (t - 0.3) / 0.45)) * 5) * 20;   // 0 = all yellow, 100 = all cobalt, in steps of 20
   return { x: d.x.toFixed(1), y: d.y.toFixed(1), r: (d.r * 1.25).toFixed(2), fill: p === 0 ? "var(--sun)" : p === 100 ? "var(--cobalt-signal)" : `color-mix(in srgb, var(--cobalt-signal) ${p}%, var(--sun))` };
 });
-export function Mark({ size = 28, white = false, label = false }: { size?: number; white?: boolean; label?: boolean }) {
+/* r65-10: the statement chip's mark is the 34-dot sunflower (the same 34 bindus as the guide ship and the finale i), finer and evenly spaced, in one colour */
+const CHIP_DOTS = sunflowerCircles(34, 100, 5).map((d) => ({ x: d.x.toFixed(1), y: d.y.toFixed(1), r: (d.r * 1.1).toFixed(2) }));
+export function Mark({ size = 28, white = false, label = false, chip = false }: { size?: number; white?: boolean; label?: boolean; chip?: boolean }) {
+  if (chip) return (
+    <span className="mark mark-chip" style={{ width: size, height: size }} aria-hidden="true">
+      <svg viewBox="0 0 100 100" focusable="false" aria-hidden="true">
+        {CHIP_DOTS.map((d, i) => <circle key={i} cx={d.x} cy={d.y} r={d.r} fill="currentColor" />)}
+      </svg>
+    </span>
+  );
   return (
     <span className={`mark${white ? " mark-white" : ""}`} style={{ width: size, height: size }} aria-hidden={label ? undefined : true}
       role={label ? "img" : undefined} aria-label={label ? "Bindu" : undefined}>

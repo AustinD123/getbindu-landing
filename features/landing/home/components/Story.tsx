@@ -20,7 +20,7 @@ export function Statement() {
     const ws = Array.from(el.querySelectorAll<HTMLElement>(".stmt-w"));
     const chip = el.querySelector<HTMLElement>(".stmt-chip")!;
     const chipBg = chip.querySelector<HTMLElement>(".stmt-chip-bg")!;
-    const chipInk = [chip.querySelector<HTMLElement>(".stmt-w")!, chip.querySelector<HTMLElement>(".mark")!];
+    const chipInk = [chip.querySelector<HTMLElement>(".stmt-w")!];   // r65-10: the mark keeps its cobalt; only the word goes to black
     const dots = Array.from(chip.querySelectorAll<SVGElement>("svg > *"));
     const ease = "sine.inOut";
     const ci = ws.indexOf(chip.querySelector<HTMLElement>(".stmt-w")!);
@@ -50,7 +50,7 @@ export function Statement() {
       <div className="container">
         <p className="stmt-t t-display-lg">
           {words.map((w, i) => w === "\u0000"
-            ? <span key={i}><span className="stmt-chip"><span className="stmt-chip-bg" /><Mark size={26} white /><span className="stmt-w">Bindu</span></span>{" "}</span>
+            ? <span key={i}><span className="stmt-chip"><span className="stmt-chip-bg" /><Mark size={26} chip /><span className="stmt-w">Bindu</span></span>{" "}</span>
             : <span key={i}><span className="stmt-w">{w}</span>{" "}</span>)}
         </p>
       </div>

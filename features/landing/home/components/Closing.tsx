@@ -44,21 +44,23 @@ export function Faq() {
    queued, reversible; drawn by the Guide canvas). Reduced motion: the masked wordmark with its dot, then the photo section with the content; no zoom. */
 const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (x: number) => { const t = c01(x); return t * t * (3 - 2 * t); };
-/* r62-2: the dot of the i is part of the mask too (an ellipse over the tittle), so the zoom can dive into it: it is the portal, and its disc is what finally fills the window */
-const MASK_SVG = MASK.svg.replace("</svg>", `<ellipse cx="${MASK.dot.cx}" cy="${MASK.dot.cy}" rx="${MASK.dot.rx}" ry="${MASK.dot.ry}" fill="#000"/></svg>`);
-const MASK_URL = `url("data:image/svg+xml,${encodeURIComponent(MASK_SVG)}")`;
+/* r65-11 (Austin): the i has no dot of its own in the mask again (r62-2's ellipse is gone): its dot is only the sunflower the bindus build. The zoom dives into a letter
+   instead: the right leg of the n, a solid stem in the middle of the word (viewBox x 389 to 430.9, straight from y 160 down to the baseline at 275). */
+const MASK_URL = `url("data:image/svg+xml,${encodeURIComponent(MASK.svg)}")`;
+const ZOOM = { cx: 409.95, cy: 222, r: 20.9 };   // the zoom origin inside the n's right leg, and the half width of that stem (the largest disc that is all letter)
 // r35: FINP is read when used (it changes on phones)   // r32-1: the hand-off plays first (20vh hold, then 120vh); the zoom runs from 140vh into the pin for 150vh
 
 type Lay = { W: number; H: number; mw0: number; x0: number; y0: number; px: number; py: number; K: number; dx: number; dy: number; dw: number; dh: number };
 function layout(W: number, H: number): Lay {
   const mw0 = W <= 600 ? W * 0.84 : Math.min(W * 0.34, 560), mh0 = (mw0 * MASK.h) / MASK.w;
   const x0 = (W - mw0) / 2, y0 = (H - mh0) / 2, u = mw0 / MASK.w;
-  // r62-2: the zoom grows around the centre of the dot of the i (it stays where it is). The final scale is worked out from the viewport: the disc of the dot must clear the
-  // farthest corner of the window seen from the dot, with 12% to spare, so the video fills the window at every ratio (16:9 to 9:16)
-  const px = x0 + MASK.dot.cx * u, py = y0 + MASK.dot.cy * u;
+  // r65-11: the zoom grows around a point inside the n's right leg (it stays where it is). The final scale is worked out from the viewport: the stem's disc (its half
+  // width) must clear the farthest corner of the window seen from that point, with 12% to spare, so the video fills the window at every ratio (16:9 to 9:16)
+  const px = x0 + ZOOM.cx * u, py = y0 + ZOOM.cy * u;
   const R = Math.max(Math.hypot(px, py), Math.hypot(W - px, py), Math.hypot(px, H - py), Math.hypot(W - px, H - py));
-  const K = Math.max(6, (1.12 * R) / (Math.min(MASK.dot.rx, MASK.dot.ry) * u));
-  return { W, H, mw0, x0, y0, px, py, K, dx: px, dy: py, dw: 2 * MASK.dot.rx * u, dh: 2 * MASK.dot.ry * u };
+  const K = Math.max(6, (1.12 * R) / (ZOOM.r * u));
+  const dx = x0 + MASK.dot.cx * u, dy = y0 + MASK.dot.cy * u;   // the dot of the i (the sunflower) stays where the tittle is
+  return { W, H, mw0, x0, y0, px, py, K, dx, dy, dw: 2 * MASK.dot.rx * u, dh: 2 * MASK.dot.ry * u };
 }
 const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
   for (const pre of ["", "-webkit-"]) {
@@ -84,10 +86,11 @@ function table(L: Lay): Row[] {
     const Pw = Pw0 + (Pwf - Pw0) * w, ox = ox0 + (oxf - ox0) * w, oy = oy0 + (oyf - oy0) * w;
     const s = u / u0;
     rows.push({
-      ms: `${mw.toFixed(1)}px auto`, mp: `${(L.px - MASK.dot.cx * u).toFixed(1)}px ${(L.py - MASK.dot.cy * u).toFixed(1)}px`,
+      ms: `${mw.toFixed(1)}px auto`, mp: `${(L.px - ZOOM.cx * u).toFixed(1)}px ${(L.py - ZOOM.cy * u).toFixed(1)}px`,
       bs: `${Pw.toFixed(1)}px ${(Ph0 + (Phf - Ph0) * w).toFixed(1)}px`, bp: `${ox.toFixed(1)}px ${oy.toFixed(1)}px`,
       v: `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px) scale(${(Pw / IW).toFixed(4)})`,
-      dot: `scale(${s.toFixed(3)})`, g: (1 - smooth((s - 1.2) / 0.8)).toFixed(3),
+      // r65-11: the sunflower rides the same zoom about the n: it moves out from the zoom point as it grows (origin at its own centre)
+      dot: `translate(${((L.dx - L.px) * (s - 1)).toFixed(1)}px, ${((L.dy - L.py) * (s - 1)).toFixed(1)}px) scale(${s.toFixed(3)})`, g: (1 - smooth((s - 2.5) / 2.5)).toFixed(3),   // r65-11: the sunflower stays on the i while the word grows, and fades as the i leaves the window
     });
   }
   return rows;

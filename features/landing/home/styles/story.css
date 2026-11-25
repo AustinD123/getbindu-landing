@@ -11,11 +11,15 @@
 /* r55: the statement is a section title at the file's display-lg (30px), 1.2 line height, no tracking */
 .bindu-home .stmt-t { margin: 0 auto; font-size: clamp(34px, 5.2vw, 76px); line-height: 1.12; letter-spacing: 0; text-wrap: balance; }
 .bindu-home .stmt-w { color: var(--on-dark); }   /* r59-2: dim and lit are opacity, set by GSAP; with no JS the sentence is fully lit */
-.bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: center; gap: 0.28em; padding: 0.02em 0.4em 0.02em 0.3em; border: 0;
-  border-radius: var(--r-control); font-size: 0.86em; vertical-align: 0.04em; background: var(--canvas-soft); }
+/* r65-10: the chip sits on the sentence's baseline (the word sets the box's baseline; the mark is centred on the box), the word is optically centred
+   (Newsreader needs a little more room under it), and the mark is the 34-dot sunflower in cobalt. */
+.bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: baseline; gap: 0.24em; padding: 0.17em 0.34em 0.03em 0.26em; border: 0;
+  border-radius: var(--r-control); font-size: 0.86em; line-height: 1; vertical-align: baseline; background: var(--canvas-soft); }
+.bindu-home .stmt-chip .mark { align-self: center; position: relative; top: -0.02em; }
 .bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--bindu-yellow); }   /* r65-8: the Bindu chip stays yellow */
-.bindu-home .stmt-chip .stmt-w, .bindu-home .stmt-chip .mark { color: #000; }   /* r65-2: white on the cobalt chip */
-.bindu-home .stmt-chip .mark { width: 0.8em !important; height: 0.8em !important; }
+.bindu-home .stmt-chip .stmt-w { color: #000; }
+.bindu-home .stmt-chip .mark { color: #1F55C4; }   /* r65-10: the dots in the yellow box are cobalt (Austin) */
+.bindu-home .stmt-chip .mark { width: 0.72em !important; height: 0.72em !important; }
 
 /* r44-1: the "Sound familiar?" rows (r19, .ba-*) are gone; the four-step story is in r44.css */
 
