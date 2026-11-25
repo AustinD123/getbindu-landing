@@ -1,7 +1,7 @@
 import { tRaf, tCaf } from "../lib/loop";
 import { track } from "../lib/pos";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { useReducedMotion } from "../lib/motion";
+import { gsap, useReducedMotion } from "../lib/motion";
 
 /* Round 21, item 4 (r31-1 reworked): "What the rules let through, and what they stop." as a split-flap departures board. Eight rows adapted
    from getbindu.com's worked examples (the wording is theirs). The section pins and each scroll step reveals ONE row: it flaps in, settles
@@ -59,44 +59,97 @@ export function Examples() {
   const isStatic = useReducedMotion();
   const [cur, setCur] = useState(isStatic ? N - 1 : -1);   // the current row (-1: none settled yet)
 
+  /* r58: real split-flap flips. Every character is four layers: the static top half (the NEW character), the static bottom half (the OLD one until the flip ends), a flap A
+     (the old top half, folds down rotateX 0 to -90, power2.in) and a flap B (the new bottom half, folds down from 90 to 0 after it with a 2 degree settle). One flip is about
+     70ms. A row plays when it becomes the current row: characters flip left to right (about 17ms apart, capped so a long route does not delay the end), each through 2 or 3
+     random letters before its own, the outcome flips last (Let through and Stopped keep their pass and stop colours) with one soft click-in scale. One GSAP timeline per row,
+     built the first time the row plays and restarted after that; a row lands in about half a second. Rows that were passed over in one jump are set to their final characters
+     at once (a fast scroll never queues flips); scrolling back blanks a row at once. Transforms only, backface-visibility hidden, no layout reads. Reduced motion: every
+     character is final at once. */
   useEffect(() => {
     const root = board.current!;
     const rows = Array.from(root.querySelectorAll<HTMLElement>("tbody tr"));
-    const chars = rows.map((tr) => Array.from(tr.querySelectorAll<HTMLElement>(".fl")));
-    const cache = rows.map((_, i) => chars[i]!.map(() => "\u0000"));
-    const paint = (i: number, r: number) => {
-      let k = 0;
-      COLS.forEach((c) => {
-        const t = label(ROWS[i]!, c).toUpperCase();
+    type Ch = { fl: HTMLElement; b: HTMLElement[]; fa: HTMLElement; fb: HTMLElement; ch: string; cell: number; j: number };
+    const rowCh: Ch[][] = rows.map((tr, i) => {
+      const out: Ch[] = []; let k = 0;
+      const fls = Array.from(tr.querySelectorAll<HTMLElement>(".fl"));
+      COLS.forEach((cn, ci) => {
+        const t = label(ROWS[i]!, cn).toUpperCase();
         Array.from(t).forEach((ch, j) => {
           if (ch === " ") return;
-          const el = chars[i]![k], v = flapChar(ch, j, t.length, r);
-          if (cache[i]![k] !== v) { cache[i]![k] = v!; el!.textContent = v!; el!.classList.toggle("is-blank", v === ""); }
-          k++;
+          const fl = fls[k++]!;
+          const hs = Array.from(fl.querySelectorAll<HTMLElement>(".fh"));
+          out.push({ fl, b: hs.map((h) => h.firstElementChild as HTMLElement), fa: hs[2]!, fb: hs[3]!, ch, cell: ci, j });
         });
       });
+      return out;
+    });
+    const faces = (x: Ch, top: string, bot: string, fa: string, fb: string) => { x.b[0]!.textContent = top; x.b[1]!.textContent = bot; x.b[2]!.textContent = fa; x.b[3]!.textContent = fb; };
+    const setChar = (x: Ch, v: string) => { faces(x, v, v, v, v); x.fl.classList.toggle("is-blank", v === ""); };
+    const idle = (x: Ch) => { gsap.set(x.fa, { rotateX: -90, transformPerspective: 220 }); gsap.set(x.fb, { rotateX: 90, transformPerspective: 220 }); };
+    rowCh.forEach((r) => r.forEach((x) => { setChar(x, isStatic ? x.ch : ""); if (!isStatic) idle(x); }));
+    if (isStatic) { setCur(N - 1); return; }
+    const LET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const rnd = (seed: number) => { let s2 = seed * 9301 + 49297; return () => { s2 = (s2 * 9301 + 49297) % 233280; return s2 / 233280; }; };
+    const verdictOf = (i: number) => rows[i]!.querySelector<HTMLElement>(".bd-verdict .bd-flaps");
+    const tls: (gsap.core.Timeline | null)[] = rows.map(() => null);
+    const state: ("off" | "on")[] = rows.map(() => "off");
+    const build = (i: number) => {
+      const tl = gsap.timeline({ paused: true });
+      const r = rnd(i + 3);
+      rowCh[i]!.forEach((x) => {
+        const isV = x.cell === 3;
+        const delay = (isV ? 0.22 : 0) + Math.min(x.j * (isV ? 0.012 : 0.017), isV ? 0.14 : 0.2);
+        const seq: string[] = [];
+        if (/[A-Z0-9]/.test(x.ch)) { const n = isV ? 2 : 2 + Math.floor(r() * 2); for (let q = 0; q < n; q++) seq.push(LET[Math.floor(r() * 26)]!); }
+        seq.push(x.ch);
+        let old = "";
+        seq.forEach((nw, q) => {
+          const t = delay + q * 0.07, o = old;
+          tl.call(() => { x.fl.classList.remove("is-blank"); faces(x, nw, o, o, nw); }, undefined, t);
+          tl.fromTo(x.fa, { rotateX: 0 }, { rotateX: -90, duration: 0.035, ease: "power2.in", immediateRender: false }, t);
+          tl.fromTo(x.fb, { rotateX: 90 }, { rotateX: -2, duration: 0.03, ease: "power2.in", immediateRender: false }, t + 0.035);
+          tl.to(x.fb, { rotateX: 0, duration: 0.012, ease: "power1.out" }, t + 0.065);
+          tl.call(() => { x.b[1]!.textContent = nw; gsap.set(x.fb, { rotateX: 90 }); gsap.set(x.fa, { rotateX: -90 }); }, undefined, t + 0.077);
+          old = nw;
+        });
+      });
+      const vEl = verdictOf(i);
+      if (vEl) {
+        const vEnd = 0.22 + 0.14 + 3 * 0.07;
+        tl.fromTo(vEl, { scale: 1 }, { scale: 1.04, duration: 0.06, ease: "power1.out", immediateRender: false }, vEnd - 0.1);
+        tl.to(vEl, { scale: 1, duration: 0.06, ease: "power1.in" }, vEnd - 0.04);
+      }
+      tls[i] = tl;
+      return tl;
     };
-    if (isStatic) { rows.forEach((_, i) => paint(i, 1)); setCur(N - 1); return; }
-    rows.forEach((_, i) => paint(i, 0));
+    const blank = (i: number) => { rowCh[i]!.forEach((x) => { setChar(x, ""); idle(x); }); const v = verdictOf(i); if (v) gsap.set(v, { scale: 1 }); };
+    const show = (i: number, animate: boolean) => {
+      state[i] = "on";
+      if (animate) { const tl = tls[i] ?? build(i); tl.pause(0); blank(i); tl.restart(); return; }
+      tls[i]?.pause(0);
+      rowCh[i]!.forEach((x) => { setChar(x, x.ch); idle(x); });
+      const v = verdictOf(i); if (v) gsap.set(v, { scale: 1 });
+    };
+    const hide = (i: number) => { state[i] = "off"; tls[i]?.pause(0); blank(i); };
     const el = pin.current!;
     let raf = 0, visible = false, last = -2;
     const tk = track(el);
-    const settled = rows.map(() => false);
     const update = () => {
       raf = 0;
       if (!visible) return;
       const range = tk.h - window.innerHeight;
       const p = range > 0 ? clamp(-tk.rectTop() / range) : 0;
-      const q = p * N;   // one row per unit: it flaps over the first 0.625 of its step and is current from then on
-      let c = -1;
+      const q = p * N;   // one row per unit: the row starts to flip at the step and is current from then on
+      const c = q > 0.02 ? Math.min(N - 1, Math.floor(q)) : -1;
+      if (c === last) return;
       rows.forEach((_, i) => {
-        const r = clamp((q - i) * 1.6, 0, 1);
-        paint(i, r);
-        const done = r >= 1;
-        if (done) c = i;
-        settled[i] = done;
+        if (i <= c) {
+          if (state[i] === "off") show(i, i === c);                  // only the row the scroll stopped on flips; rows jumped over are set at once
+          else if (i < c && tls[i]?.isActive()) tls[i]!.progress(1); // a row still flipping when the next one starts lands now
+        } else if (state[i] === "on") hide(i);
       });
-      if (c !== last) { last = c; setCur(c); }
+      last = c; setCur(c);
     };
     const kick = () => { if (!raf) raf = tRaf(update); };
     const io = new IntersectionObserver(([e]) => { visible = e!.isIntersecting; if (visible) kick(); });
@@ -104,7 +157,7 @@ export function Examples() {
     window.addEventListener("scroll", kick, { passive: true });
     window.addEventListener("resize", kick);
     kick();
-    return () => { io.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
+    return () => { io.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); tls.forEach((t) => t?.kill()); };
   }, [isStatic]);
 
   /* the headline flaps: each letter shows a few other flap characters, then its own, left to right (about 0.4s) */
@@ -151,7 +204,7 @@ export function Examples() {
                           <span className="sr">{t}</span>
                           <span className="bd-flaps" aria-hidden="true">
                             {t.toUpperCase().split(" ").map((w, wi) => (
-                              <span key={wi} className="bd-word">{Array.from(w).map((_, j) => <span key={j} className={`fl${c === "verdict" ? ` is-${r.verdict}` : ""}`} />)}</span>
+                              <span key={wi} className="bd-word">{Array.from(w).map((_, j) => <span key={j} className={`fl is-blank${c === "verdict" ? ` is-${r.verdict}` : ""}`}><span className="fh fh-t"><b /></span><span className="fh fh-b"><b /></span><span className="fh fh-fa"><b /></span><span className="fh fh-fb"><b /></span></span>)}</span>
                             ))}
                           </span>
                         </td>

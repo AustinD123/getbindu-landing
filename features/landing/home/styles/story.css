@@ -76,7 +76,17 @@
 .bindu-home .bd-flaps { display: inline-flex; gap: 0.6em; font: 500 clamp(11px, 1.15vw, 15px)/1 var(--font-mono); }
 .bindu-home .bd-word { display: inline-flex; gap: 3px; }
 /* a flap: dark on the light theme (the ink colour), light on the dark theme, split by a hairline across the middle */
-.bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); display: inline-block; width: 1.25em; height: 1.85em; line-height: 1.85em; text-align: center; border-radius: 2px; color: var(--tile-ink); background: var(--tile); }
+.bindu-home .fl { --tile: var(--line-ink); --tile-ink: var(--canvas); position: relative; display: inline-block; width: 1.25em; height: 1.85em; border-radius: 2px; color: var(--tile-ink); }
+/* r58: a flap is four half-height layers: the static top and bottom halves and the two folding flaps (A on top, B beneath it); each half shows half of the same glyph */
+.bindu-home .fl .fh { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: var(--tile); backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.bindu-home .fl .fh b { position: absolute; left: 0; right: 0; height: 200%; display: flex; align-items: center; justify-content: center; font-weight: inherit; }
+.bindu-home .fl .fh-t, .bindu-home .fl .fh-fa { top: 0; border-radius: 2px 2px 0 0; }
+.bindu-home .fl .fh-t b, .bindu-home .fl .fh-fa b { top: 0; }
+.bindu-home .fl .fh-b, .bindu-home .fl .fh-fb { bottom: 0; border-radius: 0 0 2px 2px; box-shadow: inset 0 1px 0 rgb(0 0 0 / 0.35); }
+.bindu-home .fl .fh-b b, .bindu-home .fl .fh-fb b { bottom: 0; }
+.bindu-home .fl .fh-fa { transform-origin: 50% 100%; z-index: 3; }
+.bindu-home .fl .fh-fb { transform-origin: 50% 0; z-index: 2; }
+.bindu-home .fl .fh-b { z-index: 1; }
 .bindu-home .fl.is-blank { opacity: 0.35; }
 .bindu-home .fl.is-pass { --tile: var(--board-pass); --tile-ink: #fff; }   /* r56-5: Let through in --board-pass, Stopped in --board-stop, white characters (AA on both in the light theme) */
 .bindu-home .fl.is-stop { --tile: var(--board-stop); --tile-ink: #fff; }
@@ -128,7 +138,7 @@
   .bindu-home .bd { border-spacing: 0 3px; }
   .bindu-home .bd .bd-word { gap: 2px; }
   .bindu-home .bd-flaps { font-size: 8px; row-gap: 2px; }
-  .bindu-home .bd .fl { width: 1.2em; height: 1.5em; line-height: 1.5em; }
+  .bindu-home .bd .fl { width: 1.2em; height: 1.5em; }
   .bindu-home .bd-story { margin-top: var(--s-2); min-height: 0; }
   .bindu-home .bd-story .bd-fade { gap: 6px; }
   .bindu-home .bd-story p.t-body { font-size: 13px; line-height: 1.4; }

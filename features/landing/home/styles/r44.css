@@ -146,7 +146,7 @@
      the flap type scales with the width and the height of the window, and the story reads at body size on a 64ch line. */
   .bindu-home .bd { border-spacing: 0 clamp(3px, 0.55svh, 6px); padding: var(--s-4) var(--s-5); margin-inline: auto; width: min(100%, 1200px); }
   .bindu-home .bd-flaps { font-size: clamp(10px, min(1.15vw, 2.1svh), 20px); }
-  .bindu-home .bd .fl { width: 1.05em; height: 2em; line-height: 2em; }
+  .bindu-home .bd .fl { width: 1.05em; height: 2em; }
   .bindu-home .bd-c { padding-right: var(--s-5); }
   .bindu-home .bd-story { margin-top: var(--s-3); min-height: 0; max-width: 64ch; margin-inline: auto; text-align: center; height: clamp(176px, 24svh, 260px); }
   .bindu-home .bd-fade { gap: var(--s-2); }
