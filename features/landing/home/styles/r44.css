@@ -130,18 +130,29 @@
 @media (max-width: 900px) { .bindu-home .th-lead { min-height: 0; } }
 
 /* ---------- r44-3: the supply-chain question on the shipment map (a bubble and its answer, bottom left of the map) ---------- */
-.bindu-home .ship-ask { width: auto; display: grid; gap: 6px; pointer-events: none; }
+.bindu-home .ship-ask { position: absolute; left: 12px; bottom: 12px; z-index: 2; width: min(300px, 46%); display: grid; gap: 6px; pointer-events: none; }
 .bindu-home .ship-ask-q { margin: 0; display: grid; gap: 6px; justify-items: start; padding: 10px 14px 12px; background: var(--canvas); border: 1px solid var(--hairline-dark); border-radius: var(--r-md); border-bottom-left-radius: var(--r-xs); font: 500 var(--body-sm)/1.35 var(--font-sans); color: var(--on-dark); }
 .bindu-home .ship-ask-a { margin: 0; padding: 0 0 0 12px; position: relative; font: 400 var(--body-sm)/1.4 var(--font-sans); color: var(--on-dark-body); }
 .bindu-home .ship-ask-a::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 2px; border-radius: 1px; background: var(--cobalt-signal); }
 @media (max-width: 860px) { .bindu-home .ship-pin:not(.is-static) .ship-ask { display: none; } }   /* the pinned phone window has no room beside the map: the milestone list carries the steps */
 .bindu-home .ship-pin.is-static .ship-ask { position: static; width: auto; max-width: 340px; margin-top: var(--s-3); }
 
-/* ---------- r44-4 / r55: the departures board fits one window (1440 x 900 and 1920 x 1080), 768px and up ---------- */
+/* ---------- r44-4: the departures board fits one window (1440 x 900 and 1920 x 1080), 768px and up ---------- */
 @media (min-width: 768px) {
   .bindu-home .ex-stage { gap: var(--s-3); }
   .bindu-home .ex-head h2 { max-width: none; font-size: min(var(--display-lg), 6svh); }
-  .bindu-home .bd-c { padding-block: clamp(6px, 1.3svh, 12px); }
+  .bindu-home .ex-head p { max-width: 56ch; font-size: min(var(--body), 2.2svh); }
+  /* r45-1: left-aligned to the container's left edge and bigger again. The board runs from that edge to the right gutter (not centred, no 960px cap),
+     the flap type scales with the width and the height of the window, and the story reads at body size on a 64ch line. */
+  .bindu-home .bd { border-spacing: 0 clamp(3px, 0.55svh, 6px); padding: var(--s-4) var(--s-5); margin-inline: auto; width: min(100%, 1200px); }
+  .bindu-home .bd-flaps { font-size: clamp(10px, min(1.15vw, 2.1svh), 20px); }
+  .bindu-home .bd .fl { width: 1.05em; height: 2em; line-height: 2em; }
+  .bindu-home .bd-c { padding-right: var(--s-5); }
+  .bindu-home .bd-story { margin-top: var(--s-3); min-height: 0; max-width: 64ch; margin-inline: auto; text-align: center; height: clamp(176px, 24svh, 260px); }
+  .bindu-home .bd-fade { gap: var(--s-2); }
+  .bindu-home .bd-story p.t-body { font-size: var(--body); line-height: 1.55; }
+  .bindu-home .bd-h { font-size: clamp(20px, 3svh, 28px); min-height: 0; }
+  .bindu-home .ex-pin.is-static .bd-story { height: auto; }
 }
 
 /* ---------- r44-5: What buyers say, quote cards on a curved 3D track ---------- */

@@ -31,17 +31,30 @@
 
   .bindu-home .ship-pin.is-static .ship-svg, .bindu-home .ship-pin:is(.is-static) .ship-svg { width: 100%; }   /* reduced motion: the stacked map is full width too */
 
-  /* the departures board: rows stack (goods and rule, outcome at the right, reason under), a shorter pin */
-  .bindu-home .ex-pin:not(.is-static) { height: calc(100svh + var(--ex-n, 8) * 28svh) !important; }
+  /* the departures board: Route and Verdict only, bigger tiles, five rows at a time (the two before, the current one, the two after), a shorter pin */
+  .bindu-home .ex-pin:not(.is-static) { height: calc(100svh + var(--ex-n, 9) * 18svh) !important; }
   .bindu-home .ex-stage { padding-bottom: 44px; box-sizing: border-box; }
   .bindu-home .ex-head h2.t-display-lg { font-size: 24px; }
-  .bindu-home .ex-head p { font-size: 14px; line-height: 1.4; }
-  /* the pinned window holds four rows: the current one, the one before and the two after */
+  .bindu-home .ex-head p { font-size: 13px; line-height: 1.4; }
+  .bindu-home .bd, .bindu-home .bd tbody { display: block; }
+  .bindu-home .bd { padding: var(--s-3); }
+  .bindu-home .bd-row { display: grid; grid-template-columns: minmax(0, 1fr) 34%; column-gap: 8px; margin-bottom: 4px; }
+  .bindu-home .bd-row:last-child { margin-bottom: 0; }
+  .bindu-home .bd .bd-c { position: relative; min-width: 0; padding-right: 0; }
+  .bindu-home .bd-row .bd-route { width: auto; padding-left: 14px; }
+  .bindu-home .bd-flaps { font-size: 10px; row-gap: 3px; }
+  .bindu-home .bd .fl { width: 1.05em; height: 1.6em; line-height: 1.6em; }
+  .bindu-home .bd .bd-word { gap: 1px; }
+  .bindu-home .bd-story { min-height: 0; margin-top: var(--s-3); }
+  .bindu-home .bd-story p.t-body { font-size: 15px; line-height: 1.45; }
+  .bindu-home .bd-h { font-size: 18px; }
   .bindu-home .ex-pin:not(.is-static) .bd-row { display: none; }
-  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur,
-  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur + .bd-row,
-  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur + .bd-row + .bd-row,
-  .bindu-home .ex-pin:not(.is-static) .bd-row:has(+ .bd-row.is-cur) { display: grid; }
+  .bindu-home .ex-pin:not(.is-static) .bd tbody:not(:has(.is-cur)) .bd-row:nth-child(-n+3),   
+  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur,   
+  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur + .bd-row,   
+  .bindu-home .ex-pin:not(.is-static) .bd-row.is-cur + .bd-row + .bd-row,   
+  .bindu-home .ex-pin:not(.is-static) .bd-row:has(+ .bd-row.is-cur),   
+  .bindu-home .ex-pin:not(.is-static) .bd-row:has(+ .bd-row + .bd-row.is-cur) { display: grid; }
 
   /* the finale: the sunflower dot assembles by itself (see lib/shiphome.ts for the shorter timing) and the spacer matches */
   .bindu-home .fz-spacer { height: 285vh; height: 285svh; }
