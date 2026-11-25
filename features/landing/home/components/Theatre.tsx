@@ -125,6 +125,17 @@ export function Theatre() {
     return () => { kickRef.current = () => {}; obs.disconnect(); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); tCaf(raf); };
   }, [ready, flat]);
 
+  /* r59-4: the drawings' labels are 14px on screen (11px at the smallest stage, like the overlay words): the art is a 1200-unit viewBox, so a label is px x 1200 / width units (one write per resize, never per frame) */
+  useEffect(() => {
+    const el = stages.current;
+    if (!el) return;
+    const set = () => { const w = el.clientWidth; if (w > 0) el.style.setProperty("--th-label", `${((Math.min(14, Math.max(11, w * 0.0155)) * 1200) / w).toFixed(2)}px`); };
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   /* a tab: swap the stage to that act's first scene at once, and put the scroll at the pin's start (or, flat, just swap the act) */
   const kickRef = useRef<() => void>(() => {});
   const pick = (i: number) => {
@@ -181,9 +192,13 @@ export function Theatre() {
           </div>
           <div className="th-card v3-panel v3-panel-wide">
           <div id="th-panel" role="tabpanel" aria-labelledby={`th-tab-${a.id}`} className="th-panel">
-            <div className="th-stage" data-ready={ready ? "true" : "false"}>
-              {/* the stage art is a constant string (lib/theatre-stages.ts); GSAP animates it by id */}
-              <div ref={stages} className="th-stages" dangerouslySetInnerHTML={{ __html: THEATRE_STAGES_HTML }} />
+            <div className="th-app">
+              {/* r59-4: the same app frame as the story: a 40px title bar with the act name and the Illustration chip */}
+              <div className="fl-appbar"><span className="fl-appname">{a.tab}</span><span className="chip chip-illus">{c.illus}</span></div>
+              <div className="th-stage" data-ready={ready ? "true" : "false"}>
+                {/* the stage art is a constant string (lib/theatre-stages.ts); GSAP animates it by id */}
+                <div ref={stages} className="th-stages" dangerouslySetInnerHTML={{ __html: THEATRE_STAGES_HTML }} />
+              </div>
             </div>
           </div>
           {flat ? (
@@ -200,7 +215,6 @@ export function Theatre() {
           )}
           </div>
           <p className="cargo-cap th-cap">
-            <span className="chip chip-illus">{c.illus}</span>
             {act === 2 ? <span className="chip chip-live">{c.live}</span> : null}
             <span className="t-caption t-muted">{c.caption}</span>
           </p>

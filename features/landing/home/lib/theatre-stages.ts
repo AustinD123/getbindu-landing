@@ -11,49 +11,49 @@ export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
       </defs>
       <!-- frame -->
       <line x1="40" y1="580" x2="1160" y2="580" stroke="var(--th-line)" stroke-width="2.2"/>
-      <line id="a1-border" x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2" stroke-dasharray="2 7"/>
+      <line id="a1-border" x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2.2" stroke-dasharray="2 7"/>
       <text x="888" y="566" font-size="22" letter-spacing="0" fill="var(--th-mute)">EU border</text>
       <!-- desk -->
-      <circle id="a1-desk" cx="1000" cy="330" r="16" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <circle id="a1-desk" cx="1000" cy="330" r="16" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text x="1170" y="378" text-anchor="end" font-size="22" letter-spacing="0" fill="var(--th-ink)"><tspan x="1170">Importer</tspan><tspan x="1170" dy="27">Amsterdam</tspan></text>
       <!-- socket at the desk -->
-      <path id="a1-socket" d="M 962 322 v 16 h -12 v -16" fill="none" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a1-socket" d="M 962 322 v 16 h -12 v -16" fill="none" stroke="var(--th-ink)" stroke-width="2.2"/>
 
       <!-- ROUTE A (top) -->
-      <path id="a1-routeA" d="M 1000 330 C 820 210 560 165 360 165" fill="none" stroke="var(--th-no)" stroke-width="6.5" stroke-linecap="round"/>
-      <circle id="a1-nodeA" cx="360" cy="165" r="15" fill="var(--th-no)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a1-routeA" d="M 1000 330 C 820 210 560 165 360 165" fill="none" stroke="var(--th-no)" stroke-width="2.2" stroke-linecap="round"/>
+      <circle id="a1-nodeA" cx="360" cy="165" r="15" fill="var(--th-no)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a1-lA" x="360" y="140" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Supplier A</text>
-      <path id="a1-frayA" d="M 352 165 l -26 0 m 0 0 l -9 -7 m 9 7 l -9 7" fill="none" stroke="var(--th-no)" stroke-width="3" stroke-linecap="round"/>
+      <path id="a1-frayA" d="M 352 165 l -26 0 m 0 0 l -9 -7 m 9 7 l -9 7" fill="none" stroke="var(--th-no)" stroke-width="2.2" stroke-linecap="round"/>
       <!-- bounced question tokens -->
       <circle class="a1-q" r="7" fill="var(--th-ink)"/>
       <circle class="a1-q" r="7" fill="var(--th-ink)"/>
       <circle class="a1-q" r="7" fill="var(--th-ink)"/>
 
       <!-- ROUTE B (middle): desk&#8594;B, B&#8594;agent, agent&#8594;mill -->
-      <path id="a1-b1" d="M 1000 330 L 360 330" fill="none" stroke="var(--th-ok)" stroke-width="6.5" stroke-linecap="round"/>
-      <path id="a1-b2" d="M 360 330 L 235 330" fill="none" stroke="var(--th-ok)" stroke-width="6.5" stroke-linecap="round"/>
-      <path id="a1-b3" d="M 235 330 L 115 330" fill="none" stroke="var(--th-ok)" stroke-width="6.5" stroke-linecap="round"/>
-      <circle id="a1-nodeB" cx="360" cy="330" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a1-b1" d="M 1000 330 L 360 330" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path id="a1-b2" d="M 360 330 L 235 330" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path id="a1-b3" d="M 235 330 L 115 330" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <circle id="a1-nodeB" cx="360" cy="330" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a1-lB" x="360" y="268" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Supplier B</text>
-      <circle id="a1-nodeAg" cx="235" cy="330" r="13" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <circle id="a1-nodeAg" cx="235" cy="330" r="13" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a1-lAg" x="235" y="268" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Bindu</text>
-      <rect id="a1-mill" x="97" y="312" width="36" height="36" fill="var(--th-paper)" stroke="var(--th-ok)" stroke-width="3.5"/>
+      <rect id="a1-mill" x="97" y="312" width="36" height="36" fill="var(--th-paper)" stroke="var(--th-ok)" stroke-width="2.2"/>
       <text id="a1-lMill" x="115" y="388" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Mill</text>
       <!-- handshake ticks -->
-      <path class="a1-tick" d="M 354 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="3.5" stroke-linecap="round"/>
-      <path class="a1-tick" d="M 229 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="3.5" stroke-linecap="round"/>
-      <path class="a1-tick" d="M 109 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="3.5" stroke-linecap="round"/>
+      <path class="a1-tick" d="M 354 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path class="a1-tick" d="M 229 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path class="a1-tick" d="M 109 288 l 5 6 l 9 -11" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
       <!-- data line back: mill &#8594; desk, dashed, with plug -->
-      <path id="a1-data" d="M 115 348 L 946 348" fill="none" stroke="var(--th-ok)" stroke-width="3.5" stroke-dasharray="8 7" clip-path="url(#a1-dataclip)"/>
+      <path id="a1-data" d="M 115 348 L 946 348" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-dasharray="8 7" clip-path="url(#a1-dataclip)"/>
       <path id="a1-plugB" d="M 946 341 h 12 v 14 h -12 z" fill="var(--th-ok)"/>
 
       <!-- ROUTE C (bottom) -->
-      <path id="a1-routeC" d="M 1000 330 C 820 450 560 495 360 495" fill="none" stroke="var(--th-warn)" stroke-width="5" stroke-linecap="round" stroke-dasharray="0.5 13" clip-path="url(#a1-routeCclip)"/>
-      <circle id="a1-nodeC" cx="360" cy="495" r="15" fill="var(--th-warn)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a1-routeC" d="M 1000 330 C 820 450 560 495 360 495" fill="none" stroke="var(--th-warn)" stroke-width="3.2" stroke-linecap="round" stroke-dasharray="0.5 13" clip-path="url(#a1-routeCclip)"/>
+      <circle id="a1-nodeC" cx="360" cy="495" r="15" fill="var(--th-warn)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a1-lC" x="360" y="470" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Supplier C</text>
       <!-- C's walled garden -->
       <g id="a1-wall">
-        <rect x="285" y="510" width="150" height="66" fill="none" stroke="var(--th-warn)" stroke-width="3.2"/>
+        <rect x="285" y="510" width="150" height="66" fill="none" stroke="var(--th-warn)" stroke-width="2.2"/>
         <line x1="315" y1="510" x2="315" y2="576" stroke="var(--th-warn)" stroke-width="2.2"/>
         <line x1="345" y1="510" x2="345" y2="576" stroke="var(--th-warn)" stroke-width="2.2"/>
         <line x1="375" y1="510" x2="375" y2="576" stroke="var(--th-warn)" stroke-width="2.2"/>
@@ -100,30 +100,30 @@ export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
     <svg viewBox="0 0 1200 660" role="img" aria-label="Illustration: three coffee origins; one plot was cleared, one co-op sends every plot, one never answers">
       <!-- frame (same geometry) -->
       <line x1="40" y1="580" x2="1160" y2="580" stroke="var(--th-line)" stroke-width="2.2"/>
-      <line x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2" stroke-dasharray="2 7"/>
+      <line x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2.2" stroke-dasharray="2 7"/>
       <text x="892" y="250" font-size="22" letter-spacing="0" fill="var(--th-mute)">EU border</text>
-      <circle cx="1000" cy="330" r="16" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <circle cx="1000" cy="330" r="16" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text x="1170" y="378" text-anchor="end" font-size="22" letter-spacing="0" fill="var(--th-ink)"><tspan x="1170">Importer</tspan><tspan x="1170" dy="27">Amsterdam</tspan></text>
       <!-- mountain -->
       <path d="M 40 580 L 150 430 L 230 500 L 330 380 L 430 580" fill="none" stroke="var(--th-line)" stroke-width="2.2"/>
 
       <!-- routes -->
-      <path id="a2-rA" d="M 1000 330 C 820 230 600 185 400 185" fill="none" stroke="var(--th-ok)" stroke-width="6" stroke-linecap="round"/>
-      <path id="a2-rB" d="M 1000 330 L 480 330" fill="none" stroke="var(--th-ok)" stroke-width="6.5" stroke-linecap="round"/>
-      <path id="a2-rC" d="M 1000 330 C 820 440 620 490 440 490" fill="none" stroke="var(--th-ok)" stroke-width="6" stroke-linecap="round"/>
-      <circle id="a2-nA" cx="400" cy="185" r="14" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a2-rA" d="M 1000 330 C 820 230 600 185 400 185" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path id="a2-rB" d="M 1000 330 L 480 330" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <path id="a2-rC" d="M 1000 330 C 820 440 620 490 440 490" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <circle id="a2-nA" cx="400" cy="185" r="14" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a2-lA" x="400" y="160" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Origin A</text>
-      <circle id="a2-nB" cx="480" cy="330" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <circle id="a2-nB" cx="480" cy="330" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a2-lB" x="480" y="305" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Supplier</text>
-      <circle id="a2-coop" cx="330" cy="415" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <circle id="a2-coop" cx="330" cy="415" r="15" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a2-lCoop" x="330" y="456" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Co-op</text>
-      <path id="a2-rBcoop" d="M 480 330 L 330 415" fill="none" stroke="var(--th-ok)" stroke-width="5.5" stroke-linecap="round"/>
-      <circle id="a2-nC" cx="440" cy="490" r="14" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="3.2"/>
+      <path id="a2-rBcoop" d="M 480 330 L 330 415" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+      <circle id="a2-nC" cx="440" cy="490" r="14" fill="var(--th-ok)" stroke="var(--th-ink)" stroke-width="2.2"/>
       <text id="a2-lC" x="440" y="530" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Origin C</text>
 
       <!-- origin A polygon + satellite overlay -->
       <g id="a2-plotWrap">
-        <path id="a2-plot" d="M 130 150 l 90 -18 l 55 40 l -22 62 l -95 8 l -32 -54 z" fill="var(--th-ok)" fill-opacity=".35" stroke="var(--th-ok)" stroke-width="3" stroke-linejoin="round"/>
+        <path id="a2-plot" d="M 130 150 l 90 -18 l 55 40 l -22 62 l -95 8 l -32 -54 z" fill="var(--th-ok)" fill-opacity=".35" stroke="var(--th-ok)" stroke-width="2.2" stroke-linejoin="round"/>
         <text x="175" y="120" font-size="22" letter-spacing="0" fill="var(--th-mute)">Plot &#183; origin A</text>
       </g>
       <g id="a2-satWipe">
@@ -170,51 +170,51 @@ export const THEATRE_STAGES_HTML = `<div class="th-wrap active" id="act1">
 
       <!-- shop: rack + tee + coffee bag -->
       <g id="a3-shop">
-        <line x1="120" y1="150" x2="430" y2="150" stroke="var(--th-ink)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="120" y1="150" x2="430" y2="150" stroke="var(--th-ink)" stroke-width="2.2" stroke-linecap="round"/>
         <line x1="130" y1="150" x2="130" y2="580" stroke="var(--th-line)" stroke-width="2.2"/>
         <line x1="420" y1="150" x2="420" y2="580" stroke="var(--th-line)" stroke-width="2.2"/>
         <g id="a3-tee">
           <line x1="250" y1="150" x2="250" y2="185" stroke="var(--th-ink)" stroke-width="2.2"/>
-          <path d="M 215 197 l 20 -14 h 30 l 20 14 l -9 14 l -8 -6 v 52 h -36 v -52 l -8 6 z" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2"/>
-          <rect id="a3-teeqr" x="240" y="215" width="20" height="20" fill="none" stroke="var(--th-ink)" stroke-width="2"/>
+          <path d="M 215 197 l 20 -14 h 30 l 20 14 l -9 14 l -8 -6 v 52 h -36 v -52 l -8 6 z" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2.2"/>
+          <rect id="a3-teeqr" x="240" y="215" width="20" height="20" fill="none" stroke="var(--th-ink)" stroke-width="2.2"/>
         </g>
         <g id="a3-bag">
-          <path d="M 330 200 h 44 l 6 60 h -56 z" fill="var(--th-paper)" stroke="var(--th-warn)" stroke-width="2"/>
+          <path d="M 330 200 h 44 l 6 60 h -56 z" fill="var(--th-paper)" stroke="var(--th-warn)" stroke-width="2.2"/>
           <text x="352" y="288" text-anchor="middle" font-size="20" fill="var(--th-ink)">Coffee</text>
         </g>
       </g>
-      <path id="a3-beam" d="M 240 205 L 262 205" stroke="var(--th-warn)" stroke-width="5" stroke-linecap="round"/>
+      <path id="a3-beam" d="M 240 205 L 262 205" stroke="var(--th-warn)" stroke-width="2.2" stroke-linecap="round"/>
 
       <!-- recycler conveyor -->
       <g id="a3-conv">
-        <line id="a3-belt" x1="520" y1="300" x2="900 " y2="300" stroke="var(--th-ink)" stroke-width="4.5" stroke-dasharray="14 10"/>
+        <line id="a3-belt" x1="520" y1="300" x2="900 " y2="300" stroke="var(--th-ink)" stroke-width="2.2" stroke-dasharray="14 10"/>
         <g id="a3-tee2">
-          <path d="M 545 258 l 16 -11 h 24 l 16 11 l -7 11 l -7 -5 v 40 h -28 v -40 l -7 5 z" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2.4" opacity=".65"/>
+          <path d="M 545 258 l 16 -11 h 24 l 16 11 l -7 11 l -7 -5 v 40 h -28 v -40 l -7 5 z" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2.2" opacity=".65"/>
         </g>
         <g id="a3-batt">
-          <rect x="530" y="330" width="44" height="24" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2.4"/>
+          <rect x="530" y="330" width="44" height="24" fill="var(--th-paper)" stroke="var(--th-ink)" stroke-width="2.2"/>
           <rect x="574" y="337" width="6" height="10" fill="var(--th-ink)"/>
         </g>
-        <path id="a3-beam2" d="M 700 240 L 700 320" stroke="var(--th-warn)" stroke-width="5" stroke-linecap="round"/>
+        <path id="a3-beam2" d="M 700 240 L 700 320" stroke="var(--th-warn)" stroke-width="2.2" stroke-linecap="round"/>
       </g>
 
       <!-- customs -->
       <g id="a3-customs">
-        <line x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2" stroke-dasharray="2 7"/>
+        <line x1="880" y1="90" x2="880" y2="580" stroke="var(--th-mute)" stroke-width="2.2" stroke-dasharray="2 7"/>
         <text x="888" y="106" font-size="22" letter-spacing="0" fill="var(--th-mute)">EU border</text>
-        <rect x="940" y="430" width="70" height="46" fill="none" stroke="var(--th-ink)" stroke-width="2"/>
+        <rect x="940" y="430" width="70" height="46" fill="none" stroke="var(--th-ink)" stroke-width="2.2"/>
         <text x="975" y="500" text-anchor="middle" font-size="22" letter-spacing="0" fill="var(--th-mute)">Customs</text>
       </g>
 
       <!-- epilogue: journey line that morphs into the circle -->
       <path id="a3-loop" d="M 120 500 C 320 470 420 380 600 360 C 780 340 900 300 1060 250"
-            fill="none" stroke="var(--th-ink)" stroke-width="4.5" stroke-linecap="round"/>
+            fill="none" stroke="var(--th-ink)" stroke-width="2.2" stroke-linecap="round"/>
       <g id="a3-braid">
-        <path id="a3-c1" d="M 600 138 C 706 138 792 224 792 330 C 792 436 706 522 600 522 C 494 522 408 436 408 330 C 408 224 494 138 600 138" fill="none" stroke="var(--th-ok)" stroke-width="4.5" stroke-linecap="round"/>
-        <path id="a3-c2" d="M 600 122 C 715 122 808 215 808 330 C 808 445 715 538 600 538 C 485 538 392 445 392 330 C 392 215 485 122 600 122" fill="none" stroke="var(--th-ink)" stroke-width="4.5" stroke-linecap="round"/>
-        <path id="a3-c3" d="M 600 154 C 697 154 776 233 776 330 C 776 427 697 506 600 506 C 503 506 424 427 424 330 C 424 233 503 154 600 154" fill="none" stroke="var(--th-warn)" stroke-width="4.5" stroke-linecap="round"/>
+        <path id="a3-c1" d="M 600 138 C 706 138 792 224 792 330 C 792 436 706 522 600 522 C 494 522 408 436 408 330 C 408 224 494 138 600 138" fill="none" stroke="var(--th-ok)" stroke-width="2.2" stroke-linecap="round"/>
+        <path id="a3-c2" d="M 600 122 C 715 122 808 215 808 330 C 808 445 715 538 600 538 C 485 538 392 445 392 330 C 392 215 485 122 600 122" fill="none" stroke="var(--th-ink)" stroke-width="2.2" stroke-linecap="round"/>
+        <path id="a3-c3" d="M 600 154 C 697 154 776 233 776 330 C 776 427 697 506 600 506 C 503 506 424 427 424 330 C 424 233 503 154 600 154" fill="none" stroke="var(--th-warn)" stroke-width="2.2" stroke-linecap="round"/>
       </g>
-      <circle id="a3-fiber" r="9" fill="var(--th-ink)" stroke="var(--th-paper)" stroke-width="2"/>
+      <circle id="a3-fiber" r="9" fill="var(--th-ink)" stroke="var(--th-paper)" stroke-width="2.2"/>
     </svg>
 
     <div class="ov pass" id="a3-p1" style="left:40%; top:8%;">

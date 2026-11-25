@@ -137,7 +137,7 @@
 
 
 /* ---------- r44-2: Full Circle, a label and a heading per act ---------- */
-.bindu-home .th-kicker { margin: 0; font: 500 14px/1.43 var(--font-sans); letter-spacing: 0; color: var(--on-dark-mute); }   /* r52: v2 Label voice */
+.bindu-home .th-kicker { margin: 0; font: 500 16px/1.43 var(--font-sans); letter-spacing: 0; color: var(--on-dark-mute); }   /* r52: v2 Label voice */
 .bindu-home .th-h { display: block; }
 .bindu-home .th-lead { min-height: 2lh; }
 @media (max-width: 900px) { .bindu-home .th-lead { min-height: 0; } }
