@@ -44,18 +44,21 @@ export function Faq() {
    queued, reversible; drawn by the Guide canvas). Reduced motion: the masked wordmark with its dot, then the photo section with the content; no zoom. */
 const c01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const smooth = (x: number) => { const t = c01(x); return t * t * (3 - 2 * t); };
-const MASK_URL = `url("data:image/svg+xml,${encodeURIComponent(MASK.svg)}")`;
-const STROKE = 48;                       // the stem of the d in viewBox units (Inter 600 at 330 units)
+/* r62-2: the dot of the i is part of the mask too (an ellipse over the tittle), so the zoom can dive into it: it is the portal, and its disc is what finally fills the window */
+const MASK_SVG = MASK.svg.replace("</svg>", `<ellipse cx="${MASK.dot.cx}" cy="${MASK.dot.cy}" rx="${MASK.dot.rx}" ry="${MASK.dot.ry}" fill="#000"/></svg>`);
+const MASK_URL = `url("data:image/svg+xml,${encodeURIComponent(MASK_SVG)}")`;
 // r35: FINP is read when used (it changes on phones)   // r32-1: the hand-off plays first (20vh hold, then 120vh); the zoom runs from 140vh into the pin for 150vh
 
 type Lay = { W: number; H: number; mw0: number; x0: number; y0: number; px: number; py: number; K: number; dx: number; dy: number; dw: number; dh: number };
 function layout(W: number, H: number): Lay {
   const mw0 = W <= 600 ? W * 0.84 : Math.min(W * 0.34, 560), mh0 = (mw0 * MASK.h) / MASK.w;
   const x0 = (W - mw0) / 2, y0 = (H - mh0) / 2, u = mw0 / MASK.w;
-  const px = x0 + MASK.origin.x * u, py = y0 + MASK.origin.y * u;
+  // r62-2: the zoom grows around the centre of the dot of the i (it stays where it is). The final scale is worked out from the viewport: the disc of the dot must clear the
+  // farthest corner of the window seen from the dot, with 12% to spare, so the video fills the window at every ratio (16:9 to 9:16)
+  const px = x0 + MASK.dot.cx * u, py = y0 + MASK.dot.cy * u;
   const R = Math.max(Math.hypot(px, py), Math.hypot(W - px, py), Math.hypot(px, H - py), Math.hypot(W - px, H - py));
-  const K = Math.max(6, (1.5 * R) / (STROKE * u));   // until the stroke is wider than the viewport seen from the origin (a little more for the bend of the bowl)
-  return { W, H, mw0, x0, y0, px, py, K, dx: x0 + MASK.dot.cx * u, dy: y0 + MASK.dot.cy * u, dw: 2 * MASK.dot.rx * u, dh: 2 * MASK.dot.ry * u };
+  const K = Math.max(6, (1.12 * R) / (Math.min(MASK.dot.rx, MASK.dot.ry) * u));
+  return { W, H, mw0, x0, y0, px, py, K, dx: px, dy: py, dw: 2 * MASK.dot.rx * u, dh: 2 * MASK.dot.ry * u };
 }
 const setMask = (el: HTMLElement, v: string, size: string, pos: string) => {
   for (const pre of ["", "-webkit-"]) {
@@ -79,12 +82,12 @@ function table(L: Lay): Row[] {
   for (let i = 0; i < STEPS; i++) {
     const q = i / STEPS, mw = L.mw0 * Math.pow(L.K, q), u = mw / MASK.w, w = smooth(q / PHOTO_Q);
     const Pw = Pw0 + (Pwf - Pw0) * w, ox = ox0 + (oxf - ox0) * w, oy = oy0 + (oyf - oy0) * w;
-    const cx = L.px + (MASK.dot.cx - MASK.origin.x) * u, cy = L.py + (MASK.dot.cy - MASK.origin.y) * u, s = u / u0;
+    const s = u / u0;
     rows.push({
-      ms: `${mw.toFixed(1)}px auto`, mp: `${(L.px - MASK.origin.x * u).toFixed(1)}px ${(L.py - MASK.origin.y * u).toFixed(1)}px`,
+      ms: `${mw.toFixed(1)}px auto`, mp: `${(L.px - MASK.dot.cx * u).toFixed(1)}px ${(L.py - MASK.dot.cy * u).toFixed(1)}px`,
       bs: `${Pw.toFixed(1)}px ${(Ph0 + (Phf - Ph0) * w).toFixed(1)}px`, bp: `${ox.toFixed(1)}px ${oy.toFixed(1)}px`,
       v: `translate(${ox.toFixed(1)}px, ${oy.toFixed(1)}px) scale(${(Pw / IW).toFixed(4)})`,
-      dot: `translate(${(cx - L.dx).toFixed(1)}px, ${(cy - L.dy).toFixed(1)}px) scale(${s.toFixed(3)})`, g: (1 - smooth((s - 1.2) / 0.8)).toFixed(3),
+      dot: `scale(${s.toFixed(3)})`, g: (1 - smooth((s - 1.2) / 0.8)).toFixed(3),
     });
   }
   return rows;
@@ -117,8 +120,8 @@ export function Finale() {
     // r42: the picture is fetched only when the finale is about 2 viewports away
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { sec.style.setProperty("--photo", `url(${cdnAsset(POSTER)})`); if (useClip) load(); io.disconnect(); } }, { rootMargin: "200% 0px 200% 0px" });
     io.observe(sec);
-    const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); });
-    vis.observe(sec);
+    const vis = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); sync(); }); 
+    vis.observe(sec);   // r62-3: playing (so decoded) from one viewport before the finale
     const offPause = subscribePause(sync);
     const tk = track(sec), dotDots = Array.from(dot.querySelectorAll<SVGCircleElement>("circle"));
     let L = layout(stage.clientWidth, stage.clientHeight), rows: Row[] = [], lastP = -1, willChange = false, formed = false, dashed = false, resolved = false;
