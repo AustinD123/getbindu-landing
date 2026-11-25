@@ -14,7 +14,7 @@
 /* r65-10: the chip sits on the sentence's baseline (the word sets the box's baseline; the mark is centred on the box), the word is optically centred
    (Newsreader needs a little more room under it), and the mark is the 34-dot sunflower in cobalt. */
 .bindu-home .stmt-chip { position: relative; isolation: isolate; display: inline-flex; align-items: baseline; gap: 0.24em; padding: 0.17em 0.34em 0.03em 0.26em; border: 0;
-  border-radius: var(--r-control); font-size: 0.86em; line-height: 1; vertical-align: baseline; background: var(--canvas-soft); }
+  border-radius: var(--r-control); font-size: 0.86em; line-height: 1; vertical-align: baseline; background: rgb(var(--fg-rgb) / 0.04); }   /* r65-14: a faint ground, so the yellow fades in from almost nothing */
 .bindu-home .stmt-chip .mark { align-self: center; position: relative; top: -0.02em; }
 .bindu-home .stmt-chip-bg { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--bindu-yellow); }   /* r65-8: the Bindu chip stays yellow */
 .bindu-home .stmt-chip .stmt-w { color: #000; }

@@ -263,8 +263,8 @@ export const footer = {
 
 /* Round 17 (one story). Statement, before and after, the hero selector. Facts only from the brief; statuses as in the brief. */
 export const statement = {
-  before: "Describe a shipment once.",
-  after: "works out the rules and the HS code, gathers the evidence and prepares the filing, every line traced to its document.",
+  before: "Describe your shipment.",   /* r65-14: Austin's words */
+  after: "handles the rules, codes, evidence and filing.",
 };
 
 export const finaleWordmark = { label: "Bindu", letters: ["b", "ı", "ndu"] };

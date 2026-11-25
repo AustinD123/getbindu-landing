@@ -21,28 +21,28 @@ export function Statement() {
     const chip = el.querySelector<HTMLElement>(".stmt-chip")!;
     const chipBg = chip.querySelector<HTMLElement>(".stmt-chip-bg")!;
     const chipInk = [chip.querySelector<HTMLElement>(".stmt-w")!];   // r65-10: the mark keeps its cobalt; only the word goes to black
-    const dots = Array.from(chip.querySelectorAll<SVGElement>("svg > *"));
+    const mark = chip.querySelector<HTMLElement>(".mark")!;   // r65-14: the mark lights as one piece (no per-dot stagger, which flickered)
     const ease = "sine.inOut";
     const ci = ws.indexOf(chip.querySelector<HTMLElement>(".stmt-w")!);
     gsap.set(ws, { opacity: DIM });
     gsap.set(chipBg, { opacity: 0 });
-    gsap.set(dots, { opacity: 0.2 });
+    gsap.set(mark, { opacity: 0.35 });
     const build = () => {
       const tl = gsap.timeline({ paused: true, defaults: { ease } });
       ws.forEach((w, i) => tl.to(w, { opacity: 1, duration: SPAN }, i));
-      tl.to(chipBg, { opacity: 1, duration: SPAN }, ci);
-      tl.fromTo(chipInk, { color: () => getComputedStyle(el).getPropertyValue("--on-dark") || "#000" }, { color: "#000", duration: SPAN }, ci);
-      tl.to(dots, { opacity: 1, duration: SPAN, stagger: { each: SPAN / (dots.length * 1.4) } }, ci);
+      // r65-14: the chip fills in one long, soft ramp that starts a word early and ends a word late, so the yellow grows in rather than switching on
+      tl.to(chipBg, { opacity: 1, duration: SPAN + 2, ease: "power1.inOut" }, Math.max(0, ci - 1));
+      tl.to(mark, { opacity: 1, duration: SPAN + 2, ease: "power1.inOut" }, Math.max(0, ci - 1));
       return tl;
     };
     let tl = build();
-    const st = ScrollTrigger.create({ trigger: el, start: "center 90%", end: "center 45%", animation: tl, scrub: SCRUB_SOFT });
+    const st = ScrollTrigger.create({ trigger: el, start: "top 80%", end: "center 40%", animation: tl, scrub: SCRUB_SOFT });   // r65-14: a longer scroll window, so each word lights over more scroll
     const on = ScrollTrigger.create({ trigger: el, start: "top bottom", end: "bottom top",
       onToggle: (s) => ws.forEach((w) => { w.style.willChange = s.isActive ? "opacity" : ""; }) });
     const unTheme = subscribeTheme(() => tl.invalidate());
     return () => {
       unTheme(); on.kill(); st.kill(); tl.kill();
-      gsap.set([...ws, chipBg, ...dots, ...chipInk], { clearProps: "opacity,color,willChange" });
+      gsap.set([...ws, chipBg, mark, ...chipInk], { clearProps: "opacity,color,willChange" });
     };
   }, []);
   return (
