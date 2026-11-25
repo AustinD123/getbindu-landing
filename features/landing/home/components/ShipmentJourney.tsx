@@ -10,15 +10,17 @@ import { subscribeTheme } from "../lib/theme";
 import { readCols, drawShip, buildFrom, SLOTS, NB, type Cols } from "../lib/shipcanvas";
 import { toRgb } from "../lib/shipcanvas";
 import {
-  COAST_D, GRAT_D, DOTS, MAP_H, MAP_W, MILESTONES, SHIP_GEO, dropAt, routeAt,
+  LAND, GRAT_D, DOTS, MAP_H, MAP_W, MILESTONES, SHIP_GEO, dropAt, routeAt,
   type Frame,
 } from "../lib/shipmap";
 import "../styles/shipment.css";
 
 const clamp = (v: number, lo = 0, hi = 1) => (v < lo ? lo : v > hi ? hi : v);
 const smooth = (t: number) => t * t * (3 - 2 * t);
+const LEAN = 0.3;          // extra zoom as the ship reaches a milestone
+const PULL = 1.0;          // the zoom at the end, relative to the story's framing (the whole route in view)
 const ZOOM = 1.6;          // camera zoom while following the ship, on top of the story's framing
-const WAKE = 90;           // length of the bright wake behind the ship, in map units
+const WAKE_PX = 70;        // length of the fading wake behind the ship, in screen pixels
 const GATHER = 0.86;       // the trail dots start to gather into the sunflower at this point (the ship nears the port)
 const CAM_EASE = 0.14;     // the camera moves a seventh of the way to its framing each frame (about half a second)
 
@@ -28,12 +30,11 @@ const shipProgress = (p: number) => clamp((p - 0.04) / 0.92);
    is a pure function of how far into that tail the scroll is, so it plays at any scroll speed while the map is still on screen, and in reverse going back up. */
 const tail = () => (isPhone() ? 0.5 : 0.8);   // r35: a shorter tail on phones (the CSS pin is 220svh there: 170 for the route and 50 for the tail)
 
-/* r25-1: the map is two canvases. The coastlines, land wash and graticule are pre-rendered once to an offscreen canvas (per story and frame size, redrawn only on
-   resize, theme or story change); the route, the trail, the dots, the markers and the ship are drawn live above it, only when something changed. Milestone notes
-   and labels stay real HTML text, positioned with transforms and written only when they change. */
+/* r25-1, rebuilt in r59-5: one canvas, everything vector and redrawn at the camera's scale every frame (the old pre-rendered land bitmap was scaled by the camera, which is what
+   made the map blur when it zoomed in). Land is Natural Earth, drawn ring by ring (only the rings in view, cached Path2D, constant screen-width strokes); the route, the trail,
+   the dots, the markers and the ship are drawn on top. Milestone notes and labels stay real HTML text, positioned with transforms and written only when they change. */
 /* built on first use: Path2D does not exist on the server, where this module is also evaluated */
-let paths: { LAND: Path2D; GRAT: Path2D } | null = null;
-const getPaths = () => (paths ??= { LAND: new Path2D(COAST_D), GRAT: new Path2D(GRAT_D) });
+let gratPath: Path2D | null = null;
 
 /* r19 item 6: the milestone notes sit beside the route at their points: (dx, dy) in screen pixels, alternating above and below */
 const NOTE_OFF: [number, number][] = [[16, -26], [-16, 30], [16, -26], [-16, 30], [16, -26], [-16, 30]];
@@ -97,30 +98,29 @@ export function ShipmentJourney() {
     const msPos = MILESTONES.map((m) => routeAt(route, m.t * route.length));
     const dotPos = Array.from({ length: DOTS }, (_, i) => routeAt(route, dropAt(i) * route.length));
 
-    // the pre-rendered base: coastlines, land wash and graticule, for the region the camera can see on this route, at the follow zoom
-    let off: HTMLCanvasElement | null = null, reg = { x0: 0, y0: 0, w: 1, h: 1 };
-    const paintBase = (c: CanvasRenderingContext2D, px: number) => {   // px: user units per css pixel
+    // the base, drawn live: the rings in view, at this frame's scale, as ONE path (one fill, one stroke). px: user units per css pixel; (x0, y0, x1, y1): the view box in map units.
+    // Points closer than about a pixel to the last one drawn are skipped, so a wide view does not walk every vertex of every coast.
+    const paintBase = (c: CanvasRenderingContext2D, px: number, x0: number, y0: number, x1: number, y1: number) => {
       c.lineJoin = "round"; c.lineCap = "round"; c.setLineDash([]);
-      c.lineWidth = px; c.strokeStyle = `${ink}0.1)`; c.stroke(getPaths().GRAT);
-      c.fillStyle = `${ink}0.05)`; c.fill(getPaths().LAND);
-      c.strokeStyle = `${ink}0.7)`; c.stroke(getPaths().LAND);
-    };
-    const buildBase = () => {
-      const pts = route.pts, sf = target.s * ZOOM;
-      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
-      for (const [x, y] of pts) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
-      const hxF = vw / (2 * ppu * sf), hyF = vh / (2 * ppu * sf), hxO = vw / (2 * ppu * target.s), hyO = vh / (2 * ppu * target.s);
-      x0 = Math.min(x0 - hxF, target.cx - hxO); x1 = Math.max(x1 + hxF, target.cx + hxO); y0 = Math.min(y0 - hyF, target.cy - hyO); y1 = Math.max(y1 + hyF, target.cy + hyO);
-      let k = ppu * sf * dpr;
-      const w0 = (x1 - x0) * k, h0 = (y1 - y0) * k;
-      k *= Math.min(1, 4096 / w0, 4096 / h0, Math.sqrt(9e6 / (w0 * h0)));
-      off = off ?? document.createElement("canvas");
-      off.width = Math.ceil((x1 - x0) * k); off.height = Math.ceil((y1 - y0) * k);
-      const oc = off.getContext("2d")!;
-      oc.setTransform(1, 0, 0, 1, 0, 0); oc.clearRect(0, 0, off.width, off.height);
-      oc.setTransform(k, 0, 0, k, -x0 * k, -y0 * k);
-      paintBase(oc, dpr / k);
-      reg = { x0, y0, w: x1 - x0, h: y1 - y0 };
+      c.lineWidth = px; c.strokeStyle = `${ink}0.1)`; c.stroke((gratPath ??= new Path2D(GRAT_D)));
+      const minSize = 0.6 * px, skip = 1.6 * px;   // rings smaller than about half a pixel are not drawn
+      c.beginPath();
+      for (let i = 0; i < LAND.length; i++) {
+        const r = LAND[i]!;
+        if (r.x1 < x0 || r.x0 > x1 || r.y1 < y0 || r.y0 > y1 || (r.x1 - r.x0 < minSize && r.y1 - r.y0 < minSize)) continue;
+        const pts = r.pts;
+        let lx = pts[0]![0], ly = pts[0]![1];
+        c.moveTo(lx, ly);
+        for (let k = 1; k < pts.length; k++) {
+          const q = pts[k]!;
+          if (Math.abs(q[0] - lx) + Math.abs(q[1] - ly) < skip && k < pts.length - 1) continue;
+          c.lineTo(q[0], q[1]); lx = q[0]; ly = q[1];
+        }
+        c.closePath();
+      }
+      c.fillStyle = `${ink}0.05)`; c.fill();
+      c.lineJoin = "miter"; c.lineCap = "butt";   // a 0.75px coast needs no round joins, and they are the slow path
+      c.strokeStyle = `${ink}0.7)`; c.lineWidth = 0.75 * px; c.stroke();
     };
 
     const measure = () => {
@@ -138,7 +138,6 @@ export function ShipmentJourney() {
         og.style.top = `${(r.top - fr.top + vh / 2 + ppu * s0 * (y0 - target.cy)).toFixed(1)}px`;
         window.dispatchEvent(new Event("guide:refresh"));
       }
-      buildBase();
     };
 
     // the scroll position, 0 to 1 (the ship's place is shipProgress of this). Pinned: the pin's own scroll range.
@@ -186,10 +185,10 @@ export function ShipmentJourney() {
       drawT = nowT;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, vw, vh);
       const { s, cx, cy, t, d } = st, S = ppu * s, X = (x: number) => vw / 2 + S * (x - cx), Y = (y: number) => vh / 2 + S * (y - cy);
-      // the base: the pre-rendered bitmap, moved and scaled with the camera (drawn live only while the camera is outside it, e.g. while easing between stories)
-      const covers = off && cx - vw / (2 * S) >= reg.x0 && cx + vw / (2 * S) <= reg.x0 + reg.w && cy - vh / (2 * S) >= reg.y0 && cy + vh / (2 * S) <= reg.y0 + reg.h;
-      if (off && covers) ctx.drawImage(off, X(reg.x0), Y(reg.y0), reg.w * S, reg.h * S);
-      else { ctx.save(); ctx.translate(vw / 2, vh / 2); ctx.scale(S, S); ctx.translate(-cx, -cy); paintBase(ctx, 1 / S); ctx.restore(); }
+      // the base: land and graticule redrawn at the camera's scale (vector, constant-width strokes), never a scaled bitmap
+      ctx.save(); ctx.translate(vw / 2, vh / 2); ctx.scale(S, S); ctx.translate(-cx, -cy);
+      paintBase(ctx, 1 / S, cx - vw / (2 * S), cy - vh / (2 * S), cx + vw / (2 * S), cy + vh / (2 * S));
+      ctx.restore();
       // the route, the trail behind the ship and its bright wake
       const rp = route.pts, trace = (d0: number, d1: number) => {
         const a = routeAt(route, d0), b = routeAt(route, d1);
@@ -197,12 +196,16 @@ export function ShipmentJourney() {
         for (let i = 0; i < rp.length; i++) if (route.cum[i]! > d0 && route.cum[i]! < d1) ctx.lineTo(X(rp[i]![0]), Y(rp[i]![1]));
         ctx.lineTo(X(b.x), Y(b.y));
       };
+      // the path ahead: dashed cobalt; the path behind: solid cobalt; both 1.5 css px at any zoom. The ship's wake fades out over about 70px behind it.
       ctx.lineCap = "butt"; ctx.lineWidth = 1.5; ctx.strokeStyle = `rgba(${cols.rr},${cols.rg},${cols.rb},0.85)`; ctx.setLineDash([6, 6]);
-      ctx.beginPath(); rp.forEach(([x, y]: [number, number], i: number) => (i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)))); ctx.stroke();
+      if (d < route.length) { trace(d, route.length); ctx.stroke(); }
       ctx.setLineDash([]); ctx.lineCap = "round"; ctx.lineJoin = "round";
       if (d > 0) {
-        ctx.strokeStyle = `rgba(${cols.rr},${cols.rg},${cols.rb},0.5)`; trace(0, d); ctx.stroke();
-        ctx.lineWidth = 4; ctx.globalAlpha = 0.4; ctx.strokeStyle = cols.route; trace(Math.max(0, d - WAKE), d); ctx.stroke(); ctx.globalAlpha = 1;
+        ctx.strokeStyle = cols.route; trace(0, d); ctx.stroke();
+        const wk = WAKE_PX / S, N = 6;
+        ctx.lineWidth = 3;
+        for (let k = 0; k < N; k++) { ctx.globalAlpha = 0.5 * (1 - k / N); ctx.strokeStyle = cols.route; trace(Math.max(0, d - (k + 1) * wk / N), Math.max(0, d - k * wk / N)); ctx.stroke(); }
+        ctx.globalAlpha = 1; ctx.lineWidth = 1.5;
       }
       // the trail dots: each is dropped when the ship passes it, then gathers into the sunflower at the port; yellow with a darker edge once filed
       const filed = t >= 0.995 && live;
@@ -333,9 +336,16 @@ export function ShipmentJourney() {
       const v = view.current;
       const d = t * route.length;
       const f = routeAt(route, d);
+      /* r59-5: the camera starts wide on the whole route, eases in to follow the ship, leans in on each milestone as the ship reaches it (a smooth bump either side of the
+         milestone), and pulls back out over the last stretch to show the route travelled before the hand-off. A pure function of the scroll, so it reverses. */
       const w = smooth(clamp((t - 0.04) / 0.2));                    // overview first, then follow
-      const s = v.s * (1 + (ZOOM - 1) * w);
-      const cx = v.cx + (f.x - v.cx) * w, cy = v.cy + (f.y - v.cy) * w;
+      let lean = 0;
+      for (let i = 1; i < MILESTONES.length - 1; i++) lean = Math.max(lean, smooth(clamp(1 - Math.abs(t - MILESTONES[i]!.t) / 0.05)));
+      const pull = smooth(clamp((t - 0.9) / 0.1));
+      const fs = v.s * (1 + (ZOOM - 1) * w) * (1 + LEAN * lean);
+      const s = fs + (v.s * PULL - fs) * pull;
+      const fcx = v.cx + (f.x - v.cx) * w, fcy = v.cy + (f.y - v.cy) * w;
+      const cx = fcx + (v.cx - fcx) * pull, cy = fcy + (v.cy - fcy) * pull;
       const hx = Math.cos((f.angle * Math.PI) / 180), hy = Math.sin((f.angle * Math.PI) / 180);
       if (hx > 0.35) flip.current = 1; else if (hx < -0.35) flip.current = -1;
       at.current = { x: f.x, y: f.y };
@@ -360,7 +370,7 @@ export function ShipmentJourney() {
       tween = near ? 0 : tRaf(settle);
     };
 
-    const unTheme = subscribeTheme(() => { cols = readCols(); inkRgb(); buildBase(); draw(); });
+    const unTheme = subscribeTheme(() => { cols = readCols(); inkRgb(); draw(); });
     const detach = () => { unTheme(); window.removeEventListener("resize", setCw); };
 
     if (isStatic) {
