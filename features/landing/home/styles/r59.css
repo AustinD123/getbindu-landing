@@ -24,3 +24,6 @@
 @media (prefers-contrast: more) {
   .bindu-home, .bindu-home[data-theme="light"] { --hairline-dark: var(--hairline-strong); --hairline-light: var(--hairline-strong); --on-dark-mute: var(--on-dark-body); --ink-mute: var(--ink-body); }
 }
+
+/* r60-5 (better-ui): colour transitions are suspended for the frame the theme changes in (lib/theme.ts adds and removes the class) */
+.bindu-home.theme-swap, .bindu-home.theme-swap *, .bindu-home.theme-swap *::before, .bindu-home.theme-swap *::after { transition: none !important; }

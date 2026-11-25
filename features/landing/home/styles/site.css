@@ -84,7 +84,7 @@
 /* ---------- dialog: grows from the button that opened it ---------- */
 .bindu-home .dlg { padding: 0; border: 0; background: transparent; max-width: min(640px, calc(100vw - 24px)); width: 100%; color: var(--on-dark); overflow: visible; }
 .bindu-home .dlg::backdrop { background: rgb(var(--shade-rgb) / 0.62); }
-.bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--hairline-dark); background: var(--canvas); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; }
+.bindu-home .dlg-in { border-radius: var(--r-lg); border: 1px solid var(--hairline-dark); background: var(--canvas); padding: var(--s-5); max-height: calc(100svh - 32px); overflow: auto; overscroll-behavior: contain; }
 .bindu-home .dlg.is-in:not(.no-motion) { animation: dlg-in var(--t-base) var(--ease-out) both; }
 @keyframes dlg-in { from { opacity: 0; transform: translate(calc(var(--ox, 50vw) - 50vw), calc(var(--oy, 50vh) - 50vh)) scale(0.4); } }
 .bindu-home .dlg-head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-2); }

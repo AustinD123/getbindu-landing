@@ -63,3 +63,19 @@ Checked: gestures (testimonials drag, rules loop drag, tabs), interruptibility, 
 | 4 | P3 | No press-down scale or instant pointer-down feedback on pills | components/ | conflict, not fixed: DESIGN.md v4 static buttons (colour change on :active exists) |
 | 5 | P3 | Rules loop drag and the departures board were not re-tested by hand for interrupt and reverse | components/Rules.tsx | unverified |
 | ok | | Fast hover/press colour transitions 200ms; dialog scales from its trigger (--ox/--oy origin, spatial consistency); no hard dividers under the nav | | |
+
+## Pass 5: better-ui
+
+Detection table run over styles/*.css and components (transition all, will-change, press scale, hover outside the hover media query, theme-switch transitions, overscroll, icon colours, image outlines).
+
+| Sev | Location | Before | After | Why |
+|---|---|---|---|---|
+| MEDIUM | styles/components.css:52-157 (btn-secondary, btn-ghost, btn-icon, tlink, link, seg-opt hovers) | `:hover` on touch latches after a tap | wrapped in `@media (hover: hover)` | hover only on hover-capable pointers; desktop unchanged. FIXED |
+| MEDIUM | lib/theme.ts:15, styles/r59.css | the theme swap fires every colour transition at once | `theme-swap` class turns transitions off for the swap frame | suppress transitions on theme switch. FIXED |
+| LOW | styles/site.css:87 (.dlg-in), styles/mobile.css:11 (.nav-drawer) | scrolling past the end scrolls the page | `overscroll-behavior: contain` | contain scroll in overlays. FIXED |
+| LOW | styles/site.css:30,39,115, states.css:20,32-33 (nav links, footer links, FAQ summary), r6-pricing.css:39-41 (pricing button), story.css:52 | same latch on touch | not changed | nav is a keep; pricing, FAQ and footer: Austin said don't change. Reported: touch hover latch, not an accessibility failure |
+| LOW | styles/r6-pricing.css:115 `.od-strip { will-change: transform }` | permanent layer on the price odometer | not changed | pricing keep; one small element |
+| conflict | tokens.css:129 `--press-scale: 1` | the skill wants 0.96 press scale | not changed | the skill's own header defers to bindu-design and DESIGN.md v4 (static buttons, colour change on :active) |
+| ok | | no `transition: all`, no `will-change: all`, bounce 0 everywhere, icons use currentColor (the illustrations' own fills are drawing colours), `-webkit-tap-highlight-color: transparent` on phones | | |
+
+Not verified: theme swap by eye (class logic read, not replayed), touch hover on a real device. Verdict: Approve (no HIGH).

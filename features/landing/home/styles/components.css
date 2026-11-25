@@ -49,13 +49,13 @@
 .bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover, .bindu-home .bh-btn-primary:active { background: var(--yellow-press); border-color: var(--yellow-press); }
 /* btn-secondary: --canvas-mid fill, mute label; hover one step darker fill, ink label ("Estimate your cost", "Read the rule", the tabs) */
 .bindu-home .btn-secondary { background: var(--canvas); color: var(--on-dark); border-color: var(--hairline-strong); }
-.bindu-home .btn-secondary:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-soft); }
+@media (hover: hover) { .bindu-home .btn-secondary:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-soft); } }
 /* btn-ghost: ink at 4% fill, mute label; hover --canvas-mid. Small controls (pause, menu). */
 .bindu-home .btn-ghost { background: var(--canvas-soft); color: var(--on-dark); }
-.bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas); border-color: var(--hairline-strong); }
+@media (hover: hover) { .bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas); border-color: var(--hairline-strong); } }
 /* circular icon button, 44px (the one round control besides dots): a ghost button */
 .bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: var(--canvas-soft); color: var(--on-dark); border: 1px solid transparent; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
-.bindu-home .btn-icon:hover { background: var(--canvas); border-color: var(--hairline-strong); }
+@media (hover: hover) { .bindu-home .btn-icon:hover { background: var(--canvas); border-color: var(--hairline-strong); } }
 .bindu-home .btn-l { display: inline-block; }
 /* a plain arrow after the label for links that leave the section; it does not move */
 .bindu-home .btn-arrow { flex: none; display: inline-grid; place-items: center; width: 14px; height: 14px; }
@@ -69,7 +69,7 @@
   color: var(--on-dark-mute); text-decoration: none; font: 400 16px/1.43 var(--font-sans); letter-spacing: 0;
   transition: color var(--t-ui) var(--ease-ui);
 }
-.bindu-home .tlink:hover { color: var(--on-dark); }
+@media (hover: hover) { .bindu-home .tlink:hover { color: var(--on-dark); } }
 .bindu-home .tlink-l { display: inline-block; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .bindu-home .tlink-a {
   flex: none; width: 11px; height: 11px; background: currentColor;
@@ -79,9 +79,9 @@
 
 /* inline text links inside paragraphs: cobalt, 1px underline, 4px offset; hover deepens the cobalt. On dark: ink with a cobalt underline (no cobalt text on black). */
 .bindu-home .link { color: var(--brand-cobalt); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: color var(--t-ui) var(--ease-ui); }
-.bindu-home .link:hover { filter: brightness(0.82); }
+@media (hover: hover) { .bindu-home .link:hover { filter: brightness(0.82); } }
 .bindu-home .band-dark .link { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); text-decoration-thickness: 1px; }
-.bindu-home .band-dark .link:hover { filter: none; text-decoration-color: var(--on-dark); }
+@media (hover: hover) { .bindu-home .band-dark .link:hover { filter: none; text-decoration-color: var(--on-dark); } }
 
 /* ---------- chips (r54, DESIGN.md v3 section 4): 22px tall, 5px radius, Inter 500 12px, no border ---------- */
 .bindu-home .chip {
@@ -152,7 +152,7 @@
   font: 500 16px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
   transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
-.bindu-home .seg-opt:hover { background: var(--canvas-soft); }
+@media (hover: hover) { .bindu-home .seg-opt:hover { background: var(--canvas-soft); } }
 /* the active tab is cobalt (adaptation 2) */
 .bindu-home .seg-opt.is-on, .bindu-home .seg-opt.is-on:hover { background: var(--brand-cobalt); border-color: var(--brand-cobalt); color: #fff; }
 .bindu-home .seg-opt:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 2px; }
