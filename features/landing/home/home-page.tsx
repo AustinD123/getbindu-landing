@@ -2,7 +2,7 @@
 
 /* The homepage, composed in the mockup's section order (v3 App.tsx, minus its hash-route sub-pages and the "Mockup"
    badge). One client boundary: the sections server-render for the text, and everything animated starts in effects. */
-import { lazy, Suspense, useEffect, useLayoutEffect } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import "./styles/reset.css";
 import "./styles/tokens.css";
 import "./styles/components.css";
@@ -50,6 +50,13 @@ const late = (id: string, sync: React.ComponentType | null | undefined, load: ()
   };
   return Late;
 };
+/* r63: the font trial switcher, only in dev or with ?fontlab in the URL; visitors never get it (the chunk is not even requested) */
+const FontLab = lazy(() => import("./dev/FontLab").then((m) => ({ default: m.FontLab })));
+function FontLabGate() {
+  const [on, setOn] = useState(false);
+  useEffect(() => { setOn(process.env.NODE_ENV !== "production" || new URLSearchParams(window.location.search).has("fontlab")); }, []);
+  return on ? <Suspense fallback={null}><FontLab /></Suspense> : null;
+}
 function Ready({ id }: { id: string }) {
   useEffect(() => { markReady(id); }, [id]);
   return null;
@@ -108,6 +115,7 @@ export function HomePage() {
         <Faq />
         <Finale />
       </main>
+      <FontLabGate />
     </EstimateProvider>
   );
 }
