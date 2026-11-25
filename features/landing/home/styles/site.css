@@ -249,12 +249,8 @@
 /* round 43: while the island changes size the bar drops its backdrop blur (opaque enough to read the same), so the width tween never repaints a blur over the canvas */
 .bindu-home .nav.is-moving { -webkit-backdrop-filter: none; backdrop-filter: none; background: rgb(var(--canvas-rgb) / 0.94); }
 
-/* r52 (Austin, 25 Nov 2026): Book a demo on the floating bar, at its right end after the theme toggle. Phones use the drawer's button.
-   From 861px it is pinned to the bar's right edge (the row reserves its width through --nav-book-w, set by Nav.tsx), so the collapsed
-   pill keeps the logo and the button while the bar's width changes, and the button never moves. */
+/* r52 (Austin, 25 Nov 2026): Book a demo on the expanded floating bar, at its right end after the theme toggle. It is inside .nav-rest, so the
+   collapsed pill (logo only) fades it with the links. Phones use the drawer's button. From 768 to 860px (no links, a Menu button) it stays last. */
 .bindu-home .nav-book { display: none; }
 @media (min-width: 768px) { .bindu-home .nav .nav-book { display: inline-flex; flex: none; } }
-@media (min-width: 861px) {
-  .bindu-home .nav-in { padding-right: calc(16px + var(--nav-book-w, 132px) + var(--s-5)); }
-  .bindu-home .nav .nav-book { position: absolute; right: 16px; top: 50%; translate: 0 -50%; z-index: 2; }
-}
+@media (min-width: 768px) and (max-width: 860px) { .bindu-home .nav .nav-menu { order: 1; } .bindu-home .nav .nav-book { order: 2; } }
