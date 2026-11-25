@@ -108,7 +108,7 @@
 
 /* app frame: the product mock window. Cobalt = the system */
 .bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas); border: 1px solid var(--hairline-dark); overflow: hidden; color: var(--on-dark); }
-.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; font: 500 13px/1 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; font: 500 var(--caption)/1 var(--font-sans); color: var(--on-dark-mute); }
 .bindu-home .app-frame-bar .chip-illus { margin-left: auto; }
 
 /* active step / progress: cobalt */

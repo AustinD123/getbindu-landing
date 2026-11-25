@@ -137,14 +137,14 @@
   .bindu-home .ex-stage { gap: var(--s-2); }
   .bindu-home .ex-head { gap: var(--s-1); }
   .bindu-home .ex-head h2.t-display-lg { font-size: 24px; }
-  .bindu-home .ex-head p { font-size: 11px; line-height: 1.35; }
+  .bindu-home .ex-head p { font-size: 12px; line-height: 1.35; }
   .bindu-home .bd { border-spacing: 0 3px; }
   .bindu-home .bd .bd-word { gap: 2px; }
   .bindu-home .bd-flaps { font-size: 8px; row-gap: 2px; }
   .bindu-home .bd .fl { width: 1.2em; height: 1.5em; }
   .bindu-home .bd-story { margin-top: var(--s-2); min-height: 0; }
   .bindu-home .bd-story .bd-fade { gap: 6px; }
-  .bindu-home .bd-story p.t-body { font-size: 13px; line-height: 1.4; }
+  .bindu-home .bd-story p.t-body { font-size: var(--caption); line-height: 1.4; }
   .bindu-home .bd-h { font-size: 16px; min-height: 1.2em; }
   .bindu-home .ex-pin.is-static .bd-story { margin-top: 0; }
 }
