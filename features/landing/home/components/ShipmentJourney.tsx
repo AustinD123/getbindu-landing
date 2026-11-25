@@ -87,8 +87,7 @@ export function ShipmentJourney() {
     let vw = MAP_W, vh = MAP_H;
     const tw: number[] = [];   // each label's text width in screen pixels (measured once the font is in)
     const nw: number[] = [], nh: number[] = [];   // the same for the milestone notes (width and height of the label card)
-    const lPos: (number[] | undefined)[] = [];   // each label's placed position this pass (x, y, end-anchored)
-    const noteOff = NOTE_OFF.map((o) => [o[0], o[1]] as [number, number]);   // r55: the offset each note actually uses (the collision pass below may flip or push it)
+    const noteOff = NOTE_OFF.map((o) => [o[0], o[1]] as [number, number]);   // r55: the offset each note uses (the placement pass may flip or push it); the look is unchanged
     const setCw = () => getRoot().style.setProperty("--cw", `${document.documentElement.clientWidth}px`);   // r22-11: the map bleeds to the right edge
     setCw(); window.addEventListener("resize", setCw);
     // places on the route, computed once per story
@@ -253,23 +252,18 @@ export function ShipmentJourney() {
         if (!tw[i]) tw[i] = sp.offsetWidth;
         const x = X(l.p[0]), y = Y(l.p[1]), a = l.off?.[2] ?? "start", ox = l.off?.[0] ?? 7, oy = l.off?.[1] ?? -6, lf = x + ox - (a === "end" ? tw[i] : 0), top = y + oy - 9, mg = 4;
         lT[i] = lf >= mg && lf + tw[i] <= vw - mg && top >= mg && top + 12 <= vh - mg ? 1 : 0;
-        lPos[i] = [x + ox, y + oy - 8, a === "end" ? 1 : 0];
+        putText(sp, x + ox, y + oy - 8, a === "end", lA[i]!);
       });
-      /* r55-5: nothing overlaps. Labels and notes are placed in order; a note tries its own offset, then the flipped ones and a few pushed ones, and takes the first
-         that is inside the frame and clear of the labels, the notes already placed, the other milestone points and the route line (the route is sampled in screen
-         pixels, ignoring the part right at the note's own point, where its leader starts). If none is clear it takes the one that overlaps least. */
+      /* r55-5 (kept in r56, look unchanged): notes never overlap each other, a map label or another milestone point. The current note is placed first, then the earlier ones,
+         newest first; each tries its own offset, then flipped and pushed ones, and takes the first clear one; an earlier note with no clear place is hidden. */
       const placed: number[][] = [];
-      const lRect: (number[] | null)[] = geo!.labels.map((_, i) => {
-        const q = lPos[i];
-        if (!q || !tw[i] || lT[i] === 0) return null;
-        const lf = q[0]! - (q[2] ? tw[i]! : 0);
-        return [lf - 3, q[1]! - 2, lf + tw[i]! + 3, q[1]! + 16];
+      geo!.labels.forEach((l, i) => {
+        if (!tw[i] || lT[i] === 0) return;
+        const a = l.off?.[2] ?? "start", x = X(l.p[0]) + (l.off?.[0] ?? 7), y = Y(l.p[1]) + (l.off?.[1] ?? -6) - 8, lf = x - (a === "end" ? tw[i]! : 0);
+        placed.push([lf - 3, y - 2, lf + tw[i]! + 3, y + 16]);
       });
-      const samples: number[][] = [];
-      for (let d = 0; d <= route.length; d += 10) { const q = routeAt(route, d); samples.push([X(q.x), Y(q.y)]); }
       const pts = msPos.map((q) => [X(q.x), Y(q.y)]);
       const hit = (r: number[], o: number[]) => r[0]! < o[2]! && r[2]! > o[0]! && r[1]! < o[3]! && r[3]! > o[1]!;
-      /* the current note is placed first, then the earlier ones, newest first: if an earlier note finds no clear place it is hidden, so the current one is never covered */
       const order = MILESTONES.map((_, i) => i).sort((a, b) => { const ka = a > st.cur ? 1000 + a : st.cur - a, kb = b > st.cur ? 1000 + b : st.cur - b; return ka - kb; });
       order.forEach((i) => {
         const m = MILESTONES[i]!;
@@ -278,38 +272,28 @@ export function ShipmentJourney() {
         if (!nw[i]) { nw[i] = sp.offsetWidth; nh[i] = sp.offsetHeight; }
         const w = nw[i]!, h = nh[i]!, x = pts[i]![0]!, y = pts[i]![1]!, base = NOTE_OFF[i]!;
         const rect = (dx: number, dy: number) => { const lf = dx > 0 ? x + dx : x + dx - w, top = dy < 0 ? y + dy - h : y + dy; return [lf, top, lf + w, top + h]; };
-        const cands: [number, number][] = [
-          [base[0], base[1]], [-base[0], base[1]], [base[0], -base[1]], [-base[0], -base[1]],
-          [base[0], base[1] * 2.2], [-base[0], base[1] * 2.2], [base[0], -base[1] * 2.2], [-base[0], -base[1] * 2.2],
-          [base[0], base[1] * 3.6], [-base[0], base[1] * 3.6], [base[0], -base[1] * 3.6], [-base[0], -base[1] * 3.6],
-          [base[0] * 4, base[1]], [-base[0] * 4, base[1]], [base[0] * 4, -base[1]], [-base[0] * 4, -base[1]],
-          [base[0] * 4, base[1] * 2.2], [-base[0] * 4, base[1] * 2.2], [base[0] * 4, -base[1] * 2.2], [-base[0] * 4, -base[1] * 2.2],
-        ];
+        const cands: [number, number][] = [];
+        for (const k of [1, 2.2, 3.6]) for (const hx of [1, -1, 4, -4]) for (const sy of [1, -1]) cands.push([base[0] * hx, base[1] * k * sy]);
+        cands.unshift([base[0], base[1]], [-base[0], base[1]], [base[0], -base[1]], [-base[0], -base[1]]);
         let best = cands[0]!, bestScore = Infinity;
-        for (const c of cands) {
-          const r = rect(c[0], c[1]);
+        for (const cd of cands) {
+          const r = rect(cd[0], cd[1]);
           let score = 0;
           if (!(r[0]! >= 4 && r[2]! <= vw - 4 && r[1]! >= 4 && r[3]! <= vh - 4)) score += 1000;
           for (const o of placed) if (hit(r, o)) score += 100;
-          for (const o of lRect) if (o && hit(r, o)) score += 30;   // a map label is the cheaper thing to lose: if a note has to cover one, that label is hidden
           pts.forEach((p, k) => { if (k !== i && hit(r, [p[0]! - 6, p[1]! - 6, p[0]! + 6, p[1]! + 6])) score += 40; });
-          for (const q of samples) {
-            if (Math.hypot(q[0]! - x, q[1]! - y) < 26) continue;
-            if (q[0]! > r[0]! - 2 && q[0]! < r[2]! + 2 && q[1]! > r[1]! - 2 && q[1]! < r[3]! + 2) score += 4;
-          }
-          score += (Math.abs(c[0]) + Math.abs(c[1])) * 0.01;   // prefer the short leader
-          if (score < bestScore) { bestScore = score; best = c; }
+          score += (Math.abs(cd[0]) + Math.abs(cd[1])) * 0.01;
+          if (score < bestScore) { bestScore = score; best = cd; }
         }
         noteOff[i] = best;
-        const [dx, dy] = best, right = dx > 0, above = dy < 0;
+        const [dx, dy] = best, right = dx > 0;
         const r = rect(dx, dy), top = r[1]!;
         const inFrame = r[0]! >= 4 && r[2]! <= vw - 4 && top >= 4 && r[3]! <= vh - 4;
-        nT[i] = t < m.t - 0.03 || !inFrame || (bestScore >= 100 && i !== st.cur) ? 0 : 1;   // a step shows once it is reached; past steps stay (muted by colour) unless there is no clear place for them
-        if (nT[i]) { placed.push(r); lRect.forEach((o, k) => { if (o && hit(r, o)) lT[k] = 0; }); }
+        nT[i] = t < m.t - 0.03 || !inFrame || (bestScore >= 100 && i !== st.cur) ? 0 : 1;   // a step shows once it is reached; past steps stay (muted by colour, not by fading)
+        if (nT[i]) placed.push(r);
         sp.dataset.state = i < st.cur ? "done" : i === st.cur ? "current" : "next";
         putText(sp, x + dx, top, !right, nA[i]!);
       });
-      geo!.labels.forEach((_, i) => { const q = lPos[i]; if (q) putText(labels.current[i] ?? null, q[0]!, q[1]!, !!q[2], lA[i]!); });
     };
     const fade = () => {
       fadeRaf = 0;
@@ -467,6 +451,10 @@ export function ShipmentJourney() {
                   })}
                   {geo!.labels.map((l, i) => <span key={`${story!.id}-${l.text}`} ref={(el) => { labels.current[i] = el; }} className="ship-label">{l.text}</span>)}
                 </div>
+                <div ref={askEl} className="ship-ask">
+                  <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
+                  <p className="ship-ask-a">{ask.a}</p>
+                </div>
               </div>
               <figcaption className="ship-cap">
                 <span className="chip chip-illus">{journey.illus}</span> {journey.caption}
@@ -482,10 +470,6 @@ export function ShipmentJourney() {
                 </li>
               ))}
             </ol>
-              <div ref={askEl} className="ship-ask">
-                <p className="ship-ask-q"><span className="chip chip-illus">{journey.illus}</span><span>{ask.q}</span></p>
-                <p className="ship-ask-a">{ask.a}</p>
-              </div>
             {/* phones only (CSS): the current milestone's sentence, once, under the compact index */}
             <p className={`ship-now${!story!.live && current === story!.milestones.length - 1 ? " is-coming" : ""}`} aria-hidden="true">{(story!.milestones[Math.min(current, story!.milestones.length - 1)])!.detail}</p>
           </div>

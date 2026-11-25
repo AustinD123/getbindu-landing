@@ -15,7 +15,7 @@ import {
 /* One map for the whole homepage: a single fixed canvas behind the page (.stage). The intro draws the dots into the
    map; when the intro ends the same canvas stays put and becomes the hero background, so there is no cut and no
    remount. The intro clock (ic) runs the particles; the hero clock (hc) runs the shipments and starts at the hand-off.
-   Colour roles (r55: land and graticule are ink greys; yellow and cobalt are Austin's two kept accents): land is dimmed ink dots; the route lines and ports are cobalt; shipments (their trails,
+   Colour roles: land is dimmed cobalt dots; the graticule, route lines and ports are cobalt; shipments (their trails,
    heads and glow) are yellow, and so is the filing pulse at each port. A dark veil sits under the hero copy (built from
    its measured rect on resize, faded in with the hero). The static layer is cached per size; each frame moves only the
    routes and the sweep.
@@ -46,12 +46,12 @@ const css = (c: Rgb) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const mixRgb = (a: Rgb, b: Rgb, w: number) => `rgb(${a.map((v, i) => Math.round(v + (b[i]! - v) * w)).join(",")})`;
 
 // edge: the darker outline round the yellow shipments, light theme only (--ship-outline is transparent on dark)
-type Colors = { cobalt: string; yellow: string; mute: string; mono: string; edge: string; ink: string };
+type Colors = { cobalt: string; yellow: string; mute: string; mono: string; edge: string };
 const LAND_A = 0.2;   // round 17: quieter map, land dots at 20% so the type and the guide lead
 
 /* the static map layer, scaled by a (0 to 1): the graticule, each route's faint line, and the ports with the first name */
 function paintStatic(ctx: CanvasRenderingContext2D, f: Frame, c: Colors, a: number) {
-  paintGraticule(ctx, f, c.ink, 0.1 * a);
+  paintGraticule(ctx, f, c.cobalt, 0.1 * a);
   for (const r of ROUTES) paintRouteArc(ctx, f, r.from, r.to, c.cobalt, (0.05 + 0.07 * r.k) * a);
   for (const p of PORTS) {
     const [x, y] = project(f, p.at[0], p.at[1]);
@@ -96,12 +96,12 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     if (!el || !camEl || !ctx) return;
     // the colours come from the theme tokens; they are read again on a theme change (see readColours below)
     let cobaltRgb: Rgb = [0, 0, 0], yellowRgb: Rgb = [0, 0, 0], veilRgb: Rgb = [0, 0, 0];
-    let col: Colors = { cobalt: "", yellow: "", mute: "", mono: "", edge: "", ink: "" };
+    let col: Colors = { cobalt: "", yellow: "", mute: "", mono: "", edge: "" };
     let edgeOn = false;   // true only in the light theme, where --ship-outline is a colour
     const readColours = () => {
       cobaltRgb = rgbOf(cssVar("--cobalt-signal")); yellowRgb = rgbOf(cssVar("--ship-fill"));
       veilRgb = cssVar("--canvas-rgb").split(/\s+/).map(Number) as Rgb;
-      col = { cobalt: css(cobaltRgb), yellow: css(yellowRgb), mute: cssVar("--on-dark-mute"), mono: cssVar("--font-mono"), edge: cssVar("--ship-outline"), ink: css(rgbOf(cssVar("--on-dark"))) };
+      col = { cobalt: css(cobaltRgb), yellow: css(yellowRgb), mute: cssVar("--on-dark-mute"), mono: cssVar("--font-mono"), edge: cssVar("--ship-outline") };
       edgeOn = col.edge !== "" && col.edge !== "transparent";
     };
     readColours();
@@ -132,7 +132,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
     const paintBase = () => {
       bctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       bctx.clearRect(0, 0, VW, VH);
-      paintLandDots(bctx, f, col.ink, LAND_A);
+      paintLandDots(bctx, f, col.cobalt, LAND_A);
       paintStatic(bctx, f, col, 1);
       buildVeil();
     };
@@ -191,7 +191,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
         const mapA = easeIO((ic - TM.mapAt) / TM.mapDur);
         if (mapA >= 1) ctx.drawImage(bg, 0, 0, VW, VH);
         else if (mapA > 0) {
-          paintLandDotsSweep(ctx, f, col.ink, LAND_A, (xn) => clamp(mapA * 1.4 - xn * 0.4));
+          paintLandDotsSweep(ctx, f, col.cobalt, LAND_A, (xn) => clamp(mapA * 1.4 - xn * 0.4));
           paintStatic(ctx, f, col, mapA);
         }
         // shipments: a yellow route trail to the port, then a yellow filing pulse there
@@ -241,7 +241,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
         if (vA > 0) { ctx.globalAlpha = vA; ctx.drawImage(veil, 0, 0, VW, VH); ctx.globalAlpha = 1; }
         if (!gl.current?.rig && outRef.current < 1) dust(INTRO_END, 1 - ease(outRef.current));
       }
-      paintSweep(ctx, VW, VH, -0.15 + 1.3 * (((live ? ic : hc) / 16) % 1), col.ink);
+      paintSweep(ctx, VW, VH, -0.15 + 1.3 * (((live ? ic : hc) / 16) % 1), col.cobalt);
     };
 
     const running = () => !document.hidden && (introRef.current || outRef.current < 1 || (on && visible));
