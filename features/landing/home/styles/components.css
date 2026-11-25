@@ -46,7 +46,7 @@
 }
 /* button-primary shape (pill, 36px, 8px 20px, 14px 500) in the one accent Austin kept: yellow fill, black label, only "Book a demo" (adaptation 2). Class keeps the bh- prefix: the app's global styles/bindu-product.css owns an
    unscoped .btn-primary that would leak in. */
-.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: #000; border-color: var(--brand-yellow); }
+.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: #FFFFFF; border-color: var(--brand-yellow); }
 .bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover, .bindu-home .bh-btn-primary:active { background: var(--yellow-press); border-color: var(--yellow-press); }
 /* btn-secondary: --canvas-mid fill, mute label; hover one step darker fill, ink label ("Estimate your cost", "Read the rule", the tabs) */
 .bindu-home .btn-secondary { background: var(--canvas); color: var(--on-dark); border-color: var(--hairline-strong); }
@@ -89,8 +89,8 @@
   display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 28px; padding: 0 12px; border-radius: var(--r-control);
   border: 1px solid transparent; font: 500 14px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
 }
-.bindu-home .chip-live { background: var(--live-bg); color: #000; border-color: var(--live-bg); }
-.bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #000; }
+.bindu-home .chip-live { background: var(--live-bg); color: var(--live-fg); border-color: var(--live-bg); }
+.bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--live-fg); }
 /* In build: the one bordered chip, a 1px dashed mute outline on a transparent fill */
 .bindu-home .chip-build { background: transparent; border: 1px solid var(--hairline-strong); color: var(--on-dark-mute); }
 /* Illustration and Placeholder: --canvas-mid fill, mute label (every mock, map and chat carries one) */

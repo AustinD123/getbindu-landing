@@ -10,23 +10,23 @@
    [data-theme="light"] (end of this file) changes only colour values, never a size, space or position. */
 .bindu-home {
   --fg-rgb: 255 255 255;            /* "white" overlays on dark (hairlines, veils, dots): black on light */
-  --canvas-rgb: 23 23 23;           /* the page colour, used for shades and halos over the map */
+  --canvas-rgb: 10 10 10;           /* the page colour, used for shades and halos over the map */
   --ink-rgb: 0 0 0;              /* "black" overlays on light bands */
   --shade-rgb: 0 0 0;               /* shadows and the dialog backdrop */
   --cobalt-rgb: 61 123 255;         /* the cobalt signal, as channels for alpha tints */
   --brand-cobalt-rgb: 0 71 171;     /* the brand cobalt (text and fills on light) */
-  --yellow-rgb: 255 212 0;          /* the brand yellow */
+  --yellow-rgb: 61 123 255;         /* r65-2: no yellow; the old "yellow" role is cobalt */
   --plot-bg: #171717;               /* the small plot panel in How it works */
   --key-num: var(--on-dark);        /* r17: key numbers are plain text colour; yellow is reserved for the CTA and the dots */
 }
 
 .bindu-home {
   /* ---------- brand (placeholders) ---------- */
-  --brand-yellow: #FFD400;          /* one filled pill per view, Live chips, key numbers. 13.8:1 on canvas; never text on white (1.4:1) */
+  --brand-yellow: #2F66E0;          /* r65-2: historic name, the primary fill is cobalt (white label 5.1:1). Was: one filled pill per view, Live chips, key numbers. 13.8:1 on canvas; never text on white (1.4:1) */
   --brand-cobalt: #0047AB;          /* the system. Fills (white text 8.4:1), links + frames on white bands (8.4:1). Never small text on black (2.4:1) */
 
   /* derived steps (recompute from the real hexes when they arrive) */
-  --yellow-press: #E6BF00;          /* pressed fill */
+  --yellow-press: #2453BF;          /* pressed fill */
   --yellow-glow: transparent;
   --cobalt-signal: #3D7BFF;         /* lines, data trails, progress, active steps on black: 5.2:1 (UI graphics need 3:1) */
   --cobalt-deep: #0A1A3D;           /* glow cores, blueprint grid tint, app-frame wash on black */
@@ -37,9 +37,9 @@
 
   /* ---------- neutrals: 90% of the page ---------- */
   /* dark theme: only the file's own dark tokens (adaptation 3): canvas = surface-dark #171717, text = on-dark and on-dark-mute */
-  --canvas: #171717;                /* page (surface-dark) */
-  --canvas-soft: #1F1F1F;           /* cards and nested surfaces: white at 5% over #171717 */
-  --canvas-mid: #1F1F1F;            /* nested surfaces, hovered rows */
+  --canvas: #0A0A0A;                /* r65-2: page */
+  --canvas-soft: #161616;           /* cards and nested surfaces: white at 5% over #171717 */
+  --canvas-mid: #161616;            /* nested surfaces, hovered rows */
   --hairline-dark: rgb(255 255 255 / 0.12);  /* 1px dividers and card borders on dark */
   --hairline-strong: rgb(255 255 255 / 0.25);  /* the file hairline-strong, on dark */
   --line-white-25: rgb(var(--fg-rgb) / 0.25);
@@ -48,13 +48,13 @@
   --on-photo-body: rgb(255 255 255 / 0.86);
   --on-photo-mute: rgb(255 255 255 / 0.74);
   --on-photo-line: rgb(255 255 255 / 0.22);
-  --on-dark: #FFFFFF;
-  --on-dark-body: rgb(255 255 255 / 0.85);
-  --on-dark-mute: rgb(255 255 255 / 0.7);   /* on-dark-mute */
+  --on-dark: #F2F2F2;               /* r65-2: every text colour is the one ink */
+  --on-dark-body: #F2F2F2;
+  --on-dark-mute: #F2F2F2;   /* on-dark-mute */
   --ship-outline: transparent;
-  --ship-fill: var(--brand-yellow);  /* shipment dots and routes: the brand yellow on dark */
+  --ship-fill: var(--cobalt-signal);   /* r65-2: shipments are cobalt */  /* shipment dots and routes: the brand yellow on dark */
   --route-line: var(--cobalt-signal);  /* round 15 item 7: route lines on the journey map: bright cobalt #3D7BFF on dark, deeper cobalt on light */
-  --yellow-outline: var(--brand-yellow);  /* the edge on yellow fills: same as the fill on dark, darker on light */      /* the darker edge round the yellow shipments: light theme only, dark draws none */
+  --yellow-outline: var(--cobalt-signal);  /* the edge on yellow fills: same as the fill on dark, darker on light */      /* the darker edge round the yellow shipments: light theme only, dark draws none */
   --on-cobalt: #FFFFFF;             /* off-white text on the cobalt fill (segmented control): 8.3:1 on --brand-cobalt */
   /* light (the default): Ollama's neutrals */
   --paper: #FFFFFF;                 /* canvas */
@@ -66,8 +66,8 @@
   --ink-mute: #737373;              /* body grey (the file's #a3a3a3 mute is under 3:1 on white, so it is not used for text) */
 
   /* ---------- status ---------- */
-  --live-bg: var(--brand-yellow);   /* Live chip: yellow fill, ink text */
-  --live-fg: var(--ink);
+  --live-bg: var(--on-dark);        /* r65-2: Live chip is the ink fill with the canvas colour as its label */
+  --live-fg: var(--canvas);
   --build-line-dark: rgb(var(--fg-rgb) / 0.40); /* In build chip: dashed outline, no fill */
   --build-line-light: rgb(var(--ink-rgb) / 0.35);
 
@@ -135,7 +135,7 @@
 
   /* ---------- sunflower / dot system (Bindu = dot) ---------- */
   --golden-angle: 137.50776deg;     /* phyllotaxis: dot n sits at n x golden angle, radius c*sqrt(n) */
-  --sun: var(--brand-yellow);       /* the completed sunflower = achievement / live */
+  --sun: var(--cobalt-signal);       /* the completed sunflower = achievement / live */
   --seed-pending: var(--cobalt-signal); /* dots still being gathered = the system at work */
   --dot-neutral: rgb(var(--fg-rgb) / 0.55); /* the single-dot divider */
   --mark-size-nav: 28px; --mark-size-foot: 40px;
@@ -176,7 +176,7 @@
   --ink-rgb: 0 0 0;
   --shade-rgb: 0 0 0;
   --cobalt-rgb: 31 85 196;
-  --yellow-rgb: 255 212 0;
+  --yellow-rgb: 31 85 196;
   --brand-cobalt-rgb: 8 50 122;
   --key-num: var(--on-dark);
   --link-wipe: var(--brand-cobalt);
@@ -186,22 +186,22 @@
   --canvas-mid: #FAFAFA;
   --hairline-dark: #E5E5E5;
   --hairline-strong: #D4D4D4;
-  --on-dark: #000000;               /* ink */
-  --on-dark-body: #525252;          /* charcoal */
-  --on-dark-mute: #737373;          /* body grey */
-  --ship-outline: #8A6A00;
-  --ship-fill: #E0B000;
-  --yellow-outline: #B38F00;
+  --on-dark: #111111;               /* r65-2: all text is the one ink */
+  --on-dark-body: #111111;
+  --on-dark-mute: #111111;
+  --ship-outline: transparent;
+  --ship-fill: #1F55C4;
+  --yellow-outline: #08327A;
   --route-line: #08327A;
   --paper: #FFFFFF;
   --paper-soft: #FAFAFA;
   --hairline-light: #E5E5E5;
-  --ink: #000000;
-  --ink-body: #525252;
-  --ink-mute: #737373;
-  --brand-yellow: #FFD400;
+  --ink: #111111;
+  --ink-body: #111111;
+  --ink-mute: #111111;
+  --brand-yellow: #1F55C4;          /* r65-2: the primary fill is cobalt (white label 6.6:1) */
   --brand-cobalt: #08327A;
-  --yellow-press: #E6BF00;
+  --yellow-press: #184496;
   --cobalt-signal: #1F55C4;
   --cobalt-deep: #E4E8F2;
   --on-cobalt: #FFFFFF;
@@ -218,7 +218,7 @@
   --navy-mute: rgb(255 255 255 / 0.7);
   --navy-cobalt: #3D7BFF;
   --navy-cobalt-bright: #9DBBFF;
-  --navy-yellow: #FFD400;
+  --navy-yellow: #3D7BFF;
 }
 
 /* ---------- round 17: hand-drawn ink and the night band ----------
@@ -229,14 +229,14 @@
 .bindu-home {
   --line-ink: #FFFFFF;              /* r55: drawn lines are ink (white on dark, black on light) */
   --night-band: #171717;
-  --proof-dot: var(--brand-yellow);
+  --proof-dot: var(--cobalt-signal);
   --stop: #FF6B5E;                  /* r23-1: the Stopped verdict, a clear red (dark theme) */
   --board-pass: #3D7BFF;            /* r56-5: the Let through outcome, cobalt (AA on #171717) */
   --board-stop: #FF6B5E;            /* r56-5: the Stopped outcome (AA on #171717) */
   --font-guide: var(--font-display);
 }
 .bindu-home[data-theme="light"] {
-  --line-ink: #000000;
+  --line-ink: #111111;
   --stop: #B42318;                  /* r23-1: the Stopped verdict on light (AA on the canvas) */
   --board-pass: #08327A;            /* r56-5: Let through on light (11:1 on white) */
   --board-stop: #B42318;            /* r56-5: Stopped on light (6.5:1 on white) */

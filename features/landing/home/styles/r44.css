@@ -89,7 +89,7 @@
 .bindu-home .fl-chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .bindu-home .fl-chip { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px; box-sizing: border-box; border: 1px solid var(--hairline-dark); border-radius: var(--r-control); background: var(--canvas); font: 400 14px/1 var(--font-sans); color: var(--on-dark); white-space: nowrap; }
 .bindu-home .fl-chip em { font: normal 500 12px/1 var(--font-sans); display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: var(--r-control); }
-.bindu-home .fl-chip em.is-live { background: var(--brand-yellow); color: #000; }
+.bindu-home .fl-chip em.is-live { background: var(--live-bg); color: var(--live-fg); }   /* r65-2 */
 .bindu-home .fl-chip em.is-build { border: 1px solid var(--hairline-strong); color: var(--on-dark-mute); }
 .bindu-home .fl-code, .bindu-home .fl-docs .fl-chip { font-family: var(--font-mono); }
 .bindu-home .fl-ic { flex: none; fill: none; stroke: currentColor; color: var(--on-dark-mute); }

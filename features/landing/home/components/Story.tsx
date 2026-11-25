@@ -31,7 +31,7 @@ export function Statement() {
       const tl = gsap.timeline({ paused: true, defaults: { ease } });
       ws.forEach((w, i) => tl.to(w, { opacity: 1, duration: SPAN }, i));
       tl.to(chipBg, { opacity: 1, duration: SPAN }, ci);
-      tl.fromTo(chipInk, { color: () => getComputedStyle(el).getPropertyValue("--on-dark") || "#000" }, { color: "#000", duration: SPAN }, ci);
+      tl.fromTo(chipInk, { color: () => getComputedStyle(el).getPropertyValue("--on-dark") || "#000" }, { color: "#FFFFFF", duration: SPAN }, ci);
       tl.to(dots, { opacity: 1, duration: SPAN, stagger: { each: SPAN / (dots.length * 1.4) } }, ci);
       return tl;
     };
