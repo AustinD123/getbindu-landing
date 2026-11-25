@@ -10,7 +10,8 @@ what ships here.
 | GSAP, ScrollTrigger, SplitText | GSAP Standard "no charge" licence | Yes, free for commercial use since 30 Apr 2025 |
 | Lenis (`lenis`) | MIT | Yes. Added for the homepage only; no other route imports it |
 | three.js | MIT | Yes (already a dependency). Replaces OGL, which the mockup used |
-| Rubik (via `next/font/google`, 400 to 700; headings and body, r64). Nunito and Inter are no longer loaded for the homepage. IBM Plex Mono is retired | SIL OFL 1.1 | Yes |
+| Newsreader (via `next/font/google`, variable with opsz; every text on the homepage, r65). Rubik, Nunito and Inter are no longer loaded for the homepage. IBM Plex Mono is retired | SIL OFL 1.1 | Yes |
+| Lucide icon outlines in the rules cards (r65) | ISC | Yes |
 | Lucide icons (`lucide-react`, r59: the story stage's file, mail and message icons) | ISC | Yes. Already a dependency of the site |
 
 ## Data

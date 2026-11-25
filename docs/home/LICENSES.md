@@ -9,7 +9,7 @@ Third-party code and assets used by the homepage (`features/landing/home/`), wit
 | Lenis | MIT | Yes |
 | OGL | Unlicense | Yes |
 | React, React DOM | MIT | Yes |
-| Rubik (next/font, r64; headings and body). Nunito, Inter and IBM Plex Mono are no longer used on the homepage | SIL OFL 1.1 | Yes |
+| Newsreader (next/font, r65; every text on the homepage, the getbindu.com heading face). Rubik, Nunito, Inter and IBM Plex Mono are no longer used on the homepage | SIL OFL 1.1 | Yes |
 | Map coastlines (`src/lib/worldmap.ts`, `src/lib/shipmap.ts`) | Own work, hand-typed, simplified | Yes |
 
 ## Ideas from MIT libraries, rebuilt in our own code (no code copied)
