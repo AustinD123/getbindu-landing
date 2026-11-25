@@ -335,7 +335,7 @@ export function MapLayer({ intro, onIntroEnd }: { intro: boolean; onIntroEnd: ()
       <div ref={ui} className="stage-ui">
         <p className="scene-label">Illustration: shipments to EU ports on a map. Not live data.</p>
         {!still && (
-          <button type="button" className="btn btn-outline scene-btn" aria-pressed={!playing} onClick={toggle}>
+          <button type="button" className="btn btn-ghost scene-btn" aria-pressed={!playing} onClick={toggle}>
             {playing ? hero.pause : hero.play}
           </button>
         )}

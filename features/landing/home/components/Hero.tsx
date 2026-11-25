@@ -58,7 +58,7 @@ export function SceneLayer({ final = false, label, pauseText, playText }: { fina
         : <canvas ref={canvas} className="scene-canvas" aria-hidden="true" />}
       <p className="scene-label">{label}</p>
       {mode === "webgl" && !final && (
-        <button type="button" className="btn btn-outline scene-btn" aria-pressed={state !== "playing"} onClick={toggle}>
+        <button type="button" className="btn btn-ghost scene-btn" aria-pressed={state !== "playing"} onClick={toggle}>
           {state === "playing" ? pauseText : state === "done" ? "Replay" : playText}
         </button>
       )}

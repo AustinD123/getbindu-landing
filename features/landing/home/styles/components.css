@@ -30,88 +30,82 @@
 .bindu-home .band-dark .num-key { color: var(--key-num); }
 .bindu-home .band-light .num-key, .bindu-home .band-soft .num-key { color: var(--ink); }
 
-/* ---------- buttons (r52, DESIGN.md v2 section 5 shapes; Austin 25 Nov: Inter labels, no button motion): ONE set, three variants,
-   used by every button on `/`. 4px radius, 1px border on every variant (transparent where unseen, so all are the same size),
-   16px sides, 36px tall from 768px and 44px on phones (--btn-h). Label: Inter 500 15px, sentence case, no tracking (8px top and
-   bottom centre it in the 36px box). Hover = colour only, 200ms. Focus = 2px cobalt ring. No lift, press scale, glow, magnetic
-   pull, dot burst or arrow nudge. ---------- */
+/* ---------- buttons (r54, DESIGN.md v3 section 4: Sublime's small buttons, sized for touch): ONE set, three variants, used by every
+   button on `/`. 36px tall from 768px and 44px on phones (--btn-h), 5px radius, padding 0 14px, Inter 500 14px, no border.
+   Hover = fill and label colour change, 200ms. No movement of any kind (no lift, press scale, glow, magnetic pull, dot burst
+   or arrow nudge). Focus = 2px cobalt ring (states.css). ---------- */
 .bindu-home .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-sizing: border-box;
-  min-height: var(--btn-h); padding: 8px var(--btn-px); margin: 0;
-  border-radius: var(--r-control); border: 1px solid transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
-  font: 500 15px/1.2 var(--font-sans); letter-spacing: 0;
-  transition: background-color var(--t-ui) var(--ease-ui), border-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
+  min-height: var(--btn-h); padding: 0 var(--btn-px); margin: 0;
+  border-radius: var(--r-xs); border: 0; cursor: pointer; text-decoration: none; white-space: nowrap;
+  font: 500 14px/1 var(--font-sans); letter-spacing: 0;
+  transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
-/* btn-primary: yellow fill, ink label. One per view ("Book a demo"). Class keeps the bh- prefix: the app's global
-   styles/bindu-product.css owns an unscoped .btn-primary that would leak in. The yellow does not change on hover. */
-.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: var(--ink); border-color: var(--yellow-outline); }
-/* btn-solid: ink fill, canvas label ("Estimate your cost"). --on-dark is the ink in both themes. */
-.bindu-home .btn-solid { background: var(--on-dark); color: var(--canvas); border-color: transparent; }
-.bindu-home .btn-solid:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--on-dark-body); }
-/* btn-outline: transparent, 1px hairline, ink label; hover fills the nested surface */
-.bindu-home .btn-outline { background: transparent; color: var(--on-dark); border-color: var(--hairline-dark); }
-.bindu-home .btn-outline:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-mid); }
-/* circular icon button, 44px (the one round control besides dots and the nav's logo pill) */
-.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: var(--canvas-mid); color: var(--on-dark); border: 1px solid var(--hairline-dark); }
+/* btn-primary: yellow fill, ink label ("Book a demo"). Class keeps the bh- prefix: the app's global styles/bindu-product.css owns an
+   unscoped .btn-primary that would leak in. */
+.bindu-home .bh-btn-primary { background: var(--brand-yellow); color: var(--ink); }
+.bindu-home .bh-btn-primary:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--yellow-press); }
+/* btn-secondary: --canvas-mid fill, mute label; hover one step darker fill, ink label ("Estimate your cost", "Read the rule", the tabs) */
+.bindu-home .btn-secondary { background: var(--canvas-mid); color: var(--on-dark-mute); }
+.bindu-home .btn-secondary:not(:is(:disabled, [aria-disabled="true"])):hover { background: color-mix(in srgb, var(--canvas-mid), var(--on-dark) 9%); color: var(--on-dark); }
+/* btn-ghost: ink at 4% fill, mute label; hover --canvas-mid. Small controls (pause, menu). */
+.bindu-home .btn-ghost { background: rgb(var(--fg-rgb) / 0.04); color: var(--on-dark-mute); }
+.bindu-home .btn-ghost:not(:is(:disabled, [aria-disabled="true"])):hover { background: var(--canvas-mid); color: var(--on-dark); }
+/* circular icon button, 44px (the one round control besides dots): a ghost button */
+.bindu-home .btn-icon { width: 44px; height: 44px; min-height: 0; padding: 0; border-radius: 50%; background: rgb(var(--fg-rgb) / 0.04); color: var(--on-dark-mute); border: 0; transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui); }
+.bindu-home .btn-icon:hover { background: var(--canvas-mid); color: var(--on-dark); }
 .bindu-home .btn-l { display: inline-block; }
 /* a plain arrow after the label for links that leave the section; it does not move */
 .bindu-home .btn-arrow { flex: none; display: inline-grid; place-items: center; width: 14px; height: 14px; }
 /* disabled: mute label, nested fill, no motion */
-.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); border-color: var(--hairline-dark); color: var(--on-dark-mute); }
+.bindu-home .btn:is(:disabled, [aria-disabled="true"]) { background: var(--canvas-mid); color: var(--on-dark-mute); opacity: 0.6; }
 
-/* text link: a 1px cobalt underline grows from the left (transform: scaleX, not width), the text wipes to cobalt, and the
-   arrow nudges 4px. The line at rest is the same cobalt at low opacity, so the link is always marked. */
+/* links (r54, v3 section 4): nav, footer and "see more" links are mute Inter 15px and go to ink on hover, a colour change only (200ms).
+   No underline, no growing line, no text wipe, no arrow nudge. The arrow, where there is one, is static. */
 .bindu-home .tlink {
-  position: relative; display: inline-flex; align-items: center; gap: 6px; padding: 0 0 3px; border: 0; background: none; cursor: pointer;
-  color: var(--on-dark); text-decoration: none; font: 400 15px/1.4 var(--font-sans);
+  display: inline-flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; cursor: pointer;
+  color: var(--on-dark-mute); text-decoration: none; font: 400 15px/1.4 var(--font-sans); letter-spacing: -0.02em;
+  transition: color var(--t-ui) var(--ease-ui);
 }
-.bindu-home .tlink::before, .bindu-home .tlink::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--link-wipe); }
-.bindu-home .tlink::before { opacity: 0.4; }
-.bindu-home .tlink::after { transform: scaleX(0); transform-origin: left center; transition: transform var(--t-ui) var(--ease-ui); }
-.bindu-home .tlink:hover::after, .bindu-home .tlink:focus-visible::after { transform: scaleX(1); }
-.bindu-home .tlink-l { position: relative; display: inline-block; }
-.bindu-home .tlink-l::before {
-  content: attr(data-label); position: absolute; inset: 0; color: var(--link-wipe); white-space: inherit; pointer-events: none;
-  clip-path: inset(0 100% 0 0); transition: clip-path var(--t-ui) var(--ease-ui);
-}
-.bindu-home .tlink:hover .tlink-l::before, .bindu-home .tlink:focus-visible .tlink-l::before { clip-path: inset(0 0 0 0); }
+.bindu-home .tlink:hover { color: var(--on-dark); }
+.bindu-home .tlink-l { display: inline-block; }
 .bindu-home .tlink-a {
-  flex: none; width: 11px; height: 11px; background: currentColor; transition: transform var(--t-ui) var(--ease-ui), background-color var(--t-ui) var(--ease-ui);
+  flex: none; width: 11px; height: 11px; background: currentColor;
   -webkit-mask: var(--arrow-mask) center / 11px 11px no-repeat; mask: var(--arrow-mask) center / 11px 11px no-repeat;
 }
-.bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: translateX(4px); background: var(--link-wipe); }
-.bindu-home .tlink:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 4px; }
-.bindu-home .band-light .tlink, .bindu-home .band-soft .tlink { color: var(--ink); --link-wipe: var(--brand-cobalt); }
+.bindu-home .tlink:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 4px; border-radius: var(--r-xs); }
 
-@media (prefers-reduced-motion: reduce) {
-  .bindu-home .tlink::after, .bindu-home .tlink-l::before, .bindu-home .tlink-a { transition: none !important; }
-  .bindu-home .tlink:hover .tlink-a, .bindu-home .tlink:focus-visible .tlink-a { transform: none !important; }
-}
-
-/* inline text links inside paragraphs: cobalt on light; on dark white with a cobalt underline (no cobalt text on black) */
-.bindu-home .link { color: var(--brand-cobalt); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+/* inline text links inside paragraphs: cobalt, 1px underline, 4px offset; hover deepens the cobalt. On dark: ink with a cobalt underline (no cobalt text on black). */
+.bindu-home .link { color: var(--brand-cobalt); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; transition: color var(--t-ui) var(--ease-ui); }
+.bindu-home .link:hover { filter: brightness(0.82); }
 .bindu-home .band-dark .link { color: var(--on-dark); text-decoration-color: var(--cobalt-signal); text-decoration-thickness: 1px; }
+.bindu-home .band-dark .link:hover { filter: none; text-decoration-color: var(--on-dark); }
 
-/* ---------- chips (r52, DESIGN.md v2 section 8): Inter 500 12px (never under 11px), sentence case, 22px tall, 4px radius, 1px border ---------- */
+/* ---------- chips (r54, DESIGN.md v3 section 4): 22px tall, 5px radius, Inter 500 12px, no border ---------- */
 .bindu-home .chip {
-  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 22px; padding: 0 8px; border-radius: var(--r-control);
-  border: 1px solid transparent; font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px; box-sizing: border-box; height: 22px; padding: 0 8px; border-radius: var(--r-xs);
+  border: 0; font: 500 12px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
 }
-.bindu-home .chip-live { background: var(--live-bg); color: var(--live-fg); border-color: var(--yellow-outline); }
+.bindu-home .chip-live { background: var(--live-bg); color: var(--live-fg); }
 .bindu-home .chip-live:before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink); }
-.bindu-home .chip-build { background: transparent; border: 1px dashed var(--build-line-dark); color: var(--on-dark-mute); }
-/* Illustration and Placeholder: transparent, solid hairline, mute label (every mock, map and chat carries one) */
-.bindu-home .chip-illus, .bindu-home .chip-neutral { background: transparent; border: 1px solid var(--hairline-dark); color: var(--on-dark-mute); }
+/* In build: the one bordered chip, a 1px dashed mute outline on a transparent fill */
+.bindu-home .chip-build { background: transparent; border: 1px dashed var(--on-dark-mute); color: var(--on-dark-mute); }
+/* Illustration and Placeholder: --canvas-mid fill, mute label (every mock, map and chat carries one) */
+.bindu-home .chip-illus, .bindu-home .chip-neutral { background: var(--canvas-mid); border: 0; color: var(--on-dark-mute); }
+
+/* ---------- panel (r54, v3 section 4): the one surface. --canvas-mid fill, no border, no shadow, 20px (40px for full-width panels from 1024px). Nested surfaces inside use --canvas-soft. ---------- */
+.bindu-home .panel { background: var(--canvas-mid); border: 0; border-radius: var(--r-lg); padding: 24px; }
+@media (min-width: 1024px) { .bindu-home .panel-wide { border-radius: var(--r-4xl); padding: 40px; } }
 
 /* ---------- cards (x.ai card on dark; hairline card on light) ---------- */
 .bindu-home .card { border-radius: var(--r-md); padding: var(--s-5); }
-.bindu-home .band-dark .card { background: var(--canvas-soft); border: 1px solid var(--line-white-12); }
+.bindu-home .band-dark .card { background: var(--canvas-mid); border: 0; }
 .bindu-home .band-light .card { background: var(--paper); border: 1px solid var(--hairline-light); }
 .bindu-home .band-soft .card { background: var(--paper); border: 1px solid var(--hairline-light); }
 
 /* app frame: the product mock window. Cobalt = the system */
-.bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas-soft); border: 1px solid var(--line-white-12); overflow: hidden; color: var(--on-dark); }
-.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; border-bottom: 1px solid var(--hairline-dark); font: 500 13px/1 var(--font-sans); color: var(--on-dark-mute); }
+.bindu-home .app-frame { border-radius: var(--r-lg); background: var(--canvas-soft); border: 0; overflow: hidden; color: var(--on-dark); }
+.bindu-home .app-frame-bar { display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; font: 500 13px/1 var(--font-sans); color: var(--on-dark-mute); }
 .bindu-home .app-frame-bar .chip-illus { margin-left: auto; }
 
 /* active step / progress: cobalt */
@@ -144,26 +138,20 @@
 .bindu-home .band-light .spiral circle, .bindu-home .band-soft .spiral circle { fill: var(--hairline-light); }
 .bindu-home .band-light .spiral circle.on { fill: var(--brand-cobalt); }
 
-/* ---------- tabs (r52, DESIGN.md v2 section 7): one component for the journey stories, the pricing toggle and the Full Circle acts.
-   Inter 500 15px sentence-case labels, mute at rest, ink when active. The active tab gets a 1px ink box with a 4px radius (the
-   outline button's shape), no underline and no fill; it slides between options (transform only, 250ms, --ease-ui). The row sits
-   on one hairline. Roving tabindex and arrow keys live in the components. Reduced motion: the box jumps. */
-.bindu-home .seg-track { position: relative; box-sizing: border-box; width: 100%; max-width: 720px; border-bottom: 1px solid var(--hairline-dark); }
-.bindu-home .seg-in { position: relative; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
-.bindu-home .seg-ind {
-  position: absolute; left: 0; top: 4px; bottom: 4px; width: calc(100% / var(--n)); box-sizing: border-box;
-  border: 1px solid var(--on-dark); border-radius: var(--r-control); background: transparent; pointer-events: none;
-  transform: translateX(calc(var(--i) * 100%)); transition: transform 250ms var(--ease-ui);
-}
+/* ---------- tabs (r54, DESIGN.md v3 section 4): one component for the journey stories, the pricing toggle and the Full Circle acts.
+   A centred row of btn-secondary buttons; the active one is an ink fill with a canvas label. No underline, no indicator line (the
+   old sliding indicator element is hidden). Roving tabindex and arrow keys live in the components. ---------- */
+.bindu-home .seg-track { position: relative; box-sizing: border-box; width: 100%; max-width: 100%; margin-inline: auto; }
+.bindu-home .seg-in { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.bindu-home .seg-ind { display: none; }
 .bindu-home .seg-opt {
-  position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; min-height: 44px;
-  padding: 0 16px; border: 0; background: transparent; color: var(--on-dark-mute); cursor: pointer;
-  font: 500 15px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
-  transition: color var(--t-ui) var(--ease-ui);
+  position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: var(--btn-h);
+  padding: 0 var(--btn-px); border: 0; border-radius: var(--r-xs); background: var(--canvas-mid); color: var(--on-dark-mute); cursor: pointer;
+  font: 500 14px/1 var(--font-sans); letter-spacing: 0; white-space: nowrap;
+  transition: background-color var(--t-ui) var(--ease-ui), color var(--t-ui) var(--ease-ui);
 }
-.bindu-home .seg-opt:hover, .bindu-home .seg-opt.is-on { color: var(--on-dark); }
-.bindu-home .seg-opt:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: -2px; border-radius: var(--r-control); }
-@media (prefers-reduced-motion: reduce) { .bindu-home .seg-ind { transition: none; } }
-@media (max-width: 600px) { .bindu-home .seg-opt { padding: 0 4px; font-size: 13px; } }
+.bindu-home .seg-opt:hover { background: color-mix(in srgb, var(--canvas-mid), var(--on-dark) 9%); color: var(--on-dark); }
+.bindu-home .seg-opt.is-on, .bindu-home .seg-opt.is-on:hover { background: var(--on-dark); color: var(--canvas); }
+.bindu-home .seg-opt:focus-visible { outline: 2px solid var(--link-wipe); outline-offset: 2px; }
 /* the pricing toggle has six options: below 600px the row scrolls sideways inside itself (the page never does) */
-@media (max-width: 600px) { .bindu-home .r6-tabs { overflow-x: auto; scrollbar-width: none; } .bindu-home .r6-tabs .seg-in { min-width: 470px; } .bindu-home .r6-tabs .seg-opt { padding: 0 6px; } }
+@media (max-width: 600px) { .bindu-home .r6-tabs { overflow-x: auto; scrollbar-width: none; } .bindu-home .r6-tabs .seg-in { flex-wrap: nowrap; justify-content: flex-start; min-width: max-content; } }

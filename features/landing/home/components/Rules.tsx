@@ -94,7 +94,7 @@ export function Rules() {
                     {r.date ? <dl className="rl-dl"><div><dt>Dates</dt><dd>{r.date}</dd></div></dl> : null}
                     <a className="rl-src" href={r.src.u} target="_blank" rel="noopener noreferrer">{c.source}: {r.src.t}</a>
                   </div>
-                  <a className="btn btn-outline rl-read" href={linkOf(r.link)} aria-label={`${c.read}: ${r.t}`}><BtnLabel>{c.read}</BtnLabel></a>
+                  <a className="btn btn-secondary rl-read" href={linkOf(r.link)} aria-label={`${c.read}: ${r.t}`}><BtnLabel>{c.read}</BtnLabel></a>
                 </li>
               ))}
             </ul>

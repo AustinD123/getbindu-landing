@@ -286,7 +286,7 @@ export function Nav() {
             (logo only, r43) fades it out with the links and takes it out of the tab order (visibility hidden). */}
         <a className="btn bh-btn-primary nav-book" href={DEMO_URL} target="_blank" rel="noopener noreferrer"><BtnLabel>{cta.demoShort}</BtnLabel></a>
         </div>
-        <button ref={btn} type="button" className="btn btn-outline nav-menu" aria-expanded={open} aria-controls="nav-drawer" onClick={() => setOpen(!open)}>
+        <button ref={btn} type="button" className="btn btn-ghost nav-menu" aria-expanded={open} aria-controls="nav-drawer" onClick={() => setOpen(!open)}>
           {open ? nav.close : nav.menu}
         </button>
       </div>
