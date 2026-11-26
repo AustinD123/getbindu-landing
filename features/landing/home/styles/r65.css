@@ -108,3 +108,26 @@
 .bindu-home .vx-dot { display: block; width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; background: rgb(var(--fg-rgb) / 0.3); cursor: pointer; transition: width 300ms var(--ease-ui), background-color 300ms var(--ease-ui); }
 .bindu-home .vx-dot.is-on { width: 24px; background: var(--on-dark); }
 @media (max-width: 639px) { .bindu-home .vx-q { font-size: 19px; } .bindu-home .vx-row { height: calc(var(--vx-h, 280px) + 270px); } .bindu-home .vx-dot { position: relative; } .bindu-home .vx-dot::after { content: ""; position: absolute; inset: -19px -6px; } }
+
+/* r65-17: the three pinned sections after the statement (what Bindu does, the shipment map, the departures board) put their title the same short
+   distance under the collapsed nav (8px of stage padding under the 64px sticky line), instead of centring the stage, which left 18 to 33px. Desktop
+   pinned only; phones and the static fallbacks keep their own spacing. */
+@media (min-width: 861px) {
+  .bindu-home .fl-pin:not(.is-static) .fl-win { padding-top: 8px; }
+  .bindu-home .ship-pin:not(.is-static) .ship-stage { justify-content: flex-start; padding-top: 8px; }
+  .bindu-home .ex-pin:not(.is-static) .ex-stage { align-content: start; padding-top: 8px; }
+}
+
+/* r65-20: What buyers say as one scroll-driven scene. JS writes each card's transform and opacity from one number (Voices.tsx); the cards keep one size
+   (the big card's) and scale down at the sides from their top centre, so the boxes stay top-aligned. Desktop with motion allowed: the section is a
+   sticky stage (the same media query as PIN_MQ in Voices.tsx) and four steps of scroll move through the five quotes. */
+.bindu-home .vx-row.is-live .vx-card { width: var(--vx-big, 560px); transform-origin: 50% 0; will-change: transform, opacity; }
+.bindu-home .vx-row.is-live .vx-card .pc-box { height: var(--vx-h, 336px); }
+.bindu-home .vx-row.is-live .vx-text { will-change: transform, opacity; }
+.bindu-home .vx-card .pc-win { overflow: hidden; }
+@media (min-width: 861px) and (prefers-reduced-motion: no-preference) {
+  .bindu-home .sec.vx { padding-block: 0; }
+  .bindu-home .vx-pin { height: calc(100vh + 280vh); height: calc(100svh + 280svh); }
+  .bindu-home .vx-stage { position: sticky; top: 64px; height: calc(100vh - 64px); height: calc(100svh - 64px); display: flex; flex-direction: column; justify-content: center; }
+  .bindu-home .vx-stage .vx-head { margin-bottom: var(--s-5); }
+}

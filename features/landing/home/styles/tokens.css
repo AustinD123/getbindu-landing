@@ -2,7 +2,7 @@
    Token NAMES are the old ones (hundreds of rules use them); only the values changed. Neutrals, type, radii and spacing are
    Ollama's. The two accents Austin kept are yellow (Book a demo, Live chip, proof and ship dots, the finale i, map shipments)
    and cobalt (route lines, progress, active markers, inline links, active nav and tabs, focus ring). Nothing else is coloured.
-   Fonts (adaptation 1): r65-1, one font everywhere: Newsreader (OFL, variable, opsz, via next/font), the getbindu.com heading face,
+   Fonts (adaptation 1): r65-18, one font everywhere: Work Sans (OFL, variable, via next/font), replacing r65-1's Newsreader,
    for headings, body and UI (Austin: "the whole site must have the same font"); code ui-monospace. IBM Plex Mono is retired. */
 
 /* ---------- colour channels (round 13) ----------
@@ -72,8 +72,8 @@
   --build-line-light: rgb(var(--ink-rgb) / 0.35);
 
   /* ---------- type ---------- */
-  --font-sans: var(--font-newsreader), "Newsreader", Georgia, ui-serif, serif;   /* r65-1: body and UI, Newsreader */
-  --font-display: var(--font-newsreader), "Newsreader", Georgia, ui-serif, serif;   /* r65-1: headings, the same face */
+  --font-sans: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: body and UI, Work Sans */
+  --font-display: var(--font-work-sans), "Work Sans", ui-sans-serif, system-ui, sans-serif;   /* r65-18: headings, the same face */
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* the file's hierarchy table: display-xl 36/500/1.11, display-lg 30/500/1.2, heading-lg 24/600/1.33, heading-md 20, heading-sm 18, body 16/1.5, body-sm 14, caption 12; letter-spacing 0 */

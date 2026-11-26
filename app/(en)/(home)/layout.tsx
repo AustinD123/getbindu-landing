@@ -5,15 +5,14 @@
  * and the intro state on the wrapper before first paint, so nothing flashes.
  */
 
-import { Newsreader } from "next/font/google";
+import { Work_Sans } from "next/font/google";
 import { LandingJsonLd } from "../../landing-chrome";
 
-// r65-1: one font for the whole homepage, Newsreader (SIL OFL), the getbindu.com heading face, variable with the optical-size axis.
-const newsreader = Newsreader({
+// r65-18: one font for the whole homepage, Work Sans (SIL OFL, variable weight), chosen by Austin from the font trial; replaces Newsreader.
+const workSans = Work_Sans({
   subsets: ["latin"],
   style: ["normal", "italic"],
-  axes: ["opsz"],
-  variable: "--font-newsreader",
+  variable: "--font-work-sans",
   display: "swap",
 });
 
@@ -29,7 +28,7 @@ export default function HomeLayout({
     <>
       <LandingJsonLd />
       <div
-        className={`bindu-home ${newsreader.variable}`}
+        className={`bindu-home ${workSans.variable}`}
         data-theme="light"
         suppressHydrationWarning
       >
