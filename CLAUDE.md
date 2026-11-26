@@ -20,6 +20,14 @@ paths, and only the landing-owned paths travel back.
   this copy must never be indexed.
 - Keep landing-owned files identical in shape to shelley's. Don't rename or
   move them; merge-back is a path-for-path copy.
+- Save context after every task, without being asked. Before you report a
+  task done, record what changed and why so the next session can pick it up:
+  - homepage work: add the round entry to `docs/home/DECISIONS.md` and apply
+    anything now permanent (page order, sections, rules, open questions, go-live
+    items) to `docs/home/project-context.md`, updating its "Last updated" date
+    and the "Recent rounds" log
+  - other pages: update the matching doc in `docs/` (or `README.md`)
+  - note anything left unverified or pending, so it isn't lost
 
 ## Homepage (`/`)
 
